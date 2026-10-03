@@ -1,36 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type SelectedPhoto = { file: File; preview: string };
 
 export default function ScanPage() {
   const [photos, setPhotos] = useState<SelectedPhoto[]>([]);
-
-  const photoKey = useMemo(() => photos.map((photo) => photo.preview).join("|"), [photos]);
+  const objectUrls = useRef(new Set<string>());
 
   useEffect(() => {
     return () => {
-      photos.forEach((photo) => URL.revokeObjectURL(photo.preview));
+      objectUrls.current.forEach((url) => URL.revokeObjectURL(url));
+      objectUrls.current.clear();
     };
-  }, [photoKey]); // Revoke old local previews when the selection changes or the page unmounts.
+  }, []);
 
   function addPhotos(files: FileList | null) {
     if (!files) return;
     const imageFiles = Array.from(files).filter((file) => file.type.startsWith("image/"));
     setPhotos((current) => [
       ...current,
-      ...imageFiles.map((file) => ({ file, preview: URL.createObjectURL(file) })),
+      ...imageFiles.map((file) => {
+        const preview = URL.createObjectURL(file);
+        objectUrls.current.add(preview);
+        return { file, preview };
+      }),
     ]);
   }
 
   function removePhoto(preview: string) {
-    setPhotos((current) => {
-      const removed = current.find((photo) => photo.preview === preview);
-      if (removed) URL.revokeObjectURL(removed.preview);
-      return current.filter((photo) => photo.preview !== preview);
-    });
+    URL.revokeObjectURL(preview);
+    objectUrls.current.delete(preview);
+    setPhotos((current) => current.filter((photo) => photo.preview !== preview));
   }
 
   return (
@@ -77,10 +79,10 @@ export default function ScanPage() {
               <figure className="photo-tile" key={photo.preview}>
                 {/* Local preview only. The file is not uploaded or sent to a model. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={photo.preview} alt={photo.file.name || `Selected sale photo ${index + 1}`} />
+                <img src={photo.preview} alt={`Selected sale photo ${index + 1}`} />
                 <figcaption>
                   <span>PHOTO {String(index + 1).padStart(2, "0")}</span>
-                  <button type="button" onClick={() => removePhoto(photo.preview)} aria-label={`Remove ${photo.file.name}`}>×</button>
+                  <button type="button" onClick={() => removePhoto(photo.preview)} aria-label={`Remove photo ${index + 1}`}>×</button>
                 </figcaption>
               </figure>
             ))}
