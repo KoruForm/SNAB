@@ -4,9 +4,11 @@ Mobile-first SNAB app foundation, built for deployment as a Node.js web app on H
 
 ## Current state
 
-This first scaffold includes a branded landing page, a photo intake test bench with local-only previews, a PWA manifest, and a health endpoint. Selected images stay in the browser: there is no upload, AI analysis, database, or sign-in integration yet.
+v0.3.0 includes the approved v0.4 brand assets, a persistent app shell, and a working local seller journey: dates → address/privacy → saved photos → manual highlights → editable listing preview. `/me` resumes multiple drafts. `/scan` redirects to the sale flow.
 
-The AI contract is defined in `lib/ai/types.ts`. The next implementation step is to connect private image storage and a background analysis worker after choosing the model provider and configuring credentials.
+Drafts and photo blobs are stored in IndexedDB, on the same device/browser. No account, remote upload, AI, map search or public publishing is connected. Buyer destinations explicitly show their unavailable state. See `docs/IMPLEMENTATION-STATUS.md` for the full wireframe coverage and next integration gate.
+
+Supabase owner-only database and private-storage setup is prepared in `supabase/migrations/001_seller_foundation.sql`; it has not been applied to a database. No provider credentials are needed for the local seller flow.
 
 ## Stack
 

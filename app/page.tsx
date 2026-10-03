@@ -5,7 +5,7 @@ const categories = ["Furniture", "Tools", "Books", "Electronics", "Clothing", "K
 const steps = [
   { number: "01", title: "Show us your stuff", detail: "A few wide photos of your tables, shelves and boxes. You don’t need to photograph every item." },
   { number: "02", title: "Check the good bits", detail: "The planned AI scan will suggest categories and highlights for you to review and correct." },
-  { number: "03", title: "Help it get found", detail: "Nearby search and sale publishing are next. Right now, you can try the private photo preview." },
+  { number: "03", title: "Help it get found", detail: "Nearby search and sale publishing are next. Right now, you can create a draft and preview your listing." },
 ];
 
 export default function Home() {
@@ -14,7 +14,7 @@ export default function Home() {
       <nav className="topbar" aria-label="Main navigation">
         <Link className="brand-link" href="/" aria-label="SNAB home"><Image src="/brand/snab-highlight-final-b.svg" alt="SNAB" width={140} height={69} priority /></Link>
         <span className="topbar-note">Good stuff finds new people.</span>
-        <Link className="nav-link" href="/scan">Try the preview <span aria-hidden="true">↗</span></Link>
+        <Link className="nav-link" href="/sell">Open the app <span aria-hidden="true">↗</span></Link>
       </nav>
 
       <section className="hero">
@@ -23,10 +23,10 @@ export default function Home() {
           <h1>You’ve got it.<br />Someone wants<br />to <span className="highlight">Snab it.</span></h1>
           <p className="hero-lede">Less clutter. More good finds. We’re building a simpler way to turn your sale photos into things people can find nearby.</p>
           <div className="hero-actions">
-            <Link className="button button-primary" href="/scan">Try the photo preview <span aria-hidden="true">→</span></Link>
+            <Link className="button button-primary" href="/sell">Start a sale <span aria-hidden="true">→</span></Link>
             <a className="button button-quiet" href="#how-it-works">How it works</a>
           </div>
-          <p className="small-note">Early build · private photo preview · AI coming next</p>
+          <p className="small-note">Local drafts · photos saved on this device · AI coming next</p>
         </div>
         <div className="hero-art" aria-label="SNAB’s approved brand illustrations: furniture, tools, books and a bargain campaign">
           <div className="art-sheet">
@@ -55,7 +55,7 @@ export default function Home() {
         <div className="step-list">{steps.map(step => <article className="step-card" key={step.number}><span className="step-number">{step.number}</span><h3>{step.title}</h3><p>{step.detail}</p></article>)}</div>
       </section>
 
-      <section className="preview-callout"><div><p className="eyebrow">Try the first little step</p><h2>Make room for a Snab.</h2><p>Choose a few photos and see them together. They stay in your browser.</p></div><Link className="button button-primary" href="/scan">Open the photo preview <span aria-hidden="true">↗</span></Link></section>
+      <section className="preview-callout"><div><p className="eyebrow">Try the first little step</p><h2>Make room for a Snab.</h2><p>Set the date, add photos and preview your sale. Your draft stays on this device.</p></div><Link className="button button-primary" href="/sell">Create your sale draft <span aria-hidden="true">↗</span></Link></section>
       <footer className="footer"><Image src="/brand/snab-wordmark-underline.svg" alt="SNAB" width={100} height={50} /><span>Good stuff finds new people.</span><span className="footer-status"><span className="status-light" /> Early build</span></footer>
     </main>
   );

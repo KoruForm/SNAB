@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function SavedPage() { return <section className="discovery-page"><p className="eyebrow">Keep the good finds close</p><h1>Your next<br /><span className="highlight">treasure.</span></h1><div className="empty-card"><h2>Saved finds and Treasure Lists are coming.</h2><p>When buyer discovery is connected, you’ll be able to save sales and keep a list of things you’re looking for.</p><Link href="/me" className="button button-primary">Open my sale drafts</Link></div></section>; }
