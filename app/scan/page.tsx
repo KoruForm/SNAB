@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 type SelectedPhoto = { file: File; preview: string };
@@ -10,9 +11,10 @@ export default function ScanPage() {
   const objectUrls = useRef(new Set<string>());
 
   useEffect(() => {
+    const urls = objectUrls.current;
     return () => {
-      objectUrls.current.forEach((url) => URL.revokeObjectURL(url));
-      objectUrls.current.clear();
+      urls.forEach((url) => URL.revokeObjectURL(url));
+      urls.clear();
     };
   }, []);
 
@@ -38,12 +40,12 @@ export default function ScanPage() {
   return (
     <main className="scan-shell">
       <header className="scan-topbar">
-        <Link className="wordmark" href="/">SNAB<span className="wordmark-dot">.</span></Link>
+        <Link className="brand-link" href="/" aria-label="SNAB home"><Image src="/brand/snab-highlight-final-b.svg" alt="SNAB" width={140} height={69} priority /></Link>
         <Link className="back-link" href="/">← Back home</Link>
       </header>
 
       <section className="scan-intro">
-        <p className="eyebrow"><span className="sticker-dot" /> Photo-to-search test</p>
+        <p className="eyebrow"><span className="sticker-dot" /> Private photo preview</p>
         <h1>Show us your<br /><span className="highlight">sale stuff.</span></h1>
         <p className="hero-lede">Wide photos of tables, shelves and piles are perfect. No need to photograph every item on its own.</p>
       </section>

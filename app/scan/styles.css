@@ -37,3 +37,5 @@
   .upload-panel { padding: 17px; }
   .upload-heading-row h2 { font-size: 21px; }
 }
+.scan-shell{max-width:860px}.scan-topbar{height:98px}.scan-intro .hero-lede{font-size:17px}.upload-panel{background:var(--white);border-radius:10px;padding:28px}.upload-box{min-height:200px;border-radius:7px;border-color:var(--blue)}.upload-box strong{font-size:18px}.upload-help{font-size:14px}.privacy-note{border-radius:5px}.privacy-note p{font-size:14px}.photo-count{font-size:13px}.next-steps span{font-size:14px;border-radius:5px}.photo-tile{border-radius:6px;overflow:hidden}.photo-tile figcaption{font-size:11px}.photo-tile button{width:36px;height:36px}.scan-intro h1{line-height:1.15}.analyze-button{opacity:1;background:#e3e4dd;color:#555952;box-shadow:none}
+@media(max-width:620px){.scan-topbar{height:78px}.scan-shell{padding:0 20px 48px}.scan-intro h1{font-size:clamp(34px,9.5vw,55px)}.upload-panel{padding:18px}.upload-heading-row h2{font-size:21px}.upload-heading-row{gap:12px}.photo-count{white-space:nowrap;font-size:11px}.privacy-note p{font-size:13px}}

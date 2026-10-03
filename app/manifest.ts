@@ -9,6 +9,6 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     background_color: "#f7f3e8",
     theme_color: "#f7f3e8",
-    icons: [],
+    icons: [{ src: "/brand/snab-yellow-badge.svg", sizes: "any", type: "image/svg+xml", purpose: "any" }],
   };
 }
