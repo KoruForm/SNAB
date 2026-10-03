@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Bowlby+One&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --paper: #f7f3e8;
+  --paper-deep: #efe8d7;
+  --ink: #292b2d;
+  --muted: #686b69;
+  --blue: #244d61;
+  --yellow: #f2c94c;
+  --clay: #c86f50;
+  --green: #4f9b68;
+  --white: #fffdf7;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: "DM Sans", Arial, sans-serif; }
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+.site-shell { max-width: 1240px; margin: 0 auto; padding: 0 42px; }
+.topbar { height: 82px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(41,43,45,.15); }
+.wordmark { font-family: "Bowlby One", Impact, sans-serif; font-size: 27px; letter-spacing: .02em; line-height: 1; }
+.wordmark-dot { color: var(--clay); }
+.topbar-note { color: var(--muted); font-size: 13px; }
+.nav-link { font-size: 13px; font-weight: 700; }
+.nav-link span { color: var(--clay); padding-left: 5px; }
+.hero { min-height: 545px; display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: 36px; padding: 50px 0 64px; }
+.hero-copy { max-width: 600px; }
+.eyebrow { margin: 0 0 20px; display: flex; align-items: center; gap: 9px; color: var(--blue); text-transform: uppercase; letter-spacing: .12em; font-size: 10px; font-weight: 700; }
+.sticker-dot { display: inline-block; height: 10px; width: 10px; border-radius: 50%; background: var(--yellow); border: 1px solid var(--ink); }
+h1, h2 { font-family: "Bowlby One", Impact, sans-serif; font-weight: 400; letter-spacing: -.03em; }
+h1 { margin: 0; max-width: 650px; font-size: clamp(48px, 6.5vw, 84px); line-height: .99; }
+.highlight { position: relative; z-index: 0; white-space: nowrap; }
+.highlight::after { content: ""; position: absolute; z-index: -1; height: .34em; left: -.025em; right: -.04em; bottom: .05em; background: var(--yellow); transform: rotate(-1.5deg); }
+.hero-lede { max-width: 480px; margin: 24px 0 0; color: #555957; font-size: 17px; line-height: 1.65; }
+.hero-actions { display: flex; align-items: center; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+.button { min-height: 48px; padding: 0 18px; display: inline-flex; justify-content: center; align-items: center; gap: 14px; border-radius: 6px; font-size: 13px; font-weight: 700; transition: transform .15s ease, box-shadow .15s ease; }
+.button:hover { transform: translateY(-2px); }
+.button-primary { color: var(--white); background: var(--blue); box-shadow: 3px 3px 0 var(--yellow); }
+.button-quiet { border: 1px solid rgba(41,43,45,.25); background: transparent; }
+.small-note { margin-top: 24px; font-size: 12px; color: var(--muted); }
+.hero-art { position: relative; min-height: 390px; display: grid; place-items: center; }
+.paper-card { position: absolute; width: min(310px, 75vw); height: 355px; border: 1px solid #d9d0bd; border-radius: 3px; box-shadow: 0 16px 36px rgba(45,42,34,.12); }
+.card-back { background: #dfe5db; transform: rotate(8deg) translate(19px, 1px); display: grid; place-items: center; }
+.handwritten { color: var(--blue); font: italic 25px Georgia, serif; transform: rotate(-9deg); }
+.card-front { background: var(--white); transform: rotate(-4deg); padding: 21px; overflow: visible; }
+.price-sticker { position: absolute; z-index: 2; right: -20px; top: 22px; width: 91px; height: 72px; display: grid; place-content: center; text-align: center; background: var(--yellow); color: var(--ink); font-size: 12px; font-weight: 700; line-height: 1.12; clip-path: polygon(4% 4%, 96% 0, 100% 91%, 8% 100%, 0 53%); transform: rotate(7deg); }
+.object-shape { height: 190px; display: grid; place-items: center; background: #e8e2d5; border-radius: 2px; overflow: hidden; }
+.object-shape::before { content: ""; width: 104px; height: 90px; border: 8px solid #48595a; border-radius: 16px 16px 9px 9px; background: linear-gradient(150deg,#728586,#3b4c4e); box-shadow: 9px 9px 0 #c5bba6; transform: rotate(-9deg); }
+.card-caption { display: grid; gap: 5px; margin-top: 15px; }
+.caption-label { font-size: 9px; font-weight: 700; letter-spacing: .14em; color: var(--clay); }
+.card-caption strong { font-family: "Bowlby One", Impact, sans-serif; font-size: 20px; font-weight: 400; }
+.caption-meta { font-size: 11px; color: var(--muted); }
+.orbit-note { position: absolute; left: -8px; top: 35px; color: var(--blue); font-size: 9px; font-weight: 700; letter-spacing: .11em; line-height: 1.5; transform: rotate(-9deg); }
+.tiny-spark { position: absolute; right: 24px; bottom: 28px; color: var(--clay); font-size: 34px; }
+.how-section { padding: 66px 0 82px; border-top: 1px solid rgba(41,43,45,.15); display: grid; grid-template-columns: .72fr 1.28fr; gap: 50px; }
+.section-heading .eyebrow { margin-bottom: 16px; }
+h2 { margin: 0; font-size: clamp(30px, 3.7vw, 47px); line-height: 1.12; }
+.step-list { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; align-items: stretch; }
+.step-card { padding: 20px 18px; border: 1px solid rgba(41,43,45,.18); background: rgba(255,253,247,.52); min-height: 175px; }
+.step-number { color: var(--clay); font-size: 11px; font-weight: 700; letter-spacing: .12em; }
+.step-card h3 { margin: 22px 0 9px; font-size: 15px; }
+.step-card p { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.55; }
+.footer { min-height: 76px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(41,43,45,.15); color: var(--muted); font-size: 11px; }
+.wordmark-small { font-size: 20px; color: var(--ink); }
+.footer-status { display: flex; align-items: center; gap: 8px; }
+.status-light { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+
+@media (max-width: 800px) {
+  .site-shell { padding: 0 22px; }
+  .topbar { height: 68px; }
+  .topbar-note { display: none; }
+  .hero { min-height: 0; grid-template-columns: 1fr; padding: 52px 0 46px; gap: 8px; }
+  .hero-art { min-height: 360px; margin-top: 10px; }
+  .paper-card { height: 320px; }
+  .object-shape { height: 167px; }
+  .how-section { grid-template-columns: 1fr; gap: 28px; padding: 48px 0 55px; }
+  .step-list { grid-template-columns: 1fr; }
+  .step-card { min-height: 0; }
+  .step-card h3 { margin-top: 15px; }
+  .footer { gap: 12px; flex-wrap: wrap; padding: 18px 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
