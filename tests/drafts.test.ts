@@ -44,7 +44,7 @@ test("draft metadata and photo blobs persist; deleting one draft preserves anoth
   await addPhotos(a.id, [file]); await addPhotos(b.id, [file]);
   assert.equal((await getDraft(a.id))?.title, "Workshop clearout");
   assert.equal((await getDraft(a.id))?.location.address, "Private street");
-  assert.deepEqual([...new Uint8Array(await (await getPhotos(a.id))[0].blob.arrayBuffer())], [1, 2, 3]);
+  assert.deepEqual([...new Uint8Array(await (await getPhotos(a.id))[0].blob!.arrayBuffer())], [1, 2, 3]);
   await deleteDraft(a.id);
   assert.equal(await getDraft(a.id), undefined); assert.equal((await getPhotos(a.id)).length, 0);
   assert.equal((await getPhotos(b.id)).length, 1); assert.ok(await getDraft(b.id));

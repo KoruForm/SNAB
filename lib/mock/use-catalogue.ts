@@ -3,14 +3,16 @@ import { useEffect, useState } from "react";
 import { getPhotos, listDrafts } from "../drafts/storage";
 import { demoSales, toBuyerSale, type BuyerSale } from "./catalogue";
 import { readPreferences, type Preferences } from "./preferences";
+import { useAccount } from "../supabase/use-account";
 export function useCatalogue() {
   const [sales, setSales] = useState<BuyerSale[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  useEffect(()=>{ let active=true; listDrafts().then(async drafts => {
+  const account = useAccount();
+  useEffect(()=>{ if(account.loading) return; let active=true; listDrafts().then(async drafts => {
     const local = await Promise.all(drafts.filter(d=>d.status!=="draft").map(async d=>toBuyerSale(d,await getPhotos(d.id))));
-    if(active){setSales([...local,...demoSales()]);setLoading(false);}
-  }).catch(()=>{if(active){setSales(demoSales());setError("Local sales couldn’t be opened. Sample sales are still available.");setLoading(false);}});return()=>{active=false;}; },[]);
+    if(active){setSales([...local,...demoSales()]);setError("");setLoading(false);}
+  }).catch(()=>{if(active){setSales(demoSales());setError("Local sales couldn’t be opened. Sample sales are still available.");setLoading(false);}});return()=>{active=false;}; },[account.loading, account.userId]);
   return {sales,loading,error};
 }
 export function usePreferences() {

@@ -20,7 +20,9 @@ export type Draft = {
   createdAt: string;
   updatedAt: string;
 };
-export type DraftPhoto = { id: string; draftId: string; name: string; type: string; blob: Blob; createdAt: string };
+// Local photos carry their blob; account photos carry a short-lived signed URL instead.
+export type DraftPhoto = { id: string; draftId: string; name: string; type: string; blob?: Blob; url?: string; createdAt: string };
+export type DraftPatch = Partial<Pick<Draft, "title" | "description" | "days" | "location" | "categories" | "highlights" | "status" | "items" | "demoScan" | "eventCode" | "dayMode" | "abundance">>;
 
 export function blankDraft(id: string, now = new Date().toISOString()): Draft {
   return { id, title: "", description: "", days: [{ date: "", starts: "08:00", finishes: "13:00" }], location: { address: "", town: "", reveal: "sale-day" }, categories: [], highlights: [], status: "draft", createdAt: now, updatedAt: now };
