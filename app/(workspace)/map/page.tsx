@@ -1,3 +1,3 @@
-import Image from "next/image";
-import Link from "next/link";
-export default function MapPage() { return <section className="discovery-page"><p className="eyebrow">Find the good stuff nearby</p><h1>A good find<br />starts <span className="highlight">here.</span></h1><p className="workspace-lede">The map will bring together garage sales you can actually visit.</p><div className="map-placeholder"><Image src="/brand/map-pins/selected.svg" alt="SNAB map pin" width={75} height={100} /><strong>Nearby sales are coming.</strong><p>Live maps and public listings aren’t connected yet.</p></div><div className="empty-card"><h2>Start with your own sale.</h2><p>Create a draft, add photos and preview your listing.</p><Link href="/sell" className="button button-primary">Start a sale →</Link></div><Link href="/me" className="text-link">Open my drafts</Link></section>; }
+import { Suspense } from "react";
+import { MapPage } from "../../../components/buyer-ui";
+export default function Page() { return <Suspense fallback={<p>Opening SNAB…</p>}><MapPage /></Suspense>; }

@@ -1,2 +1,3 @@
-import Link from "next/link";
-export default function HuntPage() { return <section className="discovery-page"><p className="eyebrow">Worth a Snab</p><h1>What are you<br /><span className="highlight">hunting?</span></h1><p className="workspace-lede">The planned search will match things like “old computers” or “woodworking tools” to sale contents nearby.</p><div className="empty-card"><h2>Buyer search is coming next.</h2><p>There are no published sales to search in this build. We’re starting with the seller draft flow.</p><Link className="button button-primary" href="/sell">Try creating a sale</Link></div></section>; }
+import { Suspense } from "react";
+import { HuntPage } from "../../../components/buyer-ui";
+export default function Page() { return <Suspense fallback={<p>Opening SNAB…</p>}><HuntPage /></Suspense>; }

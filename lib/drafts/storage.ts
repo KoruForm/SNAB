@@ -54,7 +54,7 @@ export async function listDrafts(): Promise<Draft[]> {
     request.onerror = () => reject(request.error);
   });
 }
-export async function updateDraft(id: string, patch: Partial<Pick<Draft, "title" | "description" | "days" | "location" | "categories" | "highlights">>): Promise<Draft> {
+export async function updateDraft(id: string, patch: Partial<Pick<Draft, "title" | "description" | "days" | "location" | "categories" | "highlights" | "status" | "items" | "demoScan" | "eventCode" | "dayMode" | "abundance">>): Promise<Draft> {
   const database = await db();
   return new Promise((resolve, reject) => {
     const tx = database.transaction("drafts", "readwrite");

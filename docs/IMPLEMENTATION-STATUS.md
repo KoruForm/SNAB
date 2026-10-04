@@ -1,49 +1,44 @@
-# SNAB UX implementation status — v0.3.0
+# SNAB UX coverage — v0.4.0
 
-Source: garage-sale-ai-ux-master-wireframes.png supplied 4 October 2026.
-Approved artwork: v0.4-smoothed. Repository: KoruForm/SNAB. Host: Hostinger.
+Reference: user-supplied garage-sale master wireframes. Approved artwork: v0.4-smoothed. Repository: KoruForm/SNAB. Deployment: Hostinger.
 
-## Implemented in this release
+The current phase is a complete interactive UX mock. Backend services and production integrations are intentionally the next phase. All primary screens and journeys are connected; demo fixtures and simulations are labelled in the interface.
 
-- Persistent Map / Hunt / Sell / Saved / Me navigation and responsive app shell.
-- Start a local sale draft; resume multiple drafts from Me.
-- Multiple sale days, dates and times, validation and NZ local-time wording.
-- Address and town input; sale-day / show-now / area-only privacy choices.
-- Camera-request input and separate multi-file picker; persisted photo blobs, thumbnails and removal.
-- Manual categories and highlights; no invented AI results.
-- Editable title and description; saved listing and buyer preview.
-- Buyer preview honours the selected address setting, including NZ sale-day dates.
-- Delete a local draft and its photos after an in-app confirmation.
-- Legacy /scan URL redirects to the seller flow.
-
-Data is in IndexedDB on the same origin, browser profile and device. It survives refresh and ordinary browser restarts. It does not sync, and clearing browser data or browser storage eviction can remove it. Private/incognito profiles may remove data when closed. There is no account identity or public listing in this release.
-
-## Still missing from the wireframe
-
-| Feature | Status |
+| Wireframe flow | Route and working interaction |
 | --- | --- |
-| Accounts, authentication and cross-device drafts | Supabase project/credentials not connected |
-| Remote photo uploads | Schema prepared; not connected |
-| Geocoding, map position and nearby map | Not connected |
-| AI processing, retry worker, grouped inventory and seller corrections | Not connected |
-| Public publishing | Disabled until server persistence and privacy projection exist |
-| Buyer results, sale details, within-sale search and item views | Not built |
-| Treasure Lists, saved sales and matching notifications | Not built |
-| Directions | Not built |
-| Community event codes | Not built |
-| Sale-day status, statistics, fresh photos and sold/gone controls | Not built |
-| Social sharing, post text, PDF signs, QR posters and invitations | Not built |
-| Price suggestions | Deferred from first release |
+| Home map / list | `/map`: illustrative Hamilton map, selectable pins, sale cards, map/list toggle, date/radius/category/open filters and empty state |
+| Sale start / event code | `/sell`: blank sale or ready-made demo; HAMILTON event code; invalid-code feedback |
+| When | `/sell/when`: multiple days, date/time validation, back/continue, persistence |
+| Where / privacy | `/sell/where`: address/town, demo area preview, sale-day/show-now/area-only controls |
+| Wide photos / camera capture | `/sell/photos`: device file picker and camera capture input, saved thumbnails, removal, manual or demo-scan path |
+| AI processing | `/sell/processing`: simulated progress, skip, storage error and retry; never sends photos to AI |
+| Review / correct / optional prices | `/sell/review`: sample suggestions, keep/fix/remove, categories, confirm all, optional asking prices, skip prices, manual additions |
+| Preview / publish | `/sell/preview`: editable title/description, buyer preview, local demo publication; listing appears on this browser's map |
+| Search and match bands | `/hunt`: text queries, simple synonym matching, Great/Good/Possible reasons, sort/open filters and empty results |
+| Sale detail / saved heart | `/sale/[id]`: cover, privacy-aware location, days, status, categories, save, highlights, illustrative tappable photo markers, photo gallery, report simulation, share copy |
+| Within-sale search | `/sale/[id]/search`: query/category filtering of available highlights |
+| Item view / pricing | `/item/[saleId]/[itemId]`: sale photo or category illustration, asking price/sample estimate, save, gone state, link to sale |
+| Treasure list / saved finds | `/saved`: add/remove interests, demo match counts, saved sales/items, empty states; browser persistence |
+| Directions | `/directions/[id]`: illustrative route and next-step walkthrough; hidden address state shows area only |
+| Sale-day controls | `/manage/[id]`: open/close confirmation/reopen, lots left/some gone, item gone/restore, fresh photo, edit, buyer preview |
+| Views and saves | Clearly labelled sample statistics; available item count uses actual local state |
+| Share / signs / QR / invites | Copyable post and invitation previews, actual downloadable A4 PDF sign with valid QR URL, QR poster preview/PDF; no messages are sent |
+| Community day | `/event`: HAMILTON fixture/local-sale catalogue, event banner and seller join route |
+| Profile / Me | `/account` demo name/sign-in/sign-out; `/me` draft resume, published sale management, buyer views, delete confirmation |
+| Bottom navigation | Map / Hunt / raised yellow plus / Saved / Me on every app screen |
 
-The Map / Hunt / Saved destinations explicitly explain their current unavailable state. No fake sales, fake processing or fake sign-in are shown.
+## Data and simulation boundaries
 
-## Next implementation gate
+Local sales and photo blobs are saved in IndexedDB on the same origin, device and browser profile. Favourites, treasure interests, demo profile and demo reports use localStorage. Refresh retains state. Browser storage eviction, clearing site data and private profile closure can remove it. A local sale URL opened in another browser will show unavailable; sample sale URLs work because their fixtures are supplied to every browser. Exported local-sale signs disclose that limitation.
 
-Connect one Supabase project and its Auth configuration. Apply the owner-only migration in `supabase/migrations/001_seller_foundation.sql` to an isolated development project, then verify owner/non-owner policies with separate accounts. It has not been applied or executed against Postgres in this release.
+The illustrated map is not geocoded. Distances, routes, scan results, price estimates, matching and engagement statistics are demonstrations. Asking prices and item availability are seller-editable local state. Exact street text is projected according to the privacy choice across buyer detail, directions, share text and sign export; this is UX behaviour, not server-side access control.
 
-After connection: add the authenticated repository adapter, migrate selected local drafts with consent, upload photos privately, implement an idempotent analysis worker, and publish through a server-controlled public projection. Exact address and exact coordinates must stay out of public responses until permitted. Do not expose the private table or return hidden coordinates to the browser.
+## Next phase: hookups
 
-Reference docs:
-- https://supabase.com/docs/guides/database/postgres/row-level-security
-- https://supabase.com/docs/guides/storage/security/access-control
-- https://supabase.com/docs/guides/storage/buckets/fundamentals
+Connect authentication and cross-device persistence, remote photo storage, geocoding/maps/directions, image analysis and reliable jobs, server-controlled public publication and privacy, event lookup, actual analytics, reporting/moderation, notifications and social integration. Supabase migration `001_seller_foundation.sql` is prepared but has not been applied. Credentials are not required for this demo.
+
+Before production publication, enforce address and coordinate privacy on the server, verify separate-account access policies, and provide migration of selected local drafts. Do not expose private tables or hidden coordinates to public clients.
+
+## Validation
+
+Lint, TypeScript production build, automated storage/privacy/search/publication/availability tests, plus live browser checks of buyer and seller transitions. The device camera is opened only when the user chooses to take a photo.

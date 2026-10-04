@@ -2,6 +2,7 @@ export const CATEGORIES = ["Furniture", "Tools", "Books", "Electronics", "Clothi
 export type Category = typeof CATEGORIES[number];
 export type AddressReveal = "sale-day" | "now" | "area-only";
 export type SaleDay = { date: string; starts: string; finishes: string };
+export type MockItem = { id: string; label: string; category: Category; description: string; price?: string; estimate?: string; available: boolean; confirmed: boolean };
 export type Draft = {
   id: string;
   title: string;
@@ -10,7 +11,12 @@ export type Draft = {
   location: { address: string; town: string; reveal: AddressReveal };
   categories: Category[];
   highlights: string[];
-  status: "draft";
+  status: "draft" | "published" | "closed";
+  items?: MockItem[];
+  demoScan?: boolean;
+  eventCode?: string;
+  dayMode?: "auto" | "open" | "closed";
+  abundance?: "lots" | "some-gone";
   createdAt: string;
   updatedAt: string;
 };

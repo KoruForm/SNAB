@@ -14,7 +14,7 @@ export default function Home() {
       <nav className="topbar" aria-label="Main navigation">
         <Link className="brand-link" href="/" aria-label="SNAB home"><Image src="/brand/snab-highlight-final-b.svg" alt="SNAB" width={140} height={69} priority /></Link>
         <span className="topbar-note">Good stuff finds new people.</span>
-        <Link className="nav-link" href="/sell">Open the app <span aria-hidden="true">↗</span></Link>
+        <Link className="nav-link" href="/map">Open the app <span aria-hidden="true">↗</span></Link>
       </nav>
 
       <section className="hero">

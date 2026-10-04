@@ -4,9 +4,11 @@ Mobile-first SNAB app foundation, built for deployment as a Node.js web app on H
 
 ## Current state
 
-v0.3.0 includes the approved v0.4 brand assets, a persistent app shell, and a working local seller journey: dates → address/privacy → saved photos → manual highlights → editable listing preview. `/me` resumes multiple drafts. `/scan` redirects to the sale flow.
+v0.4.0 is the full interactive UX demo using the approved v0.4 brand artwork. Seller creation, sample scan, highlight correction, optional prices, demo publishing, sale-day controls, sharing previews, A4 PDF signs and QR posters are connected to the buyer map/list, hunt results, sale details, within-sale search, item views, directions walkthrough, saved finds and treasure list. Me includes drafts, published sales and a demo profile. Community code HAMILTON joins the sample event.
 
-Drafts and photo blobs are stored in IndexedDB, on the same device/browser. No account, remote upload, AI, map search or public publishing is connected. Buyer destinations explicitly show their unavailable state. See `docs/IMPLEMENTATION-STATUS.md` for the full wireframe coverage and next integration gate.
+Start at `/map` to browse, or `/sell` → **Try a ready-made demo sale** to try publishing and the sale-day tools. The central navigation action is a raised yellow circle with a dark plus and no label.
+
+Sales and photos persist in IndexedDB; preferences persist in localStorage. Publishing adds a listing to this browser's demo catalogue. Fixtures, search, matching, scan progress, statistics, estimates, maps, directions and account identity are explicitly simulated. No provider credentials, remote calls, real navigation or public listing service are needed. Clearing browser data removes local changes. See `docs/IMPLEMENTATION-STATUS.md` for UX coverage and integration work for the next phase.
 
 Supabase owner-only database and private-storage setup is prepared in `supabase/migrations/001_seller_foundation.sql`; it has not been applied to a database. No provider credentials are needed for the local seller flow.
 
