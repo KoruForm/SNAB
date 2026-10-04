@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import "fake-indexeddb/auto";
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-import { blankDraft, localDateKey } from "../lib/drafts/types";
+import { blankDraft, localDateKey, TITLE_MAX } from "../lib/drafts/types";
 import { getDraft, updateDraft } from "../lib/drafts/storage";
 import { createDemoDraft, publicationError, publishDemo } from "../lib/mock/actions";
 import { createSaleSign, layoutSaleSign, signText } from "../lib/mock/sign";
@@ -95,4 +95,14 @@ test("the ready-made demo sale is marked so it never moves to an account", async
   const draft = await createDemoDraft();
   assert.equal(draft.readyMade, true);
   assert.equal((await getDraft(draft.id))?.readyMade, true);
+});
+
+test("sale titles are capped at 60 characters for the sign", () => {
+  const draft = blankDraft("long"); draft.days = [{date:"2026-10-10",starts:"08:00",finishes:"13:00"}];
+  draft.location = {address:"1 Example Lane",town:"Hamilton",reveal:"now"};
+  draft.title = "x".repeat(TITLE_MAX); assert.equal(publicationError(draft), null);
+  draft.title = "Everything Must Go Mega Clearance: whiteware, power tools, children’s clothes";
+  assert.match(publicationError(draft) ?? "", /60 characters/);
+  const text = layoutSaleSign(toBuyerSale(draft,[]), (t, size) => t.length * size * .25).lines.filter(l => l.size > 25).map(l => l.text).join(" ");
+  assert.ok(text.startsWith("Everything Must Go")); assert.ok(text.includes("…")); assert.ok(!text.includes("clothes"));
 });

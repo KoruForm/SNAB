@@ -1,6 +1,6 @@
 import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
-import type { SaleDay } from "../drafts/types";
+import { TITLE_MAX, type SaleDay } from "../drafts/types";
 import type { BuyerSale } from "./catalogue";
 
 // Josh's A4 template (design/sign/a4-template.svg) is pre-rendered to public/sign/a4-template.png.
@@ -14,7 +14,7 @@ const QR = { x: 80.85, y: 187.6, size: 50 }; // centred in the template's white 
 const BASE = { title: 30, dayTitle: 24, date: 20, address: 36, more: 14 }; // pt, from the design
 const DAY_BOOST: Record<number, number> = { 1: 1.6, 2: 1.3 };
 const LEADING = 1.1, DAY_LEADING = 1.25; // baseline-to-baseline, as a multiple of the font size
-const MIN = { title: 18, address: 20 };
+const MIN = { title: 26, address: 20 }; // titles are capped at TITLE_MAX, so they barely need to shrink
 
 export type SignAssets = { background: string; font: string }; // PNG data URL, base64 TTF
 export type SignLine = { text: string; size: number; x: number; y: number }; // y = baseline
@@ -32,6 +32,14 @@ export function signDay(day: SaleDay): { name: string; date: string; time: strin
 // Bowlby One SC only covers Latin-1 plus curly quotes and dashes: macrons are dropped (ā → a), emoji removed.
 export function signText(text: string): string {
   return text.normalize("NFD").replace(/\u0304/g, "").normalize("NFC").replace(/[^\x20-\x7E\u00A0-\u00FF‘’“”–—…·]/gu, "").replace(/\s+/g, " ").trim();
+}
+
+// Titles saved before the TITLE_MAX limit are cut at a word boundary.
+function shortTitle(text: string): string {
+  const clean = signText(text) || "Garage sale";
+  if (clean.length <= TITLE_MAX) return clean;
+  const cut = clean.slice(0, TITLE_MAX - 1), space = cut.lastIndexOf(" ");
+  return `${(space > TITLE_MAX / 2 ? cut.slice(0, space) : cut).replace(/[\s,:;–—-]+$/, "")}…`;
 }
 
 function wrap(text: string, size: number, width: number, measure: Measure): string[] {
@@ -71,7 +79,7 @@ export function layoutSaleSign(sale: BuyerSale, measure: Measure): SignLayout {
   for (let b = maxBoost; b > 1.001; b -= 0.1) attempts.push([1, b]);
   for (let scale = 1; scale > 0.5; scale -= 0.05) attempts.push([scale, 1]);
   for (const [i, [scale, boost]] of attempts.entries()) {
-    const title = fitBlock([signText(sale.title) || "Garage sale"], BASE.title * scale, MIN.title * scale, 3, measure);
+    const title = fitBlock([shortTitle(sale.title)], BASE.title * scale, MIN.title * scale, 3, measure);
     const addr = fitBlock(address, BASE.address * scale, MIN.address * scale, address.length > 1 ? 3 : 2, measure);
     // One size for every day column, shrunk until the widest day fits its column.
     const fit = (size: number, pick: (d: ReturnType<typeof signDay>) => string) =>
