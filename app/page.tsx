@@ -28,7 +28,7 @@ export default function Home() {
       <main id="main-content">
         <section className="landing-hero landing-container" aria-labelledby="landing-title">
           <div className="landing-copy">
-            <p className="landing-eyebrow"><span className="landing-spark" aria-hidden="true">✳</span> Garage sales. Made local.</p>
+            <p className="landing-eyebrow"><Image className="landing-pin" src="/brand/snab-pin.png" alt="" width={17} height={24} /> Garage sales without the hassle.</p>
             <h1 id="landing-title">Garage sales.<br />Great finds.<br /><span className="landing-underline">That’s SNAB.</span></h1>
             <p className="landing-intro">Find garage sales, or give your<br className="landing-intro-break" /> good stuff a new home.</p>
             <div className="landing-actions">

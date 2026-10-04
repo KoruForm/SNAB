@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useState, type FormEvent } from "react";
 import { interestOptions, registerInterest, validEmail, type Interest } from "../lib/interest";
 
@@ -26,7 +27,7 @@ export function InterestForm() {
   if (state === "done") {
     return (
       <div className="soon-form soon-done" id="join" role="status">
-        <p className="landing-eyebrow"><span className="landing-spark" aria-hidden="true">✳</span> You’re on the list</p>
+        <p className="landing-eyebrow"><Image className="landing-pin" src="/brand/snab-pin.png" alt="" width={17} height={24} /> You’re on the list</p>
         <h2>Nice one. <span className="landing-underline">See you soon.</span></h2>
         <p>We’ll email you when SNAB opens near you. Time to start eyeing up that garage.</p>
       </div>

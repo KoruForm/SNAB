@@ -50,6 +50,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 .landing-copy{padding-bottom:20px}
 .landing-eyebrow{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.14em;line-height:1.6;text-transform:uppercase;font-weight:700;margin:0 0 18px}
 .landing-spark{font-size:23px;line-height:1;color:var(--rust)}
+.landing-pin{display:block;width:17px;height:24px;flex-shrink:0}
 .landing-copy h1{font-size:clamp(42px,4.3vw,60px);line-height:1.15;letter-spacing:-.04em}
 .landing-underline{position:relative;isolation:isolate;white-space:nowrap}
 .landing-underline:after{content:"";position:absolute;z-index:-1;left:0;right:0;bottom:.03em;height:.18em;background:var(--yellow);transform:rotate(-1.6deg);clip-path:polygon(0 25%,97% 0,100% 74%,2% 100%)}
