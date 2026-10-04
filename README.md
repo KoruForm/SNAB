@@ -10,7 +10,7 @@ Start at `/map` to browse, or `/sell` → **Try a ready-made demo sale** to try 
 
 Sales and photos persist in IndexedDB; preferences persist in localStorage. Publishing adds a listing to this browser's demo catalogue. Fixtures, search, matching, scan progress, statistics, estimates, maps, directions and account identity are explicitly simulated. No provider credentials, remote calls, real navigation or public listing service are needed. Clearing browser data removes local changes. See `docs/IMPLEMENTATION-STATUS.md` for UX coverage and integration work for the next phase.
 
-Supabase owner-only database and private-storage setup is prepared in `supabase/migrations/001_seller_foundation.sql`; it has not been applied to a database. No provider credentials are needed for the local seller flow.
+Supabase owner-only database and private-storage setup is prepared in `supabase/migrations/001_seller_foundation.sql`, and server-enforced address privacy for buyers in `002_public_sale_privacy.sql`; neither has been applied to a database. `npm run test:db` checks them against a local Postgres. No provider credentials are needed for the local seller flow.
 
 ## Stack
 

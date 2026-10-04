@@ -35,10 +35,12 @@ The illustrated map is not geocoded. Distances, routes, scan results, price esti
 
 ## Next phase: hookups
 
-Connect authentication and cross-device persistence, remote photo storage, geocoding/maps/directions, image analysis and reliable jobs, server-controlled public publication and privacy, event lookup, actual analytics, reporting/moderation, notifications and social integration. Supabase migration `001_seller_foundation.sql` is prepared but has not been applied. Credentials are not required for this demo.
+Connect authentication and cross-device persistence, remote photo storage, geocoding/maps/directions, image analysis and reliable jobs, server-controlled public publication, event lookup, actual analytics, reporting/moderation, notifications and social integration. Supabase migration `001_seller_foundation.sql` is prepared but has not been applied. Credentials are not required for this demo.
 
-Before production publication, enforce address and coordinate privacy on the server, verify separate-account access policies, and provide migration of selected local drafts. Do not expose private tables or hidden coordinates to public clients.
+Server-side address privacy is prepared in `002_public_sale_privacy.sql` (not yet applied). Buyers read sales only through `list_public_sales()` and `get_public_sale(id)`, which return the street and exact coordinates only while the reveal setting allows it (Pacific/Auckland date; never for drafts, closed sales or after the last sale day) and otherwise the town plus a coarse grid point of about 1 km. `npm run test:db` applies the migrations to a scratch Postgres and checks this, along with separate-account access, in CI. The app's demo projection uses the same rule (`addressVisible` in `lib/drafts/types.ts`).
+
+Before production publication, wire the buyer screens to those functions, strip photo location metadata on upload, and provide migration of selected local drafts. Do not expose private tables or hidden coordinates to public clients.
 
 ## Validation
 
-Lint, TypeScript production build, automated storage/privacy/search/publication/availability tests, plus live browser checks of buyer and seller transitions. The device camera is opened only when the user chooses to take a photo.
+Lint, TypeScript production build, automated storage/privacy/search/publication/availability tests, Postgres address-privacy and access-policy tests, plus live browser checks of buyer and seller transitions. The device camera is opened only when the user chooses to take a photo.
