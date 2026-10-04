@@ -1,8 +1,9 @@
 import { createDraft, getDraft, signedIn, updateDraft } from "../drafts/storage";
-import { localDateKey, validateDays, type Draft } from "../drafts/types";
+import { localDateKey, TITLE_MAX, validateDays, type Draft } from "../drafts/types";
 import { simulateItems } from "./catalogue";
 export function publicationError(draft: Draft): string | null {
   if (!draft.title.trim()) return "Give your sale a title before publishing.";
+  if (draft.title.trim().length > TITLE_MAX) return `Keep your sale title to ${TITLE_MAX} characters so it fits on your sign.`;
   const dates = validateDays(draft.days); if (dates) return dates;
   if (!draft.location.address.trim() || !draft.location.town.trim()) return "Add your address and town before publishing.";
   return null;
