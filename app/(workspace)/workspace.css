@@ -11,6 +11,7 @@
 .photo-hotspot{position:absolute;display:grid;place-items:center;width:35px;height:35px;border:2px solid var(--ink);border-radius:50%;background:var(--yellow);font-size:14px;font-weight:700;box-shadow:0 2px 8px #22232125}.photo-hotspot:hover{transform:scale(1.1)}.photo-hotspot-caption{position:absolute;bottom:0;left:0;right:0;padding:9px 14px;background:#f7f3e8df;font-size:11px;color:#586356}
 @media(max-width:380px){.filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.filter-row>label:last-child{grid-column:1/-1}.filter-row select{font-size:13px}.treasure-form{flex-wrap:wrap}.treasure-form>label{flex-basis:100%}.treasure-form>.button{width:100%}}
 .sale-sign-preview{width:100%;height:490px;border:1px solid #22232125;border-radius:8px;background:var(--paper);margin:10px 0 20px}
+.social-previews{display:grid;grid-template-columns:minmax(0,1.42fr) minmax(0,1fr);gap:14px;align-items:end;margin:10px 0 18px}.social-previews figure{margin:0;display:grid;gap:10px}.social-previews img{width:100%;height:auto;border-radius:8px;box-shadow:0 2px 10px #22232118}.social-previews .field-help{grid-column:1/-1}
 .start-photo{margin:2px 4px 32px;transform:rotate(-1.5deg)}.intro-photo{margin:20px 0 28px}.intro-photo .snap-photo-frame,.guide-photo .snap-photo-frame{aspect-ratio:16/9}.guide-photo{margin:0 0 30px}
 .workspace-main input:not([type=radio]):not([type=checkbox]):not([type=file]),.workspace-main textarea,.workspace-main select{border:1px solid #22232126;border-radius:10px;background:var(--white);box-shadow:0 1px 2px #2223210a}
 .icon{flex-shrink:0}

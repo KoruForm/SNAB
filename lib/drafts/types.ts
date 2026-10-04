@@ -51,6 +51,9 @@ export function validateDays(days: SaleDay[], today = localDateKey(new Date())):
   return null;
 }
 
+// Longest sale title a seller can type: three lines on the A4 sign at the design size.
+export const TITLE_MAX = 60;
+
 export function formatDay(day: SaleDay): string {
   if (!day.date) return "Date to be confirmed";
   const date = new Date(`${day.date}T12:00:00Z`);

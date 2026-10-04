@@ -1,10 +1,12 @@
+import { readFileSync } from "node:fs";
 import "fake-indexeddb/auto";
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-import { blankDraft, localDateKey } from "../lib/drafts/types";
+import { blankDraft, localDateKey, TITLE_MAX } from "../lib/drafts/types";
 import { getDraft, updateDraft } from "../lib/drafts/storage";
 import { createDemoDraft, publicationError, publishDemo } from "../lib/mock/actions";
-import { createSaleSign } from "../lib/mock/sign";
+import { createSaleSign, layoutSaleSign, signText } from "../lib/mock/sign";
+import { layoutSocial, SOCIAL, socialDay } from "../lib/mock/social";
 import { demoSales, matchedItems, rankSales, toBuyerSale } from "../lib/mock/catalogue";
 
 test("demo publication requires a title, sale dates and a location", () => {
@@ -69,14 +71,53 @@ test("sale sign exports an A4 PDF using only the buyer-visible address", async (
   const draft = blankDraft("sign"); draft.title = "My clearout";
   draft.location = {address:"PRIVATE STREET",town:"Hamilton",reveal:"area-only"};
   draft.days = [{date:"2026-10-10",starts:"08:00",finishes:"13:00"}];
-  const bytes = await createSaleSign(toBuyerSale(draft,[]), "https://example.com/sale/sign");
+  const sale = toBuyerSale(draft,[]);
+  const assets = { background: `data:image/png;base64,${readFileSync("public/sign/a4-template.png").toString("base64")}`, font: readFileSync("public/sign/BowlbyOneSC-Regular.ttf").toString("base64") };
+  const bytes = await createSaleSign(sale, "https://example.com/sale/sign", assets);
   const pdf = Buffer.from(bytes).toString("latin1");
   assert.ok(pdf.startsWith("%PDF-")); const box = pdf.match(/\/MediaBox \[0 0 ([\d.]+) ([\d.]+)\]/)!; assert.ok(box); assert.ok(Math.abs(Number(box[1])-595.28)<.01); assert.ok(Math.abs(Number(box[2])-841.89)<.01);
-  assert.ok(pdf.includes("My clearout")); assert.ok(pdf.includes("Hamilton")); assert.ok(!pdf.includes("PRIVATE STREET"));
+  const text = layoutSaleSign(sale, (t, size) => t.length * size * .25).lines.map(l => l.text).join("\n");
+  assert.ok(text.includes("My clearout")); assert.ok(text.includes("HAMILTON")); assert.ok(text.includes("SATURDAY")); assert.ok(!text.includes("PRIVATE STREET"));
+});
+
+test("sale sign layout keeps every line inside the page and drops glyphs the font lacks", () => {
+  const measure = (t: string, size: number) => t.length * size * .25;
+  for (const count of [0, 1, 2, 3, 5]) {
+    const draft = blankDraft("fit"); draft.title = "Everything Must Go Mega Clearance: whiteware, power tools, children’s clothes, vintage vinyl and so much more";
+    draft.location = {address:"Flat 2, 145A Te Rapa Road, Beerescourt",town:"Hamilton",reveal:"now"};
+    draft.days = Array.from({length:count}, (_, i) => ({date:`2026-09-${String(20+i).padStart(2,"0")}`,starts:"08:00",finishes:"13:00"}));
+    const { lines } = layoutSaleSign(toBuyerSale(draft,[]), measure);
+    for (const l of lines) { assert.ok(l.y > 60 && l.y < 171, `${l.text} at ${l.y}`); assert.ok(measure(l.text, l.size) <= 181, l.text); }
+  }
+  assert.equal(signText("Kirikiriroa Whānau Sale 🎉"), "Kirikiriroa Whanau Sale");
 });
 
 test("the ready-made demo sale is marked so it never moves to an account", async () => {
   const draft = await createDemoDraft();
   assert.equal(draft.readyMade, true);
   assert.equal((await getDraft(draft.id))?.readyMade, true);
+});
+
+test("sale titles are capped at 60 characters for the sign", () => {
+  const draft = blankDraft("long"); draft.days = [{date:"2026-10-10",starts:"08:00",finishes:"13:00"}];
+  draft.location = {address:"1 Example Lane",town:"Hamilton",reveal:"now"};
+  draft.title = "x".repeat(TITLE_MAX); assert.equal(publicationError(draft), null);
+  draft.title = "Everything Must Go Mega Clearance: whiteware, power tools, children’s clothes";
+  assert.match(publicationError(draft) ?? "", /60 characters/);
+  const text = layoutSaleSign(toBuyerSale(draft,[]), (t, size) => t.length * size * .25).lines.filter(l => l.size > 25).map(l => l.text).join(" ");
+  assert.ok(text.startsWith("Everything Must Go")); assert.ok(text.includes("…")); assert.ok(!text.includes("clothes"));
+});
+
+test("social post and story layouts keep text in their zones and use buyer-visible details", () => {
+  const measure = (t: string, size: number) => t.length * size * .62;
+  for (const kind of ["post", "story"] as const) for (const count of [1, 2, 3, 4]) {
+    const draft = blankDraft("social"); draft.title = "Three Neighbours' Big Sale: toys, tools, books and baby gear";
+    draft.location = {address:"PRIVATE STREET",town:"Claudelands",reveal:"sale-day"}; draft.categories = ["Toys","Tools","Books","Other"];
+    draft.days = Array.from({length:count}, (_, i) => ({date:`2026-10-${10+i}`,starts:"08:30",finishes:"13:00"}));
+    const lines = layoutSocial(toBuyerSale(draft,[],new Date("2026-10-01T00:00:00Z")), kind, measure), spec = SOCIAL[kind];
+    for (const l of lines) { assert.ok(l.y > spec.title.top && l.y < spec.info.bottom + 5, `${l.text} at ${l.y}`); assert.ok(measure(l.text, l.size) <= 1010, l.text); }
+    const text = lines.map(l => l.text).join(" ");
+    assert.ok(!text.includes("PRIVATE STREET")); assert.ok(text.includes("CLAUDELANDS")); assert.ok(text.includes("8:30AM - 1PM")); assert.ok(text.includes("TOYS")); assert.ok(!text.includes("OTHER"));
+  }
+  assert.deepEqual(socialDay({date:"2026-10-10",starts:"14:00",finishes:"16:30"}), {name:"SATURDAY",date:"10 OCT",time:"2PM - 4:30PM"});
 });
