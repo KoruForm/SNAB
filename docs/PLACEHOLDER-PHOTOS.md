@@ -3,7 +3,17 @@ AI-generated design placeholders, created 4 October 2026 with the built-in image
 
 All images are 1536 × 1024 (3:2), full-resolution WebP exports at quality 92. No cropping or graphic overlays applied. Original PNG generation outputs remain in the generating chat.
 
-These assets are deliberately outside public/: not implemented, imported, or served by the app. Move selected assets into public/photos/ only in a later authorised implementation.
+The images live in `public/photos/` and are wired into the app through `components/snap-photo.tsx` (one place for paths, alt text and crop focus):
+
+| File | Where it appears |
+| --- | --- |
+| 01-home-hero.webp | Homepage hero, in place of the illustration sheet (campaign sticker, arrow and handwriting kept) |
+| 02-start-sale.webp | /sell start screen, in place of the three category illustrations |
+| 03-reclaimed-space.webp | Homepage "Make room for a Snab." callout |
+| 04-photo-upload-guide.webp | /sell/photos step, as the "step back" tip above the heading |
+| 05-buyer-discovery.webp | /hunt intro, under the lede |
+| 06-community-sale.webp | /event (Hamilton SNAB Day) intro, above the event banner |
+| 07-sale-finished.webp | /manage/[id] once a sale is closed ("That's a wrap.") |
 
 | File | Suggested placement | Crop guidance | Suggested alt text |
 | --- | --- | --- | --- |

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { SnapPhoto } from "../components/snap-photo";
 
 const categories = ["Furniture", "Tools", "Books", "Electronics", "Clothing", "Kitchen", "Garden", "Toys", "Free"];
 const steps = [
@@ -28,17 +29,8 @@ export default function Home() {
           </div>
           <p className="small-note">Local drafts · photos saved on this device · AI coming next</p>
         </div>
-        <div className="hero-art" aria-label="SNAB’s approved brand illustrations: furniture, tools, books and a bargain campaign">
-          <div className="art-sheet">
-            <div className="art-sheet-heading"><span>GOOD STUFF</span><span>SECOND CHANCES</span></div>
-            <div className="find-illustrations">
-              <Image className="find-chair" src="/brand/categories/furniture.svg" alt="Armchair" width={170} height={170} />
-              <Image className="find-tools" src="/brand/categories/tools.svg" alt="Hammer" width={95} height={95} />
-              <Image className="find-books" src="/brand/categories/books.svg" alt="Books" width={105} height={105} />
-              <Image className="find-toy" src="/brand/categories/toys.svg" alt="Teddy bear" width={90} height={90} />
-            </div>
-            <p>Not unwanted.<br /><strong>Unfound.</strong></p>
-          </div>
+        <div className="hero-art">
+          <SnapPhoto name="hero" className="hero-photo" sizes="(max-width: 700px) 100vw, 520px" priority />
           <Image className="campaign-sticker" src="/brand/snag-correction-campaign.svg" alt="Snag a bargain, with the G corrected to a B: Snab a bargain." width={225} height={120} />
           <Image className="art-arrow" src="/brand/black-arrow.svg" alt="" width={95} height={60} />
           <span className="handwritten">a little room<br />for something new</span>
@@ -55,7 +47,7 @@ export default function Home() {
         <div className="step-list">{steps.map(step => <article className="step-card" key={step.number}><span className="step-number">{step.number}</span><h3>{step.title}</h3><p>{step.detail}</p></article>)}</div>
       </section>
 
-      <section className="preview-callout"><div><p className="eyebrow">Try the first little step</p><h2>Make room for a Snab.</h2><p>Set the date, add photos and preview your sale. Your draft stays on this device.</p></div><Link className="button button-primary" href="/sell">Create your sale draft <span aria-hidden="true">↗</span></Link></section>
+      <section className="preview-callout"><SnapPhoto name="reclaimedSpace" className="callout-photo" sizes="(max-width: 700px) 100vw, 320px" /><div className="callout-copy"><p className="eyebrow">Try the first little step</p><h2>Make room for a Snab.</h2><p>Set the date, add photos and preview your sale. Your draft stays on this device.</p></div><Link className="button button-primary" href="/sell">Create your sale draft <span aria-hidden="true">↗</span></Link></section>
       <footer className="footer"><Image src="/brand/snab-wordmark-underline.svg" alt="SNAB" width={100} height={50} /><span>Good stuff finds new people.</span><span className="footer-status"><span className="status-light" /> Early build</span></footer>
     </main>
   );
