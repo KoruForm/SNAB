@@ -35,7 +35,7 @@ The illustrated map is not geocoded. Distances, routes, scan results, price esti
 
 ## Next phase: hookups
 
-Connect authentication and cross-device persistence, remote photo storage, geocoding/maps/directions, image analysis and reliable jobs, server-controlled public publication and privacy, event lookup, actual analytics, reporting/moderation, notifications and social integration. Supabase migration `001_seller_foundation.sql` is prepared but has not been applied. Credentials are not required for this demo.
+Connect authentication and cross-device persistence, remote photo storage, geocoding/maps/directions, image analysis and reliable jobs, server-controlled public publication and privacy, event lookup, actual analytics, reporting/moderation, notifications and social integration. Seller sign-in (email link), account drafts, sale days, private address records and private photo storage are wired to Supabase and switch on when its public URL and anon key are set; see the README. Migrations `001_seller_foundation.sql` and `003_seller_draft_sync.sql` are written but not applied. Credentials are not required for this demo.
 
 Before production publication, enforce address and coordinate privacy on the server, verify separate-account access policies, and provide migration of selected local drafts. Do not expose private tables or hidden coordinates to public clients.
 
