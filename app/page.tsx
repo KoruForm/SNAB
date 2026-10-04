@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ComingSoon } from "../components/coming-soon";
+import { comingSoonHome } from "../lib/launch";
 
 const steps = [
   { number: "01", title: "Have a little look.", detail: "Browse sales, search for something you love and save the ones that catch your eye." },
@@ -12,6 +14,7 @@ function Arrow({ plus = false }: { plus?: boolean }) {
 }
 
 export default function Home() {
+  if (comingSoonHome) return <ComingSoon />;
   return (
     <div className="landing-site">
       <a className="skip-link" href="#main-content">Skip to content</a>
