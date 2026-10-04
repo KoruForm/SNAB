@@ -19,7 +19,7 @@ const MIN = { title: 26, address: 20 }; // titles are capped at TITLE_MAX, so th
 export type SignAssets = { background: string; font: string }; // PNG data URL, base64 TTF
 export type SignLine = { text: string; size: number; x: number; y: number }; // y = baseline
 export type SignLayout = { lines: SignLine[]; scale: number };
-type Measure = (text: string, size: number) => number; // width in mm of text at size pt
+export type Measure = (text: string, size: number) => number; // width of text at a font size, in the layout's units
 
 export function signDay(day: SaleDay): { name: string; date: string; time: string } {
   const time = `${day.starts} - ${day.finishes}`;
@@ -35,7 +35,7 @@ export function signText(text: string): string {
 }
 
 // Titles saved before the TITLE_MAX limit are cut at a word boundary.
-function shortTitle(text: string): string {
+export function shortTitle(text: string): string {
   const clean = signText(text) || "Garage sale";
   if (clean.length <= TITLE_MAX) return clean;
   const cut = clean.slice(0, TITLE_MAX - 1), space = cut.lastIndexOf(" ");
@@ -60,11 +60,11 @@ function clip(text: string, size: number, width: number, measure: Measure): stri
 }
 
 // Wraps text into at most maxLines, shrinking from size towards min first, then clipping the last line.
-function fitBlock(paragraphs: string[], size: number, min: number, maxLines: number, measure: Measure) {
+export function fitBlock(paragraphs: string[], size: number, min: number, maxLines: number, measure: Measure, width = WIDTH) {
   for (let s = size; ; s -= 1) {
-    const lines = paragraphs.flatMap(p => wrap(p, s, WIDTH, measure)).map(l => clip(l, s, WIDTH, measure));
+    const lines = paragraphs.flatMap(p => wrap(p, s, width, measure)).map(l => clip(l, s, width, measure));
     if (lines.length <= maxLines) return { lines, size: s };
-    if (s <= min) { lines.length = maxLines; lines[maxLines - 1] = clip(`${lines[maxLines - 1].replace(/…$/, "")}…`, s, WIDTH, measure); return { lines, size: s }; }
+    if (s <= min) { lines.length = maxLines; lines[maxLines - 1] = clip(`${lines[maxLines - 1].replace(/…$/, "")}…`, s, width, measure); return { lines, size: s }; }
   }
 }
 
