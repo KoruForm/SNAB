@@ -10,8 +10,8 @@ export function GET() {
     catalogue: "sample-sales-plus-local-published-drafts",
     integrations: {
       ai: "not-configured",
-      database: "not-configured",
-      photoStorage: "local-indexeddb-drafts",
+      database: process.env.NEXT_PUBLIC_SUPABASE_URL ? "supabase" : "not-configured",
+      photoStorage: process.env.NEXT_PUBLIC_SUPABASE_URL ? "supabase-private-bucket" : "local-indexeddb-drafts",
     },
   });
 }

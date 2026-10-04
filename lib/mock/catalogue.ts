@@ -1,5 +1,5 @@
 import { addressVisible, localDateKey, publicAddress, type Category, type Draft, type DraftPhoto, type MockItem, type SaleDay } from "../drafts/types";
-export type BuyerSale = { id: string; title: string; description: string; town: string; addressLabel: string; exactAddressVisible: boolean; days: SaleDay[]; categories: Category[]; items: MockItem[]; photos: DraftPhoto[]; coverCategory: Category; distance: number; x: number; y: number; state: "open" | "upcoming" | "closed"; sample: boolean; own: boolean; eventCode?: string; abundance?: string };
+export type BuyerSale = { id: string; title: string; description: string; town: string; addressLabel: string; exactAddressVisible: boolean; days: SaleDay[]; categories: Category[]; items: MockItem[]; photos: DraftPhoto[]; coverCategory: Category; distance: number | null; x: number; y: number; state: "open" | "upcoming" | "closed"; sample: boolean; own: boolean; eventCode?: string; abundance?: string };
 export type Match = { sale: BuyerSale; band: "Great match" | "Good match" | "Possible match"; reasons: string[]; score: number };
 function item(id: string, label: string, category: Category, description: string, estimate?: string): MockItem { return { id, label, category, description, estimate, available: true, confirmed: true }; }
 const templates = [
@@ -30,6 +30,8 @@ export function matchedItems(sale: BuyerSale, query: string): MockItem[] {
   const tokens = queryTokens(query);
   return sale.items.filter(i => i.available && (!tokens.length || tokens.some(t => (aliases[t] || [t]).some(word => containsTerm(`${i.label} ${i.category} ${i.description}`, word)))));
 }
+// Sales without a known distance (not yet on the real map) sort after those with one.
+export function byDistance(a: BuyerSale, b: BuyerSale): number { return (a.distance ?? Infinity) - (b.distance ?? Infinity) || 0; }
 export function rankSales(sales: BuyerSale[], query: string): Match[] {
   const tokens = queryTokens(query);
   return sales.map(sale => {
@@ -38,6 +40,6 @@ export function rankSales(sales: BuyerSale[], query: string): Match[] {
     const covered = tokens.filter(t => (aliases[t] || [t]).some(word => containsTerm(corpus, word))).length;
     const score = tokens.length ? covered / tokens.length : 1;
     return { sale, score, band: score >= .75 ? "Great match" as const : score >= .4 ? "Good match" as const : "Possible match" as const, reasons: items.slice(0, 3).map(i=>i.label) };
-  }).filter(m=>!tokens.length || m.score>0).sort((a,b)=>b.score-a.score || a.sale.distance-b.sale.distance);
+  }).filter(m=>!tokens.length || m.score>0).sort((a,b)=>b.score-a.score || byDistance(a.sale,b.sale));
 }
 export function simulateItems(): MockItem[] { return [item("mock-drill", "Cordless drill", "Tools", "Demo highlight: a drill and workshop tools.", "$30–60"), item("mock-console", "Games console", "Electronics", "Demo highlight: a games console with controller.", "$80–120"), item("mock-table", "Dining table", "Furniture", "Demo highlight: a table for a second home.", "$50–90"), item("mock-books", "Box of books", "Books", "Demo highlight: paperbacks and cookbooks.", "$1–5 each")].map(i=>({...i,confirmed:false})); }

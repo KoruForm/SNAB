@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { getPhotos, listDrafts } from "../drafts/storage";
+import { fetchListedSales } from "../public/browse";
+import { getSupabase } from "../supabase/client";
 import { demoSales, toBuyerSale, type BuyerSale } from "./catalogue";
 import { readPreferences, type Preferences } from "./preferences";
 import { useAccount } from "../supabase/use-account";
@@ -9,10 +11,21 @@ export function useCatalogue() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const account = useAccount();
-  useEffect(()=>{ if(account.loading) return; let active=true; listDrafts().then(async drafts => {
-    const local = await Promise.all(drafts.filter(d=>d.status!=="draft").map(async d=>toBuyerSale(d,await getPhotos(d.id))));
-    if(active){setSales([...local,...demoSales()]);setError("");setLoading(false);}
-  }).catch(()=>{if(active){setSales(demoSales());setError("Local sales couldn’t be opened. Sample sales are still available.");setLoading(false);}});return()=>{active=false;}; },[account.loading, account.userId]);
+  useEffect(()=>{ if(account.loading) return; let active=true;
+    // Your own sales (device or account), everyone's published sales, then the samples. Your own copy wins.
+    const own = listDrafts().then(drafts => Promise.all(drafts.filter(d=>d.status!=="draft").map(async d=>toBuyerSale(d,await getPhotos(d.id)))));
+    const supabase = getSupabase();
+    const listed = supabase ? fetchListedSales(supabase) : Promise.resolve([]);
+    Promise.allSettled([own, listed]).then(([mine, others]) => {
+      if(!active) return;
+      const ownSales = mine.status==="fulfilled" ? mine.value : [];
+      const ownIds = new Set(ownSales.map(s=>s.id));
+      const listedSales = others.status==="fulfilled" ? others.value.filter(s=>!ownIds.has(s.id)) : [];
+      setSales([...ownSales,...listedSales,...demoSales()]);
+      setError(mine.status==="rejected" ? "Your own sales couldn’t be opened. Other sales are still available." : others.status==="rejected" ? others.reason instanceof Error ? others.reason.message : "Couldn’t load sales near you." : "");
+      setLoading(false);
+    });
+    return()=>{active=false;}; },[account.loading, account.userId]);
   return {sales,loading,error};
 }
 export function usePreferences() {

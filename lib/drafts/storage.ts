@@ -20,13 +20,16 @@ export async function addPhotos(draftId: string, files: File[]): Promise<void> {
 export async function removePhoto(id: string): Promise<void> { const a = await account(); return a ? remote.removeRemotePhoto(a.supabase, id) : local.removePhoto(id); }
 export async function deleteDraft(id: string): Promise<void> { const a = await account(); return a ? remote.deleteRemoteDraft(a.supabase, id) : local.deleteDraft(id); }
 
-// Drafts made on this device before signing in stay here until the seller moves them.
-export async function listDeviceDrafts(): Promise<Draft[]> { return (await account()) ? local.listDrafts() : []; }
+export async function signedIn(): Promise<boolean> { return Boolean(await account()); }
+
+// Drafts made on this device before signing in stay here until the seller moves them. The ready-made demo sale stays behind.
+export async function listDeviceDrafts(): Promise<Draft[]> { return (await account()) ? (await local.listDrafts()).filter(d => !d.readyMade) : []; }
 export async function moveDeviceDraftToAccount(id: string): Promise<Draft> {
   const a = await account();
   if (!a) throw new Error("Sign in to move this sale to your account.");
   const draft = await local.getDraft(id);
   if (!draft) throw new Error("This draft no longer exists on this device.");
+  if (draft.readyMade) throw new Error("The demo sale stays on this device. Start a new sale to list it for real.");
   const photos = await local.getPhotos(id);
   const created = await remote.createRemoteDraft(a.supabase, a.userId);
   try {
