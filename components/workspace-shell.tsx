@@ -3,8 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { supabaseConfigured } from "../lib/supabase/client";
 
-const tabs = [{ href: "/map", label: "Map", icon: "map" }, { href: "/hunt", label: "Hunt", icon: "search" }, { href: "/sell", label: "Sell", icon: "plus" }, { href: "/saved", label: "Saved", icon: "heart" }, { href: "/me", label: "Me", icon: "user" }];
+const tabs = [{ href: "/map", label: "Find", icon: "search" }, { href: "/sell", label: "Sell", icon: "plus" }, { href: "/saved", label: "Saved", icon: "heart" }, { href: "/me", label: "Me", icon: "user" }];
 function NavIcon({ name }: { name: string }) {
   const paths: Record<string, ReactNode> = {
     map: <><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z" /><path d="M9 3v15M15 6v15" /></>,
@@ -17,5 +18,15 @@ function NavIcon({ name }: { name: string }) {
 }
 export default function WorkspaceShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  return <div className="workspace"><header className="workspace-header"><span className="build-label">Demo</span><Link href="/" aria-label="SNAB home" className="workspace-logo"><Image src="/brand/snab-highlight-final-b.svg" alt="SNAB" width={84} height={41} priority /></Link><Link href="/me" className="workspace-drafts-link" aria-label="My space"><NavIcon name="user" /></Link></header><main className="workspace-main">{children}</main><nav className="bottom-nav" aria-label="App navigation">{tabs.map(tab => { const active = pathname === tab.href || (tab.href === "/sell" && pathname.startsWith("/sell/")) || (tab.href === "/map" && ["/sale/", "/item/", "/directions/"].some(prefix => pathname.startsWith(prefix))) || (tab.href === "/me" && ["/manage/", "/account"].some(prefix => pathname.startsWith(prefix))); return <Link href={tab.href} key={tab.href} aria-current={active ? "page" : undefined} className={`${active ? "active " : ""}${tab.icon === "plus" ? "sell-tab" : ""}`}><span className="nav-icon"><NavIcon name={tab.icon} /></span><span>{tab.label}</span></Link>; })}</nav></div>;
+  return <div className="workspace">
+    <header className="workspace-header">
+      <Link href="/" aria-label="SNAB home" className="workspace-logo"><Image src="/brand/snab-highlight-final-b.svg" alt="SNAB" width={100} height={49} priority /></Link>
+      <div className="workspace-header-actions">{!supabaseConfigured() && <span className="build-label">Demo</span>}<Link href="/me" className="workspace-drafts-link" aria-label="My space"><NavIcon name="user" /></Link></div>
+    </header>
+    <main className="workspace-main" id="main-content">{children}</main>
+    <nav className="bottom-nav" aria-label="App navigation">{tabs.map(tab => {
+      const active = pathname === tab.href || (tab.href === "/sell" && pathname.startsWith("/sell/")) || (tab.href === "/map" && (["/hunt", "/event"].includes(pathname) || ["/sale/", "/item/", "/directions/"].some(prefix => pathname.startsWith(prefix)))) || (tab.href === "/me" && ["/manage/", "/account"].some(prefix => pathname.startsWith(prefix)));
+      return <Link href={tab.href} key={tab.href} aria-current={active ? "page" : undefined} className={active ? "active" : undefined}><span className="nav-icon"><NavIcon name={tab.icon} /></span><span>{tab.label}</span></Link>;
+    })}</nav>
+  </div>;
 }

@@ -6,7 +6,9 @@ Mobile-first SNAB app foundation, built for deployment as a Node.js web app on H
 
 v0.4.0 is the full interactive UX demo using the approved v0.4 brand artwork. Seller creation, sample scan, highlight correction, optional prices, demo publishing, sale-day controls, sharing previews, A4 PDF signs and QR posters are connected to the buyer map/list, hunt results, sale details, within-sale search, item views, directions walkthrough, saved finds and treasure list. Me includes drafts, published sales and a demo profile. Community code HAMILTON joins the sample event.
 
-Start at `/map` to browse, or `/sell` → **Try a ready-made demo sale** to try publishing and the sale-day tools. The central navigation action is a raised yellow circle with a dark plus and no label.
+Start at `/` for the mobile-first introduction, `/map` to find sales, or `/sell` → **Try a ready-made demo sale** to try publishing and the sale-day tools. Bottom navigation has four labelled destinations: Find, Sell, Saved and Me, with the SNAB paper highlight behind the active icon.
+
+Find combines list/map browsing and item matching; existing `/hunt?q=…` links still work. Search, day, category, area and view stay in the URL. Maps and sample distances remain illustrative. The seller flow presents three groups (Details, Photos & highlights, Preview) while retaining the five underlying forms and their validation. See `docs/MOBILE-REDESIGN.md` for design assets and verification.
 
 Sales and photos persist in IndexedDB; preferences persist in localStorage. Publishing adds a listing to this browser's demo catalogue. Fixtures, search, matching, scan progress, statistics, estimates, maps, directions and account identity are explicitly simulated. No provider credentials, remote calls, real navigation or public listing service are needed. Clearing browser data removes local changes. See `docs/IMPLEMENTATION-STATUS.md` for UX coverage and integration work for the next phase.
 
