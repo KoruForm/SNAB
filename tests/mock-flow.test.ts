@@ -6,6 +6,7 @@ import { blankDraft, localDateKey, TITLE_MAX } from "../lib/drafts/types";
 import { getDraft, updateDraft } from "../lib/drafts/storage";
 import { createDemoDraft, publicationError, publishDemo } from "../lib/mock/actions";
 import { createSaleSign, layoutSaleSign, signText } from "../lib/mock/sign";
+import { layoutSocial, SOCIAL, socialDay } from "../lib/mock/social";
 import { demoSales, matchedItems, rankSales, toBuyerSale } from "../lib/mock/catalogue";
 
 test("demo publication requires a title, sale dates and a location", () => {
@@ -105,4 +106,18 @@ test("sale titles are capped at 60 characters for the sign", () => {
   assert.match(publicationError(draft) ?? "", /60 characters/);
   const text = layoutSaleSign(toBuyerSale(draft,[]), (t, size) => t.length * size * .25).lines.filter(l => l.size > 25).map(l => l.text).join(" ");
   assert.ok(text.startsWith("Everything Must Go")); assert.ok(text.includes("…")); assert.ok(!text.includes("clothes"));
+});
+
+test("social post and story layouts keep text in their zones and use buyer-visible details", () => {
+  const measure = (t: string, size: number) => t.length * size * .62;
+  for (const kind of ["post", "story"] as const) for (const count of [1, 2, 3, 4]) {
+    const draft = blankDraft("social"); draft.title = "Three Neighbours' Big Sale: toys, tools, books and baby gear";
+    draft.location = {address:"PRIVATE STREET",town:"Claudelands",reveal:"sale-day"}; draft.categories = ["Toys","Tools","Books","Other"];
+    draft.days = Array.from({length:count}, (_, i) => ({date:`2026-10-${10+i}`,starts:"08:30",finishes:"13:00"}));
+    const lines = layoutSocial(toBuyerSale(draft,[],new Date("2026-10-01T00:00:00Z")), kind, measure), spec = SOCIAL[kind];
+    for (const l of lines) { assert.ok(l.y > spec.title.top && l.y < spec.info.bottom + 5, `${l.text} at ${l.y}`); assert.ok(measure(l.text, l.size) <= 1010, l.text); }
+    const text = lines.map(l => l.text).join(" ");
+    assert.ok(!text.includes("PRIVATE STREET")); assert.ok(text.includes("CLAUDELANDS")); assert.ok(text.includes("8:30AM - 1PM")); assert.ok(text.includes("TOYS")); assert.ok(!text.includes("OTHER"));
+  }
+  assert.deepEqual(socialDay({date:"2026-10-10",starts:"14:00",finishes:"16:30"}), {name:"SATURDAY",date:"10 OCT",time:"2PM - 4:30PM"});
 });
