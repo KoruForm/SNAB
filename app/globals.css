@@ -50,6 +50,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 .landing-copy{padding-bottom:20px}
 .landing-eyebrow{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.14em;line-height:1.6;text-transform:uppercase;font-weight:700;margin:0 0 18px}
 .landing-spark{font-size:23px;line-height:1;color:var(--rust)}
+.landing-pin{display:block;width:17px;height:24px;flex-shrink:0}
 .landing-copy h1{font-size:clamp(42px,4.3vw,60px);line-height:1.15;letter-spacing:-.04em}
 .landing-underline{position:relative;isolation:isolate;white-space:nowrap}
 .landing-underline:after{content:"";position:absolute;z-index:-1;left:0;right:0;bottom:.03em;height:.18em;background:var(--yellow);transform:rotate(-1.6deg);clip-path:polygon(0 25%,97% 0,100% 74%,2% 100%)}
@@ -97,7 +98,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 .landing-build-note{font-size:12px;line-height:1.5;color:var(--muted);margin:12px 0 0}
 
 /* Coming soon page: reuses the landing layout, plus the badge and interest form. */
-.soon-badge{margin:0;padding:8px 14px;border:1.5px solid var(--ink);border-radius:999px;background:var(--yellow);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.soon-badge{margin:0;padding:14px 26px 13px;background:url("/brand/coming-soon-tape.png") center/100% 100% no-repeat;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;transform:rotate(-2deg)}
 .soon-hero{align-items:start}
 .soon-hero .landing-hero-figure{position:sticky;top:24px}
 .soon-form{margin-top:4px;padding:26px;background:var(--white);border:1.5px solid var(--ink);border-radius:10px;box-shadow:6px 6px 0 var(--ink);display:grid;gap:16px;max-width:520px;scroll-margin-top:24px}
@@ -179,7 +180,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
   .landing-footer-main>span{margin-left:auto;font-size:12px}
   .landing-footer-main>a:last-child{margin-left:0;font-size:12px}
   .landing-build-note{font-size:11px;margin-top:3px;max-width:420px}
-  .soon-badge{font-size:10px;padding:7px 11px}
+  .soon-badge{font-size:10px;padding:11px 18px 10px}
   .soon-hero .landing-hero-figure{position:static}
   .soon-form{padding:20px;box-shadow:4px 4px 0 var(--ink);max-width:none}
   .soon-last-note{font-size:16px}

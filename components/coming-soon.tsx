@@ -18,7 +18,7 @@ export function ComingSoon() {
       <main id="main-content">
         <section className="landing-hero soon-hero landing-container" aria-labelledby="landing-title">
           <div className="landing-copy">
-            <p className="landing-eyebrow"><span className="landing-spark" aria-hidden="true">✳</span> Garage sales. Made local.</p>
+            <p className="landing-eyebrow"><Image className="landing-pin" src="/brand/snab-pin.png" alt="" width={17} height={24} /> Garage sales without the hassle.</p>
             <h1 id="landing-title">Garage sales.<br />Great finds.<br /><span className="landing-underline">Coming soon.</span></h1>
             <p className="landing-intro">A new way to find garage sales, or give your good stuff a new home.</p>
             <InterestForm />
