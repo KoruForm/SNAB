@@ -14,6 +14,8 @@ export type Draft = {
   status: "draft" | "published" | "closed";
   items?: MockItem[];
   demoScan?: boolean;
+  // The ready-made demo sale. It only ever lives on the device and never moves to an account.
+  readyMade?: boolean;
   eventCode?: string;
   dayMode?: "auto" | "open" | "closed";
   abundance?: "lots" | "some-gone";
@@ -22,7 +24,7 @@ export type Draft = {
 };
 // Local photos carry their blob; account photos carry a short-lived signed URL instead.
 export type DraftPhoto = { id: string; draftId: string; name: string; type: string; blob?: Blob; url?: string; createdAt: string };
-export type DraftPatch = Partial<Pick<Draft, "title" | "description" | "days" | "location" | "categories" | "highlights" | "status" | "items" | "demoScan" | "eventCode" | "dayMode" | "abundance">>;
+export type DraftPatch = Partial<Pick<Draft, "title" | "description" | "days" | "location" | "categories" | "highlights" | "status" | "items" | "demoScan" | "readyMade" | "eventCode" | "dayMode" | "abundance">>;
 
 export function blankDraft(id: string, now = new Date().toISOString()): Draft {
   return { id, title: "", description: "", days: [{ date: "", starts: "08:00", finishes: "13:00" }], location: { address: "", town: "", reveal: "sale-day" }, categories: [], highlights: [], status: "draft", createdAt: now, updatedAt: now };

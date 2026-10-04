@@ -47,11 +47,9 @@ set role anon;
 do $$ begin perform 1 from public.sale_private_locations; raise exception 'FAILED: anon read private locations'; exception when insufficient_privilege then null; end $$;
 do $$ begin perform 1 from public.sales; raise exception 'FAILED: anon read sales'; exception when insufficient_privilege then null; end $$;
 do $$ begin perform private.public_sale_rows(now()); raise exception 'FAILED: anon reached the private schema'; exception when insufficient_privilege then null; end $$;
-select pg_temp.check(count(*) = 4, 'anon can list published and closed sales') from public.list_public_sales();
-select pg_temp.check(count(*) = 0, 'anon never sees the area-only or closed streets')
-  from public.list_public_sales() where title in ('Area only', 'Closed early') and (address is not null or exact_location);
-select pg_temp.check(count(*) = 0, 'a draft is not readable by id') from public.get_public_sale('10000000-0000-0000-0000-000000000004');
-select pg_temp.check(count(*) = 1, 'a published sale is readable by id') from public.get_public_sale('10000000-0000-0000-0000-000000000003');
+-- Since 004, buyers use the browse functions (tested in browse_sales.sql); the 002 ones are not callable.
+do $$ begin perform public.list_public_sales(); raise exception 'FAILED: anon called list_public_sales'; exception when insufficient_privilege then null; end $$;
+do $$ begin perform public.get_public_sale('10000000-0000-0000-0000-000000000003'); raise exception 'FAILED: anon called get_public_sale'; exception when insufficient_privilege then null; end $$;
 reset role;
 
 -- Signed-in sellers see only their own private rows and cannot write the derived area point.

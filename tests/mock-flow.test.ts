@@ -74,3 +74,9 @@ test("sale sign exports an A4 PDF using only the buyer-visible address", async (
   assert.ok(pdf.startsWith("%PDF-")); const box = pdf.match(/\/MediaBox \[0 0 ([\d.]+) ([\d.]+)\]/)!; assert.ok(box); assert.ok(Math.abs(Number(box[1])-595.28)<.01); assert.ok(Math.abs(Number(box[2])-841.89)<.01);
   assert.ok(pdf.includes("My clearout")); assert.ok(pdf.includes("Hamilton")); assert.ok(!pdf.includes("PRIVATE STREET"));
 });
+
+test("the ready-made demo sale is marked so it never moves to an account", async () => {
+  const draft = await createDemoDraft();
+  assert.equal(draft.readyMade, true);
+  assert.equal((await getDraft(draft.id))?.readyMade, true);
+});

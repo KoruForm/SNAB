@@ -10,15 +10,15 @@ Start at `/map` to browse, or `/sell` → **Try a ready-made demo sale** to try 
 
 Sales and photos persist in IndexedDB; preferences persist in localStorage. Publishing adds a listing to this browser's demo catalogue. Fixtures, search, matching, scan progress, statistics, estimates, maps, directions and account identity are explicitly simulated. No provider credentials, remote calls, real navigation or public listing service are needed. Clearing browser data removes local changes. See `docs/IMPLEMENTATION-STATUS.md` for UX coverage and integration work for the next phase.
 
-Supabase owner-only database and private-storage setup is prepared in `supabase/migrations/001_seller_foundation.sql`, server-enforced address privacy for buyers in `002_public_sale_privacy.sql`, and account draft sync in `003_seller_draft_sync.sql`; none has been applied to a database. `npm run test:db` checks them against a local Postgres. No provider credentials are needed for the local seller flow.
+Supabase owner-only database and private-storage setup is prepared in `supabase/migrations/001_seller_foundation.sql`, server-enforced address privacy for buyers in `002_public_sale_privacy.sql`, and account draft sync in `003_seller_draft_sync.sql`, and buyer browsing in `004_buyer_browse.sql`. 001–003 are applied to the live Supabase project. `npm run test:db` checks them against a local Postgres. No provider credentials are needed for the local seller flow.
 
 ## Seller accounts (Supabase)
 
-With no Supabase settings the app runs as the local demo above. When `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set (see `.env.example`), `/account` offers email sign-in links, and a signed-in seller's drafts, sale days, address and photos are saved to their account instead of the browser. Photos go to the private `sale-photos` bucket and are shown through short-lived signed links. Drafts started before signing in can be moved to the account from **Me**. Buyer screens don't read other people's account sales yet; that will go through the `002` public sale functions.
+With no Supabase settings the app runs as the local demo above. When `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set (see `.env.example`), `/account` offers email sign-in links, and a signed-in seller's drafts, sale days, address and photos are saved to their account instead of the browser. Photos go to the private `sale-photos` bucket and are shown through short-lived signed links. Drafts started before signing in can be moved to the account from **Me**. Buyers on any device see every seller's published sales through `browse_sales()` (migration `004`), with the street hidden until the seller's chosen time and photos shown through short-lived signed links. A sale drops off once its last sale day has passed. The ready-made demo sale is only offered when signed out and never moves to an account.
 
 To set up a Supabase project:
 
-1. Run the migrations in `supabase/migrations/` in order (001, 002, 003) in the SQL editor (none has been applied yet).
+1. Run the migrations in `supabase/migrations/` in order in the SQL editor.
 2. In **Authentication → URL configuration**, set the site URL and add `<site>/account` as a redirect URL for each environment (for example `http://localhost:3000/account`).
 3. Put the project URL and anon key in `.env.local` locally, or in Hostinger's environment variables before building. Never add the service-role key.
 
