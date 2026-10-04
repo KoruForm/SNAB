@@ -24,6 +24,10 @@ To set up a Supabase project:
 2. In **Authentication → URL configuration**, set the site URL and add `<site>/account` as a redirect URL for each environment (for example `http://localhost:3000/account`).
 3. Put the project URL and anon key in `.env.local` locally, or in Hostinger's environment variables before building. Never add the service-role key.
 
+## Coming soon page
+
+`/coming-soon` is a pre-launch page in the landing style with a "Be first to know" email sign-up. Sign-ups go through `register_interest()` (migration `005`) into `interest_signups`, which nobody can read through the API; view them in the Supabase dashboard. To show it as the home page, set `COMING_SOON_DEFAULT = true` in `lib/launch.ts` (or `NEXT_PUBLIC_COMING_SOON=on` before building). The rest of the app stays reachable at its own addresses.
+
 ## Stack
 
 - Next.js App Router + React + TypeScript
