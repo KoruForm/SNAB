@@ -1,0 +1,24 @@
+SNAB concept font sources
+
+Font files were downloaded without modification from these Google Fonts URLs:
+
+Atkinson Hyperlegible Next, weight 400
+https://fonts.gstatic.com/s/atkinsonhyperlegiblenext/v7/NaP4cYPdHfdVxJw0IfIP0lvYFqijb-UxCtm5_wdGscKFt4tOOfV4ZmW37LQhtA.ttf
+
+Atkinson Hyperlegible Next, weight 500
+https://fonts.gstatic.com/s/atkinsonhyperlegiblenext/v7/NaP4cYPdHfdVxJw0IfIP0lvYFqijb-UxCtm5_wdGscKFt4tOOfV4ZmW33rQhtA.ttf
+
+Atkinson Hyperlegible Next, weight 600
+https://fonts.gstatic.com/s/atkinsonhyperlegiblenext/v7/NaP4cYPdHfdVxJw0IfIP0lvYFqijb-UxCtm5_wdGscKFt4tOOfV4ZmW3MrMhtA.ttf
+
+Atkinson Hyperlegible Next, weight 700
+https://fonts.gstatic.com/s/atkinsonhyperlegiblenext/v7/NaP4cYPdHfdVxJw0IfIP0lvYFqijb-UxCtm5_wdGscKFt4tOOfV4ZmW3C7MhtA.ttf
+
+Bowlby One, weight 400
+https://fonts.gstatic.com/s/bowlbyone/v25/taiPGmVuC4y96PFeqp8smo4.ttf
+
+License sources from the Google Fonts repository:
+https://raw.githubusercontent.com/google/fonts/main/ofl/atkinsonhyperlegiblenext/OFL.txt
+https://raw.githubusercontent.com/google/fonts/main/ofl/bowlbyone/OFL.txt
+
+Local CSS preserves the supplied font families, styles, weights and display setting.
