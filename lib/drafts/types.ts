@@ -53,11 +53,21 @@ export function formatDay(day: SaleDay): string {
   return new Intl.DateTimeFormat("en-NZ", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).format(date);
 }
 
-export function publicAddress(draft: Draft, now = new Date()): string {
-  if (draft.location.reveal === "area-only") return draft.location.town || "Area to be confirmed";
-  if (draft.location.reveal === "now") return draft.location.address || draft.location.town;
+// Mirrors private.address_visible in supabase/migrations/002_public_sale_privacy.sql, which enforces this rule on the server.
+// Unpublished drafts are previewed as if published; closed sales and finished sales never show the street.
+export function addressVisible(draft: Pick<Draft, "status" | "days" | "location">, now = new Date()): boolean {
+  if (draft.status === "closed") return false;
   const today = localDateKey(now);
-  return draft.days.some(day => day.date === today) ? draft.location.address || draft.location.town : `${draft.location.town || "Local area"} · address revealed on sale day`;
+  if (draft.location.reveal === "now") return draft.days.some(day => day.date >= today);
+  if (draft.location.reveal === "sale-day") return draft.days.some(day => day.date === today);
+  return false;
+}
+
+export function publicAddress(draft: Draft, now = new Date()): string {
+  if (addressVisible(draft, now)) return draft.location.address || draft.location.town;
+  if (draft.location.reveal === "area-only") return draft.location.town || "Area to be confirmed";
+  const today = localDateKey(now);
+  return draft.status !== "closed" && draft.days.some(day => day.date > today) ? `${draft.location.town || "Local area"} · address revealed on sale day` : draft.location.town || "Area to be confirmed";
 }
 
 export function draftProgress(draft: Draft, photoCount: number): number {

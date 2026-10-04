@@ -1,4 +1,4 @@
-import { localDateKey, publicAddress, type Category, type Draft, type DraftPhoto, type MockItem, type SaleDay } from "../drafts/types";
+import { addressVisible, localDateKey, publicAddress, type Category, type Draft, type DraftPhoto, type MockItem, type SaleDay } from "../drafts/types";
 export type BuyerSale = { id: string; title: string; description: string; town: string; addressLabel: string; exactAddressVisible: boolean; days: SaleDay[]; categories: Category[]; items: MockItem[]; photos: DraftPhoto[]; coverCategory: Category; distance: number; x: number; y: number; state: "open" | "upcoming" | "closed"; sample: boolean; own: boolean; eventCode?: string; abundance?: string };
 export type Match = { sale: BuyerSale; band: "Great match" | "Good match" | "Possible match"; reasons: string[]; score: number };
 function item(id: string, label: string, category: Category, description: string, estimate?: string): MockItem { return { id, label, category, description, estimate, available: true, confirmed: true }; }
@@ -18,7 +18,7 @@ export function toBuyerSale(draft: Draft, photos: DraftPhoto[], now = new Date()
   const today = localDateKey(now); const time = new Intl.DateTimeFormat("en-NZ", { timeZone: "Pacific/Auckland", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(now);
   const open = draft.days.some(day => day.date === today && day.starts <= time && day.finishes > time);
   const state = draft.status === "closed" || draft.dayMode === "closed" ? "closed" : draft.dayMode === "open" || open ? "open" : draft.days.length && draft.days.every(day => day.date < today || (day.date === today && day.finishes <= time)) ? "closed" : "upcoming";
-  const exactAddressVisible = draft.location.reveal === "now" || (draft.location.reveal === "sale-day" && draft.days.some(d => d.date === today));
+  const exactAddressVisible = addressVisible(draft, now);
   const fallbackItems = draft.highlights.map((label, n) => item(`highlight-${n}`, label, draft.categories[0] || "Other", label));
   return { id: draft.id, title: draft.title || "Your garage sale", description: draft.description, town: draft.location.town, addressLabel: publicAddress(draft, now), exactAddressVisible, days: draft.days, categories: draft.categories, items: draft.items?.length ? draft.items : fallbackItems, photos, coverCategory: draft.categories[0] || "Furniture", distance: 1.5, x: 48, y: 43, state, sample: false, own: true, eventCode: draft.eventCode, abundance: draft.abundance };
 }

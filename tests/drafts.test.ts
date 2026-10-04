@@ -1,7 +1,7 @@
 import "fake-indexeddb/auto";
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-import { blankDraft, localDateKey, publicAddress, validateDays } from "../lib/drafts/types";
+import { addressVisible, blankDraft, localDateKey, publicAddress, validateDays } from "../lib/drafts/types";
 import { createDraft, getDraft, updateDraft, getPhotos, addPhotos, deleteDraft, removePhoto, MAX_PHOTOS } from "../lib/drafts/storage";
 
 test("sale-day disclosure uses Auckland's date and hides the address on non-sale days", () => {
@@ -13,6 +13,20 @@ test("sale-day disclosure uses Auckland's date and hides the address on non-sale
   assert.ok(!publicAddress(draft, new Date("2026-10-04T12:00:00Z")).includes("123"));
   assert.ok(!publicAddress(draft, new Date("2026-10-06T12:00:00Z")).includes("123"));
   draft.location.reveal = "area-only";
+  assert.equal(publicAddress(draft, new Date("2026-10-03T12:00:00Z")), "Hamilton");
+});
+
+test("the street is hidden again once a sale is closed or its last day has passed", () => {
+  const draft = blankDraft("finished");
+  draft.days = [{ date: "2026-10-04", starts: "08:00", finishes: "13:00" }];
+  draft.location = { address: "123 Test Street", town: "Hamilton", reveal: "now" };
+  assert.equal(addressVisible(draft, new Date("2026-10-01T12:00:00Z")), true);
+  assert.equal(addressVisible(draft, new Date("2026-10-04T12:00:00Z")), false);
+  assert.equal(publicAddress(draft, new Date("2026-10-04T12:00:00Z")), "Hamilton");
+  draft.status = "closed";
+  assert.equal(addressVisible(draft, new Date("2026-10-01T12:00:00Z")), false);
+  draft.location.reveal = "sale-day";
+  assert.equal(addressVisible(draft, new Date("2026-10-03T12:00:00Z")), false);
   assert.equal(publicAddress(draft, new Date("2026-10-03T12:00:00Z")), "Hamilton");
 });
 
