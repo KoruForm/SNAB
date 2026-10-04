@@ -4,6 +4,7 @@ import { test } from "node:test";
 import { blankDraft, localDateKey } from "../lib/drafts/types";
 import { getDraft, updateDraft } from "../lib/drafts/storage";
 import { createDemoDraft, publicationError, publishDemo } from "../lib/mock/actions";
+import { createSaleSign } from "../lib/mock/sign";
 import { demoSales, matchedItems, rankSales, toBuyerSale } from "../lib/mock/catalogue";
 
 test("demo publication requires a title, sale dates and a location", () => {
@@ -47,6 +48,7 @@ test("hunts rank synonym coverage and explain results with available items", () 
   const results = rankSales(sales, "old computers and retro stuff");
   assert.equal(results[0].sale.id, "demo-garage"); assert.equal(results[0].band, "Great match");
   assert.ok(results[0].reasons.includes("Old PC tower"));
+  assert.ok(!results.some(m => m.sale.id === "demo-neighbours"), "old must not match household");
   assert.equal(rankSales(sales, "unfindablexyz").length, 0);
   const workshop = sales.find(s=>s.id === "demo-workshop")!;
   assert.ok(matchedItems(workshop, "woodworking").length > 0);
@@ -61,4 +63,14 @@ test("expired local sales are closed while future sale days remain upcoming", ()
   assert.equal(toBuyerSale(draft,[],new Date("2026-10-04T03:00:00Z")).state,"closed");
   draft.days.push({date:"2026-10-05",starts:"08:00",finishes:"13:00"});
   assert.equal(toBuyerSale(draft,[],new Date("2026-10-04T03:00:00Z")).state,"upcoming");
+});
+
+test("sale sign exports an A4 PDF using only the buyer-visible address", async () => {
+  const draft = blankDraft("sign"); draft.title = "My clearout";
+  draft.location = {address:"PRIVATE STREET",town:"Hamilton",reveal:"area-only"};
+  draft.days = [{date:"2026-10-10",starts:"08:00",finishes:"13:00"}];
+  const bytes = await createSaleSign(toBuyerSale(draft,[]), "https://example.com/sale/sign");
+  const pdf = Buffer.from(bytes).toString("latin1");
+  assert.ok(pdf.startsWith("%PDF-")); const box = pdf.match(/\/MediaBox \[0 0 ([\d.]+) ([\d.]+)\]/)!; assert.ok(box); assert.ok(Math.abs(Number(box[1])-595.28)<.01); assert.ok(Math.abs(Number(box[2])-841.89)<.01);
+  assert.ok(pdf.includes("My clearout")); assert.ok(pdf.includes("Hamilton")); assert.ok(!pdf.includes("PRIVATE STREET"));
 });

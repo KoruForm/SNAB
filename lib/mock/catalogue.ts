@@ -23,18 +23,19 @@ export function toBuyerSale(draft: Draft, photos: DraftPhoto[], now = new Date()
   return { id: draft.id, title: draft.title || "Your garage sale", description: draft.description, town: draft.location.town, addressLabel: publicAddress(draft, now), exactAddressVisible, days: draft.days, categories: draft.categories, items: draft.items?.length ? draft.items : fallbackItems, photos, coverCategory: draft.categories[0] || "Furniture", distance: 1.5, x: 48, y: 43, state, sample: false, own: true, eventCode: draft.eventCode, abundance: draft.abundance };
 }
 const aliases: Record<string, string[]> = { computer: ["pc", "computer", "desktop"], computers: ["pc", "computer", "desktop"], woodworking: ["woodworking", "saw", "clamp", "timber", "tools"], workshop: ["workshop", "tools", "drill", "saw"], kids: ["children", "toys", "games"], retro: ["retro", "vintage", "old"], vintage: ["vintage", "old", "retro"], gardening: ["garden", "plants", "pots"], clothes: ["clothes", "clothing", "jackets", "shirts"], free: ["free"] };
-const stopwords = new Set(["and", "or", "the", "a", "an", "for", "stuff", "things", "looking", "some", "near", "me", "of", "with"]);
+const stopwords = new Set(["and", "or", "the", "a", "an", "for", "stuff", "things", "looking", "some", "near", "me", "of", "with", "i", "my", "to", "love", "like", "find", "want", "sale", "please"]);
 export function queryTokens(query: string): string[] { return query.toLowerCase().split(/[^a-z0-9]+/).filter(token => token && !stopwords.has(token)); }
+function containsTerm(corpus: string, term: string): boolean { return new RegExp(`\\b${term}(?:s|es|ing)?\\b`, "i").test(corpus); }
 export function matchedItems(sale: BuyerSale, query: string): MockItem[] {
   const tokens = queryTokens(query);
-  return sale.items.filter(i => i.available && (!tokens.length || tokens.some(t => (aliases[t] || [t]).some(word => `${i.label} ${i.category} ${i.description}`.toLowerCase().includes(word)))));
+  return sale.items.filter(i => i.available && (!tokens.length || tokens.some(t => (aliases[t] || [t]).some(word => containsTerm(`${i.label} ${i.category} ${i.description}`, word)))));
 }
 export function rankSales(sales: BuyerSale[], query: string): Match[] {
   const tokens = queryTokens(query);
   return sales.map(sale => {
     const items = matchedItems(sale, query);
     const corpus = `${sale.title} ${sale.town} ${sale.categories.join(" ")} ${sale.items.filter(i=>i.available).map(i=>`${i.label} ${i.description}`).join(" ")}`.toLowerCase();
-    const covered = tokens.filter(t => (aliases[t] || [t]).some(word => corpus.includes(word))).length;
+    const covered = tokens.filter(t => (aliases[t] || [t]).some(word => containsTerm(corpus, word))).length;
     const score = tokens.length ? covered / tokens.length : 1;
     return { sale, score, band: score >= .75 ? "Great match" as const : score >= .4 ? "Good match" as const : "Possible match" as const, reasons: items.slice(0, 3).map(i=>i.label) };
   }).filter(m=>!tokens.length || m.score>0).sort((a,b)=>b.score-a.score || a.sale.distance-b.sale.distance);

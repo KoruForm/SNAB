@@ -14,5 +14,5 @@ export async function publishDemo(id: string, title: string, description: string
 }
 export async function createDemoDraft(eventCode?: string): Promise<Draft> {
   const draft = await createDraft();
-  return updateDraft(draft.id, { title: "Our Saturday Clearout", description: "A few things ready for a second home. Tools, games, books and a dining table. This is my demo sale.", days: [{ date: localDateKey(new Date()), starts: "08:00", finishes: "13:00" }], location: { address: "18 Demo Street", town: "Hamilton East", reveal: "sale-day" }, categories: ["Tools", "Electronics", "Furniture", "Books"], items: simulateItems().map(i => ({ ...i, confirmed: true })), highlights: simulateItems().map(i => i.label), demoScan: true, eventCode });
+  return updateDraft(draft.id, { title: "Our Garage Clearout", description: "A few things ready for a second home. Tools, games, books and a dining table. This is my demo sale.", days: [{ date: localDateKey(new Date()), starts: "08:00", finishes: "13:00" }], location: { address: "18 Demo Street", town: "Hamilton East", reveal: "sale-day" }, categories: ["Tools", "Electronics", "Furniture", "Books"], items: simulateItems().map(i => ({ ...i, confirmed: true })), highlights: simulateItems().map(i => i.label), demoScan: true, eventCode });
 }
