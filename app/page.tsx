@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ComingSoon } from "../components/coming-soon";
+import { SellSteps } from "../components/sell-steps";
 import { comingSoonHome } from "../lib/launch";
 
 const steps = [
@@ -59,11 +60,7 @@ export default function Home() {
             </div>
             <div className="landing-seller-details">
               <p className="landing-seller-kicker">Your sale, in a few simple steps</p>
-              <ol>
-                <li><span aria-hidden="true">1</span><div><h3>Pick the when and where.</h3><p>Add your times and choose when to reveal your address.</p></div></li>
-                <li><span aria-hidden="true">2</span><div><h3>Show off the good stuff.</h3><p>Add a few photos and the highlights worth a look.</p></div></li>
-                <li><span aria-hidden="true">3</span><div><h3>Give it a once-over.</h3><p>Preview your listing and check the details before you publish.</p></div></li>
-              </ol>
+              <SellSteps />
               <p className="landing-draft-note">Just having a look? You can try creating a demo sale on this device.</p>
             </div>
           </div>
