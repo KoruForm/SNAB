@@ -32,9 +32,7 @@ revoke all on function public.replace_sale_days(uuid, jsonb) from public, anon;
 grant execute on function public.replace_sale_days(uuid, jsonb) to authenticated;
 
 -- A photo record may only point at a file inside the owner's own <user-id>/<sale-id>/ folder.
-drop policy "owners_manage_photo_records" on public.sale_photos;
-create policy "owners_manage_photo_records" on public.sale_photos for all to authenticated
-  using (exists (select 1 from public.sales s where s.id = sale_id and s.owner_id = (select auth.uid())))
+alter policy "owners_manage_photo_records" on public.sale_photos
   with check (exists (select 1 from public.sales s where s.id = sale_id and s.owner_id = (select auth.uid()))
     and split_part(storage_path, '/', 1) = (select auth.uid())::text
     and split_part(storage_path, '/', 2) = sale_id::text);
