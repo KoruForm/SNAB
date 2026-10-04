@@ -98,7 +98,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 .landing-build-note{font-size:12px;line-height:1.5;color:var(--muted);margin:12px 0 0}
 
 /* Coming soon page: reuses the landing layout, plus the badge and interest form. */
-.soon-badge{margin:0;padding:8px 14px;border:1.5px solid var(--ink);border-radius:999px;background:var(--yellow);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.soon-badge{margin:0;padding:14px 26px 13px;background:url("/brand/coming-soon-tape.png") center/100% 100% no-repeat;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;transform:rotate(-2deg)}
 .soon-hero{align-items:start}
 .soon-hero .landing-hero-figure{position:sticky;top:24px}
 .soon-form{margin-top:4px;padding:26px;background:var(--white);border:1.5px solid var(--ink);border-radius:10px;box-shadow:6px 6px 0 var(--ink);display:grid;gap:16px;max-width:520px;scroll-margin-top:24px}
@@ -180,7 +180,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
   .landing-footer-main>span{margin-left:auto;font-size:12px}
   .landing-footer-main>a:last-child{margin-left:0;font-size:12px}
   .landing-build-note{font-size:11px;margin-top:3px;max-width:420px}
-  .soon-badge{font-size:10px;padding:7px 11px}
+  .soon-badge{font-size:10px;padding:11px 18px 10px}
   .soon-hero .landing-hero-figure{position:static}
   .soon-form{padding:20px;box-shadow:4px 4px 0 var(--ink);max-width:none}
   .soon-last-note{font-size:16px}
