@@ -28,7 +28,7 @@ export function InterestForm() {
       <div className="soon-form soon-done" id="join" role="status">
         <p className="landing-eyebrow"><span className="landing-spark" aria-hidden="true">✳</span> You’re on the list</p>
         <h2>Nice one. <span className="landing-underline">See you soon.</span></h2>
-        <p>We’ll email you when SNAB opens in Hamilton. Time to start eyeing up that garage.</p>
+        <p>We’ll email you when SNAB opens near you. Time to start eyeing up that garage.</p>
       </div>
     );
   }
@@ -48,8 +48,8 @@ export function InterestForm() {
         ))}</div>
       </fieldset>
       <label className="soon-field">
-        <span>Suburb <em>(optional)</em></span>
-        <input type="text" name="suburb" autoComplete="address-level3" maxLength={100} placeholder="e.g. Hamilton East" value={suburb} onChange={e => setSuburb(e.target.value)} />
+        <span>Suburb or town <em>(optional)</em></span>
+        <input type="text" name="suburb" autoComplete="address-level3" maxLength={100} placeholder="Where you live" value={suburb} onChange={e => setSuburb(e.target.value)} />
       </label>
       {error && <p className="soon-error" id="soon-error" role="alert">{error}</p>}
       <button className="button button-primary" type="submit" disabled={state === "sending"}>{state === "sending" ? "Adding you…" : "Keep me posted"} <svg className="landing-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6" /></svg></button>
