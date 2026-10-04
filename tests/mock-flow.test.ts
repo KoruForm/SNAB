@@ -86,7 +86,7 @@ test("sale sign layout keeps every line inside the page and drops glyphs the fon
     draft.location = {address:"Flat 2, 145A Te Rapa Road, Beerescourt",town:"Hamilton",reveal:"now"};
     draft.days = Array.from({length:count}, (_, i) => ({date:`2026-09-${String(20+i).padStart(2,"0")}`,starts:"08:00",finishes:"13:00"}));
     const { lines } = layoutSaleSign(toBuyerSale(draft,[]), measure);
-    for (const l of lines) { assert.ok(l.y > 70 && l.y < 175, `${l.text} at ${l.y}`); assert.ok(measure(l.text, l.size) <= 181, l.text); }
+    for (const l of lines) { assert.ok(l.y > 60 && l.y < 171, `${l.text} at ${l.y}`); assert.ok(measure(l.text, l.size) <= 181, l.text); }
   }
   assert.equal(signText("Kirikiriroa Whānau Sale 🎉"), "Kirikiriroa Whanau Sale");
 });

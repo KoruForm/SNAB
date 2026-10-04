@@ -9,8 +9,8 @@ export const SIGN_FONT = "BowlbyOneSC";
 const CAP = 1520 / 2048; // cap height of Bowlby One SC, as a share of the font size
 const PT = 25.4 / 72;
 const LEFT = 15, WIDTH = 180, CENTRE = 105;
-const ZONE_TOP = 74, ZONE_BOTTOM = 173; // between "GARAGE SALE" and the yellow QR panel
-const QR = { x: 80.85, y: 187.6, size: 50 }; // centred in the template's white square
+const ZONE_TOP = 64, ZONE_BOTTOM = 168; // between "GARAGE SALE" and the yellow QR panel
+const QR = { x: 80.85, y: 183.3, size: 50 }; // centred in the template's white square
 const BASE = { title: 30, dayTitle: 24, date: 20, address: 36, more: 14 }; // pt, from the design
 const DAY_BOOST: Record<number, number> = { 1: 1.6, 2: 1.3 };
 const LEADING = 1.1, DAY_LEADING = 1.25; // baseline-to-baseline, as a multiple of the font size
