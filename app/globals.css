@@ -292,3 +292,5 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 @media(min-width:701px) and (max-width:1000px){.landing-treasure{gap:48px}}
 .treasure-alerts{margin-top:28px}.treasure-alerts>p{font-size:15px;line-height:1.55;color:var(--muted);margin:0 0 16px}.code-sign-in .form-stack{gap:16px}.code-input{letter-spacing:.3em;font-size:22px!important;font-weight:700!important}.code-sign-in-again{margin:0;font-size:14px;color:var(--muted)}
 .stop-alerts{max-width:520px;margin:0 auto;padding:60px 20px;line-height:1.6}.stop-alerts h1{font-size:34px;margin-bottom:14px}.stop-alerts p{margin:14px 0}
+/* Josh's tab shape: sale photos are cut like a folder tab, low on the left and stepping up on the right. Stretches to fit any photo. */
+.tab-photo,.sale-preview-card>.sale-cover,.buyer-card-cover>.buyer-card-photo,.buyer-card-cover>.illustrated-cover,.sale-hero>.sale-cover,.sale-hero>.large-cover{-webkit-mask:url('/brand/photo-tab.svg') 0 0/100% 100% no-repeat;mask:url('/brand/photo-tab.svg') 0 0/100% 100% no-repeat}
