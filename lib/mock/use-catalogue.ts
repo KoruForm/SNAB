@@ -13,6 +13,7 @@ export function useCatalogue() {
   const account = useAccount();
   useEffect(()=>{ if(account.loading) return; let active=true;
     // Your own sales (device or account), everyone's published sales, then the samples. Your own copy wins.
+    // The made-up samples only fill an empty map: once any real sale is listed, buyers see real sales only.
     const own = listDrafts().then(drafts => Promise.all(drafts.filter(d=>d.status!=="draft").map(async d=>toBuyerSale(d,await getPhotos(d.id)))));
     const supabase = getSupabase();
     const listed = supabase ? fetchListedSales(supabase) : Promise.resolve([]);
@@ -21,7 +22,8 @@ export function useCatalogue() {
       const ownSales = mine.status==="fulfilled" ? mine.value : [];
       const ownIds = new Set(ownSales.map(s=>s.id));
       const listedSales = others.status==="fulfilled" ? others.value.filter(s=>!ownIds.has(s.id)) : [];
-      setSales([...ownSales,...listedSales,...demoSales()]);
+      const realListed = others.status==="fulfilled" && others.value.length > 0;
+      setSales([...ownSales,...listedSales,...(realListed ? [] : demoSales())]);
       setError(mine.status==="rejected" ? "Your own sales couldn’t be opened. Other sales are still available." : others.status==="rejected" ? others.reason instanceof Error ? others.reason.message : "Couldn’t load sales near you." : "");
       setLoading(false);
     });

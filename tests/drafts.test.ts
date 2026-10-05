@@ -33,7 +33,9 @@ test("the street is hidden again once a sale is closed or its last day has passe
 test("invalid, duplicate and inverted dates/times are rejected", () => {
   const day = { date: "2026-10-04", starts: "08:00", finishes: "13:00" };
   assert.equal(validateDays([day], "2026-10-04"), null);
-  for (const days of [[{ ...day, date: "2026-02-30" }], [day, day], [{ ...day, finishes: "07:00" }], [{ ...day, starts: "25:00" }], [{ ...day, date: "2026-10-03" }]]) assert.ok(validateDays(days, "2026-10-04"));
+  for (const days of [[{ ...day, date: "2026-02-30" }], [day, day], [{ ...day, finishes: "07:00" }], [{ ...day, starts: "25:00" }], [{ ...day, date: "2026-10-03" }], [{ ...day, date: "2027-04-06" }],
+    ["05", "06", "07", "08", "09", "10", "11", "12"].map(d => ({ ...day, date: `2026-10-${d}` }))]) assert.ok(validateDays(days, "2026-10-04"));
+  assert.equal(validateDays([{ ...day, date: "2027-04-05" }], "2026-10-04"), null);
 });
 
 test("draft metadata and photo blobs persist; deleting one draft preserves another", async () => {
