@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { getDraft, getPhotos, updateDraft } from "../lib/drafts/storage";
 import { formatDay, type Draft, type DraftPhoto } from "../lib/drafts/types";
 import { toBuyerSale } from "../lib/mock/catalogue";
+import { signQrTags } from "../lib/analytics";
 import { CategoryArt, MissingSale, SaleCover, StateBadge } from "./buyer-ui";
 export default function ManageSale({ id }: { id: string }) {
   const params = useSearchParams(); const [draft, setDraft] = useState<Draft>(); const [photos, setPhotos] = useState<DraftPhoto[]>([]); const [loading, setLoading] = useState(true); const [error, setError] = useState(""); const [notice, setNotice] = useState(""); const [busy, setBusy] = useState(false); const [shareView, setShareView] = useState(""); const [qr, setQr] = useState(""); const [signUrl, setSignUrl] = useState(""); const [social, setSocial] = useState<{ post?: string; story?: string }>({}); const [closeConfirm, setCloseConfirm] = useState(false); const [invite, setInvite] = useState("Come join our neighbourhood SNAB Day! Bring out a few things for a second home. Demo event code: HAMILTON.");
@@ -15,9 +16,10 @@ export default function ManageSale({ id }: { id: string }) {
   useEffect(() => () => { Object.values(social).forEach(u => u && URL.revokeObjectURL(u)); }, [social]);
   async function change(patch: Parameters<typeof updateDraft>[1], message: string) { setBusy(true); setError(""); try { setDraft(await updateDraft(id, patch)); setNotice(message); } catch(e) { setError(e instanceof Error ? e.message : "Couldn’t save that."); } finally { setBusy(false); } }
   function url() { return `${window.location.origin}/sale/${id}`; }
+  function qrUrl() { return `${url()}?${signQrTags}`; }
   function text() { return `SNAB — ${draft?.title}\n${draft?.days.map(d=>`${formatDay(d)} ${d.starts}–${d.finishes}`).join("\n")}\n${draft ? toBuyerSale(draft,photos).addressLabel : ""}\n${url()}\nUX demo · sale saved on this device only.`; }
   async function copy(value: string) { try { await navigator.clipboard.writeText(value); setNotice("Copied. Ready to paste into a post or message."); } catch { setNotice("Select the text below and copy it from your browser."); } }
-  async function showQr() { setShareView("qr"); try { const QRCode = await import("qrcode"); setQr(await QRCode.toDataURL(url(), { width: 320, margin: 2, color: { dark: "#222321", light: "#F7F3E8" } })); } catch { setError("Couldn’t make the QR code. Try again."); } }
+  async function showQr() { setShareView("qr"); try { const QRCode = await import("qrcode"); setQr(await QRCode.toDataURL(qrUrl(), { width: 320, margin: 2, color: { dark: "#222321", light: "#F7F3E8" } })); } catch { setError("Couldn’t make the QR code. Try again."); } }
   async function showPost() {
     setShareView("post"); if (!draft || social.post) return;
     try { const { createSocialImage } = await import("../lib/mock/social"); const sale = toBuyerSale(draft, photos), photo = photos[0]?.blob ?? photos[0]?.url;
@@ -27,7 +29,7 @@ export default function ManageSale({ id }: { id: string }) {
   }
   async function downloadSign() {
     if (!draft) return; setBusy(true); setError("");
-    try { const { createSaleSign } = await import("../lib/mock/sign"); const bytes = await createSaleSign(toBuyerSale(draft, photos), url()); setSignUrl(URL.createObjectURL(new Blob([bytes], {type:"application/pdf"}))); setShareView("sign"); setNotice("Your demo sign PDF is ready. Preview it below, then save it.");
+    try { const { createSaleSign } = await import("../lib/mock/sign"); const bytes = await createSaleSign(toBuyerSale(draft, photos), qrUrl()); setSignUrl(URL.createObjectURL(new Blob([bytes], {type:"application/pdf"}))); setShareView("sign"); setNotice("Your demo sign PDF is ready. Preview it below, then save it.");
     } catch(e) { setError(e instanceof Error ? e.message : "Couldn’t make the sign. Try again."); } finally { setBusy(false); }
   }
   if (!draft) return <MissingSale loading={loading} error={error} />;

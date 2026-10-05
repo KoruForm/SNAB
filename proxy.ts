@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { comingSoonHome, previewCookie, previewKey } from "./lib/launch";
+import { trackingParams } from "./lib/analytics";
 
 // While the coming soon teaser is on, hide the app: every page except the teaser redirects home,
 // unless this browser has opened the private preview link (see lib/launch.ts).
@@ -25,6 +26,8 @@ export function proxy(request: NextRequest) {
   const home = request.nextUrl.clone();
   home.pathname = "/";
   home.search = "";
+  // Keep QR and campaign tags so the visit still counts as a sign scan in the stats.
+  for (const name of trackingParams) { const value = searchParams.get(name); if (value) home.searchParams.set(name, value); }
   return NextResponse.redirect(home);
 }
 

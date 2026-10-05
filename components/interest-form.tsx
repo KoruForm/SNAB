@@ -1,6 +1,7 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import { registerInterest, validEmail } from "../lib/interest";
+import { trackEvent } from "../lib/analytics";
 
 export function InterestForm() {
   const [email, setEmail] = useState("");
@@ -15,6 +16,7 @@ export function InterestForm() {
     try {
       await registerInterest(email, "both", "");
       setState("done");
+      trackEvent("Email sign-up");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn’t add you to the list just now. Please try again.");
       setState("idle");
