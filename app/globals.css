@@ -298,5 +298,5 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 .workspace-main .buyer-sale-card,.workspace-main .sale-preview-card{border:0;background:transparent;border-radius:0;overflow:visible}
 .buyer-card-body,.sale-preview-body{flex:1;background:var(--white);border:1px solid #17181535;border-top:0;border-radius:0 0 9px 9px}
 .workspace-main .buyer-card-cover{background:transparent}
-.buyer-sale-card.on-list{border:0;box-shadow:none;filter:drop-shadow(4px 4px 0 var(--yellow))}
-.buyer-sale-card.on-list .buyer-card-body{border:1.5px solid var(--ink);border-top:0}
+.buyer-sale-card.on-list{border:0;box-shadow:none;filter:drop-shadow(4px 0 0 var(--yellow)) drop-shadow(-4px 0 0 var(--yellow)) drop-shadow(0 4px 0 var(--yellow)) drop-shadow(0 -4px 0 var(--yellow))}
+.buyer-sale-card.on-list .buyer-card-body{border-color:transparent}
