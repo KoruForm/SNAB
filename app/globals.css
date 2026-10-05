@@ -294,3 +294,9 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 .stop-alerts{max-width:520px;margin:0 auto;padding:60px 20px;line-height:1.6}.stop-alerts h1{font-size:34px;margin-bottom:14px}.stop-alerts p{margin:14px 0}
 /* Josh's tab shape: sale photos are cut like a folder tab, low on the left and stepping up on the right. Stretches to fit any photo. */
 .tab-photo,.sale-preview-card>.sale-cover,.buyer-card-cover>.buyer-card-photo,.buyer-card-cover>.illustrated-cover,.sale-hero>.sale-cover,.sale-hero>.large-cover{-webkit-mask:url('/brand/photo-tab.svg') 0 0/100% 100% no-repeat;mask:url('/brand/photo-tab.svg') 0 0/100% 100% no-repeat}
+/* The tab-shaped photo is the top edge of its card: no card border or fill shows above it. The frame starts below the photo. */
+.workspace-main .buyer-sale-card,.workspace-main .sale-preview-card{border:0;background:transparent;border-radius:0;overflow:visible}
+.buyer-card-body,.sale-preview-body{flex:1;background:var(--white);border:1px solid #17181535;border-top:0;border-radius:0 0 9px 9px}
+.workspace-main .buyer-card-cover{background:transparent}
+.buyer-sale-card.on-list{border:0;box-shadow:none;filter:drop-shadow(4px 4px 0 var(--yellow))}
+.buyer-sale-card.on-list .buyer-card-body{border:1.5px solid var(--ink);border-top:0}
