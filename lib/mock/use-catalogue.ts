@@ -29,7 +29,7 @@ export function useCatalogue() {
   return {sales,loading,error};
 }
 export function usePreferences() {
-  const [prefs, setPrefs]=useState<Preferences>({savedSales:[],savedItems:[],treasures:[],name:"",demoSignedIn:false,reports:[]});
+  const [prefs, setPrefs]=useState<Preferences>({savedSales:[],savedItems:[],treasures:[],name:"",demoSignedIn:false});
   const [error,setError]=useState("");
   useEffect(()=>{ const update=()=>setPrefs(readPreferences()); queueMicrotask(update); window.addEventListener("snab-preferences",update);window.addEventListener("storage",update);return()=>{window.removeEventListener("snab-preferences",update);window.removeEventListener("storage",update);};},[]);
   function act(action:()=>void){try{action();setError("");}catch{setError("Your browser couldn’t save that. Check that local storage is enabled.");}}
