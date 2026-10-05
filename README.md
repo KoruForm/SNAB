@@ -36,6 +36,8 @@ Maps use MapLibre with OpenFreeMap's free tiles (no key; `NEXT_PUBLIC_MAP_STYLE_
 
 `/coming-soon` is a pre-launch page in the landing style with a "Be first to know" email sign-up. Sign-ups go through `register_interest()` (migration `005`) into `interest_signups`, which nobody can read through the API; view them in the Supabase dashboard. It is currently the home page (`COMING_SOON_DEFAULT = true` in `lib/launch.ts`); the app's own landing page is at `/welcome` and every other route works as before. Set it to `false` (or `NEXT_PUBLIC_COMING_SOON=off` before building) to put the app landing back on `/`.
 
+Sellers see real views and saves for their listed sales on the Manage page (migration `007`). Opening a sale page counts one view per device per day, and saving or unsaving a sale updates the save count. Browsers send a random device code; the server keeps only a hash of it per sale, so nothing ties a view to a person, and the seller's own visits don't count.
+
 ## Stack
 
 - Next.js App Router + React + TypeScript

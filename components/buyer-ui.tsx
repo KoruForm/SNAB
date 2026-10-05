@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { CATEGORIES, formatDay, type Category, type MockItem } from "../lib/drafts/types";
 import { matchedItems, withDistances, type BuyerSale, type Match } from "../lib/mock/catalogue";
 import { distanceKm, roundKm } from "../lib/geo";
@@ -14,6 +14,7 @@ import { REPORT_NOTE_MAX, reportReasons, reportSale, type ReportReason } from ".
 import { useCatalogue, usePreferences } from "../lib/mock/use-catalogue";
 import { useAccount } from "../lib/supabase/use-account";
 import { hitLabels, watchHits } from "../lib/watchlist";
+import { recordSaleView } from "../lib/sale-stats";
 import { SaleWatchBanner, TreasureWatchlist, WatchlistStrip } from "./treasure-list";
 import DraftPhotoImage from "./draft-photo";
 import { PHOTOS, type PhotoName } from "./snap-photo";
@@ -121,6 +122,8 @@ export function ItemCard({ item, sale, onList = false }: { item: MockItem; sale:
 }
 export function SaleDetail({ id }: { id: string }) {
   const { sales, loading, error } = useCatalogue(); const signedIn = Boolean(useAccount().userId); const { prefs, act, error: prefsError } = usePreferences(); const [notice, setNotice] = useState(""); const [report, setReport] = useState(false); const [reason, setReason] = useState<ReportReason>("wrong-details"); const [reportNote, setReportNote] = useState(""); const [reporting, setReporting] = useState(false); const { origin } = useBuyerLocation(); const sale = sales.find(s => s.id === id);
+  const countView = Boolean(sale && !sale.own && !sale.sample);
+  useEffect(() => { if (countView) recordSaleView(id); }, [countView, id]);
   if (!sale) return <MissingSale loading={loading} error={error} />;
   const km = origin && sale.point ? roundKm(distanceKm(origin, sale.point)) : null;
   const saved = prefs.savedSales.includes(id); const listed = new Set(watchHits(sale, prefs.treasures).flatMap(hit => hit.items.map(i => i.id)));
