@@ -39,3 +39,9 @@ test("photo files live under the owner's and sale's folders", () => {
   assert.equal(photoPath("user", "sale", "photo", { name: "camera", type: "image/heic" }), "user/sale/photo.heic");
   assert.equal(photoPath("user", "sale", "photo", { name: "../../x", type: "image/png" }), "user/sale/photo.png");
 });
+
+test("a sale hidden after reports reads back as hidden, and sellers never write the flag", () => {
+  assert.equal(rowToDraft(row).hidden, undefined);
+  assert.equal(rowToDraft({ ...row, hidden: true }).hidden, true);
+  assert.equal("hidden" in patchToSaleRow({ title: "New" }), false);
+});
