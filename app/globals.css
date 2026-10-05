@@ -134,32 +134,28 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 .landing-build-note{font-size:12px;line-height:1.5;color:var(--muted);margin:12px 0 0}
 
 /* Coming soon page: reuses the landing layout, plus the badge and interest form. */
-.soon-badge{margin:0;padding:14px 26px 13px;background:url("/brand/coming-soon-tape.png") center/100% 100% no-repeat;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;transform:rotate(-2deg)}
-.soon-hero{align-items:start}
-.soon-hero .landing-hero-figure{position:sticky;top:24px}
-.soon-form{margin-top:4px;padding:26px;background:var(--white);border:1.5px solid var(--ink);border-radius:10px;box-shadow:6px 6px 0 var(--ink);display:grid;gap:16px;max-width:520px;scroll-margin-top:24px}
-.soon-form h2{font-size:clamp(24px,2.3vw,30px);line-height:1.15}
-.soon-form-lede{margin:-8px 0 0;font-size:16px;color:var(--muted)}
+.soon-site{min-height:100vh;min-height:100svh;display:grid;grid-template-columns:minmax(0,1fr);place-items:center;padding:48px 24px}
+.soon-main{width:min(100%,680px);min-width:0;display:grid;grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center;gap:28px}
+/* The logo artwork has empty space under it; crop it off so the tagline sits close. */
+.soon-logo{width:min(100%,440px);height:auto;aspect-ratio:1072/436;object-fit:cover;object-position:top}
+.soon-line{max-width:680px;font-size:clamp(28px,4.4vw,44px);line-height:1.15}
+.soon-form{width:100%;max-width:520px;padding:26px;background:var(--white);border:1.5px solid var(--ink);border-radius:10px;box-shadow:6px 6px 0 var(--ink);display:grid;gap:16px;text-align:left;scroll-margin-top:24px}
+.soon-form h2{font-size:clamp(22px,2.3vw,28px);line-height:1.15}
 .soon-field{display:grid;gap:7px;font-size:14px;font-weight:700}
-.soon-field em{font-style:normal;font-weight:400;color:var(--muted)}
 .soon-field input{min-height:52px;padding:12px 14px;border:1.5px solid var(--ink);border-radius:7px;background:var(--paper);font-size:17px;color:var(--ink);width:100%}
-.soon-field input:focus-visible,.soon-choice input:focus-visible+span{outline:3px solid var(--rust);outline-offset:2px}
+.soon-field input:focus-visible{outline:3px solid var(--rust);outline-offset:2px}
 .soon-field input[aria-invalid]{border-color:var(--rust)}
-.soon-choice{border:0;margin:0;padding:0;min-width:0}
-.soon-choice legend{padding:0;margin-bottom:7px;font-size:14px;font-weight:700}
-.soon-choice>div{display:flex;flex-wrap:wrap;gap:8px}
-.soon-choice label{position:relative;cursor:pointer}
-.soon-choice input{position:absolute;opacity:0;width:1px;height:1px}
-.soon-choice span{display:flex;align-items:center;min-height:44px;padding:8px 16px;border:1.5px solid var(--ink);border-radius:999px;font-size:15px;font-weight:700;background:var(--paper)}
-.soon-choice input:checked+span{background:var(--yellow)}
 .soon-form .button{justify-content:space-between;font-size:17px;width:100%}
 .soon-error{margin:0;color:var(--rust);font-size:15px;font-weight:700;line-height:1.4}
 .soon-privacy{margin:-4px 0 0;font-size:13px;line-height:1.45;color:var(--muted)}
 .soon-done{gap:10px}
-.soon-done .landing-eyebrow{margin:0}
-.soon-done p:last-child{margin:4px 0 0;font-size:17px;line-height:1.5}
-.soon-last-note{margin:0;max-width:440px;font-size:18px;line-height:1.55;color:var(--muted)}
-.soon-site .landing-footer-main>span:last-child{margin-left:auto}
+.soon-done p:last-child{margin:0;font-size:17px;line-height:1.5}
+@media(max-width:700px){
+  .soon-site{padding:36px 20px;align-items:start}
+  .soon-main{gap:22px}
+  .soon-logo{width:min(100%,300px)}
+  .soon-form{padding:20px;box-shadow:4px 4px 0 var(--ink)}
+}
 
 @media(max-width:1000px){
   .landing-container{width:calc(100% - 56px)}
@@ -219,11 +215,6 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
   .landing-footer-main>span{margin-left:auto;font-size:12px}
   .landing-footer-main>a:last-child{margin-left:0;font-size:12px}
   .landing-build-note{font-size:11px;margin-top:3px;max-width:420px}
-  .soon-badge{font-size:10px;padding:11px 18px 10px}
-  .soon-hero .landing-hero-figure{position:static}
-  .soon-form{padding:20px;box-shadow:4px 4px 0 var(--ink);max-width:none}
-  .soon-last-note{font-size:16px}
-  .soon-last-note+.button{width:100%;font-size:17px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 

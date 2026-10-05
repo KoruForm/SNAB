@@ -1,19 +1,27 @@
 import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "./globals.css";
+import { umamiScript, umamiWebsiteId } from "../lib/analytics";
+import { comingSoonHome } from "../lib/launch";
 
-// Link previews (app/opengraph-image.jpg) need absolute URLs. Set NEXT_PUBLIC_SITE_URL before building
+// Link previews need absolute URLs. Set NEXT_PUBLIC_SITE_URL before building
 // once SNAB has its own domain; until then this is the Hostinger preview address.
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://olivedrab-rabbit-869283.hostingersite.com";
-const title = "SNAB — Garage sales. Great finds.";
-const description = "Browse garage sales, save your favourites and give your good stuff a new home. Add photos, set the details and preview your own sale with SNAB.";
+// While the coming soon teaser is on, shares and search results give nothing away either.
+const teaser = comingSoonHome;
+const title = teaser ? "SNAB" : "SNAB — Garage sales. Great finds.";
+const description = teaser ? "Something’s coming to your street." : "Browse garage sales, save your favourites and give your good stuff a new home. Add photos, set the details and preview your own sale with SNAB.";
+const image = teaser
+  ? { url: "/social/teaser-preview.jpg", width: 1200, height: 630, alt: "SNAB. Something’s coming to your street." }
+  : { url: "/social/link-preview.jpg", width: 1200, height: 630, alt: "SNAB: Good stuff finds new people. Garage Sales Made Easy." };
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
   description,
-  openGraph: { type: "website", siteName: "SNAB", locale: "en_NZ", title, description },
-  twitter: { card: "summary_large_image", title, description },
+  openGraph: { type: "website", siteName: "SNAB", locale: "en_NZ", title, description, images: [image] },
+  twitter: { card: "summary_large_image", title, description, images: [image] },
   applicationName: "SNAB",
   manifest: "/manifest.webmanifest",
   icons: { icon: "/brand/snab-yellow-badge.svg", apple: "/brand/snab-yellow-badge.svg" },
@@ -28,7 +36,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en-NZ">
-      <body>{children}</body>
+      <body>
+        {children}
+        {umamiWebsiteId && <Script src={umamiScript} data-website-id={umamiWebsiteId} strategy="afterInteractive" />}
+      </body>
     </html>
   );
 }
