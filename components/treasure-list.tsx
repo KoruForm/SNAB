@@ -2,10 +2,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import type { BuyerSale } from "../lib/mock/catalogue";
 import { savePreferences } from "../lib/mock/preferences";
 import { usePreferences } from "../lib/mock/use-catalogue";
+import { CodeSignIn } from "./code-sign-in";
+import { supabaseConfigured } from "../lib/supabase/client";
+import { useAccount } from "../lib/supabase/use-account";
+import { setTreasureAlerts } from "../lib/treasure-sync";
 import { addTreasure, hitLabels, salesOnList, treasureMatches, watchHits } from "../lib/watchlist";
 
 const STARTERS = ["Old computers", "Vintage books", "Garden tools", "Kids’ toys"];
@@ -87,8 +91,49 @@ export function TreasureWatchlist({ sales }: { sales: BuyerSale[] }) {
       {hits.length > 0 && <ul className="treasure-hits">{hits.slice(0, 3).map(({ sale, items }) => <li key={sale.id}><Link href={`/sale/${sale.id}`}><span><b>{sale.title}</b><small>{sale.town} · {sale.state === "open" ? "Open now" : "Coming up"}</small><em>{items.map(i => i.label).join(", ")}</em></span><span aria-hidden="true">›</span></Link></li>)}</ul>}
       {hits.length > 3 && <Link className="small-link" href={`/map?q=${encodeURIComponent(treasure)}`}>See all {hits.length} sales →</Link>}
     </article>)}</div> : <div className="empty-card treasure-empty"><h2>A little list. Big possibilities.</h2><p>Add the things you’re after. Any sale that has one gets a yellow “On your list” tape in Find.</p></div>}
-    <p className="field-help">Your treasure list is saved in this browser for now.</p>
+    {supabaseConfigured() && prefs.treasures.length > 0 ? <TreasureAlerts /> : <p className="field-help">Your treasure list is saved in this browser.</p>}
   </>;
+}
+
+// Email alerts: asked for only when a buyer wants them. Signing in by code also saves the list to their account.
+function TreasureAlerts() {
+  const account = useAccount();
+  const { prefs } = usePreferences();
+  const [wanted, setWanted] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const userId = account.userId;
+  const synced = Boolean(userId) && prefs.treasuresSyncedFor === userId;
+  async function change(on: boolean) {
+    if (!userId) return;
+    setBusy(true); setError("");
+    try { await setTreasureAlerts(userId, on); } catch (e) { setError(e instanceof Error ? e.message : "Couldn’t change your alerts. Try again."); } finally { setBusy(false); }
+  }
+  // Just signed in from this card: switch alerts on once the account copy of the list is in.
+  useEffect(() => {
+    if (!wanted || !synced || !userId) return;
+    queueMicrotask(() => { setWanted(false); setBusy(true); setTreasureAlerts(userId, true).catch(() => setError("Couldn’t turn on your alerts. Try again.")).finally(() => setBusy(false)); });
+  }, [wanted, synced, userId]);
+  if (account.loading) return null;
+  const on = synced && prefs.treasureAlerts;
+  return <aside className="watch-card treasure-alerts" aria-labelledby="treasure-alerts-title">
+    <span className="watch-tape">{on ? "Alerts on" : "Treasure alerts"}</span>
+    {on ? <>
+      <h2 id="treasure-alerts-title">We’ll give you a ping.</h2>
+      <p>When a new sale has something on your list, we’ll email {account.email}. Your list is saved to your account.</p>
+      <button className="text-button" disabled={busy} onClick={() => void change(false)}>Turn off email alerts</button>
+    </> : <>
+      <h2 id="treasure-alerts-title">Get a ping when one turns up?</h2>
+      {userId ? <>
+        <p>We’ll email {account.email} when a new sale has something on your list.</p>
+        <button className="button button-primary" disabled={busy || !synced} onClick={() => void change(true)}>{busy ? "Turning on…" : "Email me alerts"}</button>
+      </> : <>
+        <p>Enter your email and we’ll send a 6-digit code. Your list is saved to your account, so it’s on every device too.</p>
+        <CodeSignIn sendLabel="Email me a code" onSignedIn={() => setWanted(true)} />
+      </>}
+    </>}
+    {error && <p className="form-message error-message" role="alert">{error}</p>}
+  </aside>;
 }
 
 // Home page: introduce the list and send people to Saved with their first treasure on it.

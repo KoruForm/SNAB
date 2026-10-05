@@ -14,14 +14,18 @@ Sales and photos persist in IndexedDB; preferences persist in localStorage. Publ
 
 Supabase owner-only database and private-storage setup is prepared in `supabase/migrations/001_seller_foundation.sql`, server-enforced address privacy for buyers in `002_public_sale_privacy.sql`, and account draft sync in `003_seller_draft_sync.sql`, and buyer browsing in `004_buyer_browse.sql`. 001–003 are applied to the live Supabase project. `npm run test:db` checks them against a local Postgres. No provider credentials are needed for the local seller flow.
 
+## Treasure alerts
+
+A buyer's treasure list stays in the browser until they ask for email alerts on **Saved**. Signing in by code then saves the list to their account (`treasure_lists`, migration `006`) so it follows them to other devices. Every 15 minutes pg_cron (migration `007`) runs the `treasure-alerts` Edge Function in `supabase/functions/`, which emails each buyer about sales published since they switched alerts on that have something on their list, once per sale. It uses the same matching code as the app (`lib/treasure-match.ts`, copied next to the function; a test keeps them identical). Deploy with `supabase functions deploy treasure-alerts --no-verify-jwt` and set the function secrets `RESEND_API_KEY`, `ALERT_FROM` and `SITE_URL`. Without `RESEND_API_KEY` it sends nothing. Each email has a stop link (`/alerts/stop`).
+
 ## Seller accounts (Supabase)
 
-With no Supabase settings the app runs as the local demo above. When `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set (see `.env.example`), `/account` offers email sign-in links, and a signed-in seller's drafts, sale days, address and photos are saved to their account instead of the browser. Photos go to the private `sale-photos` bucket and are shown through short-lived signed links. Drafts started before signing in can be moved to the account from **Me**. Buyers on any device see every seller's published sales through `browse_sales()` (migration `004`), with the street hidden until the seller's chosen time and photos shown through short-lived signed links. A sale drops off once its last sale day has passed. The ready-made demo sale is only offered when signed out and never moves to an account.
+With no Supabase settings the app runs as the local demo above. When `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set (see `.env.example`), `/account` offers sign-in with a 6-digit email code, and a signed-in seller's drafts, sale days, address and photos are saved to their account instead of the browser. Photos go to the private `sale-photos` bucket and are shown through short-lived signed links. Drafts started before signing in can be moved to the account from **Me**. Buyers on any device see every seller's published sales through `browse_sales()` (migration `004`), with the street hidden until the seller's chosen time and photos shown through short-lived signed links. A sale drops off once its last sale day has passed. The ready-made demo sale is only offered when signed out and never moves to an account.
 
 To set up a Supabase project:
 
 1. Run the migrations in `supabase/migrations/` in order in the SQL editor.
-2. In **Authentication → URL configuration**, set the site URL and add `<site>/account` as a redirect URL for each environment (for example `http://localhost:3000/account`).
+2. In **Authentication → URL configuration**, set the site URL. In **Authentication → Emails → Magic Link**, put `{{ .Token }}` in the email so it carries the 6-digit sign-in code. Public sign-in needs custom SMTP (**Authentication → Emails → SMTP settings**); Supabase's built-in sender only reaches the project team.
 3. Put the project URL and anon key in `.env.local` locally, or in Hostinger's environment variables before building. Never add the service-role key.
 
 ## Maps and addresses

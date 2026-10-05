@@ -1,3 +1,4 @@
+import { aliases, containsTerm, itemsMatching, queryTokens } from "../treasure-match";
 import { areaPoint, distanceKm, roundKm, type Point } from "../geo";
 import { addressVisible, localDateKey, publicAddress, type Category, type Draft, type DraftPhoto, type MockItem, type SaleDay } from "../drafts/types";
 export type BuyerSale = { id: string; title: string; description: string; town: string; addressLabel: string; exactAddressVisible: boolean; days: SaleDay[]; categories: Category[]; items: MockItem[]; photos: DraftPhoto[]; coverCategory: Category; distance: number | null; point: Point | null; exactPoint: boolean; state: "open" | "upcoming" | "closed"; sample: boolean; own: boolean; eventCode?: string; abundance?: string };
@@ -26,14 +27,8 @@ export function toBuyerSale(draft: Draft, photos: DraftPhoto[], now = new Date()
   const fallbackItems = draft.highlights.map((label, n) => item(`highlight-${n}`, label, draft.categories[0] || "Other", label));
   return { id: draft.id, title: draft.title || "Your garage sale", description: draft.description, town: draft.location.town, addressLabel: publicAddress(draft, now), exactAddressVisible, days: draft.days, categories: draft.categories, items: draft.items?.length ? draft.items : fallbackItems, photos, coverCategory: draft.categories[0] || "Furniture", distance: null, point: exactAddressVisible || !spot ? spot : areaPoint(spot), exactPoint: exactAddressVisible && Boolean(spot), state, sample: false, own: true, eventCode: draft.eventCode, abundance: draft.abundance };
 }
-const aliases: Record<string, string[]> = { computer: ["pc", "computer", "desktop"], computers: ["pc", "computer", "desktop"], woodworking: ["woodworking", "saw", "clamp", "timber", "tools"], workshop: ["workshop", "tools", "drill", "saw"], kids: ["children", "toys", "games"], retro: ["retro", "vintage", "old"], vintage: ["vintage", "old", "retro"], gardening: ["garden", "plants", "pots"], clothes: ["clothes", "clothing", "jackets", "shirts"], free: ["free"] };
-const stopwords = new Set(["and", "or", "the", "a", "an", "for", "stuff", "things", "looking", "some", "near", "me", "of", "with", "i", "my", "to", "love", "like", "find", "want", "sale", "please"]);
-export function queryTokens(query: string): string[] { return query.toLowerCase().split(/[^a-z0-9]+/).filter(token => token && !stopwords.has(token)); }
-function containsTerm(corpus: string, term: string): boolean { return new RegExp(`\\b${term}(?:s|es|ing)?\\b`, "i").test(corpus); }
-export function matchedItems(sale: BuyerSale, query: string): MockItem[] {
-  const tokens = queryTokens(query);
-  return sale.items.filter(i => i.available && (!tokens.length || tokens.some(t => (aliases[t] || [t]).some(word => containsTerm(`${i.label} ${i.category} ${i.description}`, word)))));
-}
+export { queryTokens };
+export function matchedItems(sale: BuyerSale, query: string): MockItem[] { return itemsMatching(sale.items, query); }
 // Distance from the buyer to the point they're allowed to see, never to a hidden street.
 export function withDistances(sales: BuyerSale[], origin: Point | null): BuyerSale[] {
   return sales.map(sale => ({ ...sale, distance: origin && sale.point ? roundKm(distanceKm(origin, sale.point)) : null }));
