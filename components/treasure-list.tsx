@@ -60,7 +60,7 @@ export function WatchlistStrip({ sales, onPick }: { sales: BuyerSale[]; onPick: 
     <span className="watch-tape">Your treasure list</span>
     <h2 id="watch-summary-title">{onList ? <><span className="watch-mark">{plural(onList, "sale")}</span> {onList === 1 ? "has" : "have"} something you’re after.</> : "Nothing on your list yet. We’ll flag it when it turns up."}</h2>
     <div className="watch-chips">{matches.map(m => <button key={m.treasure} type="button" className={m.sales.length ? "has-hits" : ""} onClick={() => onPick(m.treasure)}>{m.treasure}<span>{m.sales.length}</span></button>)}</div>
-    <Link className="small-link" href="/saved">Edit your list →</Link>
+    <Link className="small-link" href="/saved?tab=treasures">Edit your list →</Link>
   </aside>;
 }
 
@@ -74,7 +74,7 @@ export function SaleWatchBanner({ sale }: { sale: BuyerSale }) {
     <p className="watch-hit-items">Look for: {hitLabels(hits).join(", ")}</p>
   </div>;
   if (prefs.treasures.length || sale.state === "closed") return null;
-  return <Link className="watch-nudge" href="/saved"><Image src="/brand/snab-pin.png" alt="" width={17} height={24} /><span><strong>Hunting for something specific?</strong><small>Start a treasure list and we’ll flag sales that have it.</small></span><span aria-hidden="true">→</span></Link>;
+  return <Link className="watch-nudge" href="/saved?tab=treasures"><Image src="/brand/snab-pin.png" alt="" width={17} height={24} /><span><strong>Hunting for something specific?</strong><small>Start a treasure list and we’ll flag sales that have it.</small></span><span aria-hidden="true">→</span></Link>;
 }
 
 // Saved: the list itself, with the sales that have each treasure right underneath.

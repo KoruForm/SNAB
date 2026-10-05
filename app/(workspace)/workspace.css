@@ -110,3 +110,8 @@
 .address-suggestions li{padding:11px 12px;border-radius:7px;font-size:14px;line-height:1.35;cursor:pointer}
 .address-suggestions li:hover,.address-suggestions li.active{background:var(--paper)}
 @media(max-width:620px){.sale-map-wrap{height:310px}}
+.sale-status-line{display:flex;align-items:center;gap:10px;margin:8px 0 4px;font-weight:700}
+.sale-day-panel .field-label{margin:18px 0 0;font-weight:700}
+.sale-day-panel .filter-chips{margin-top:8px}
+.manage-summary-links{display:flex;flex-wrap:wrap;gap:4px 18px}
+.manage-summary-links .small-link{display:inline-flex;align-items:center;min-height:36px}
