@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { ComingSoon } from "../../components/coming-soon";
 
 export const metadata: Metadata = {
-  title: "SNAB — Coming soon",
-  description: "Garage sales. Great finds. SNAB is coming soon. Sign up to hear when it opens.",
+  title: "SNAB",
+  description: "Something’s coming to your street.",
 };
 
 export default function ComingSoonPage() {
