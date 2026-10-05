@@ -3,12 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { SnapPhoto } from "./snap-photo";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { addPhotos, createDraft, getDraft, getPhotos, MAX_PHOTOS, removePhoto, updateDraft } from "../lib/drafts/storage";
 import { CATEGORIES, formatDay, localDateKey, publicAddress, TITLE_MAX, validateDays, type Category, type Draft, type DraftPhoto, type MockItem, type SaleDay } from "../lib/drafts/types";
 import DraftPhotoImage from "./draft-photo";
 import { createDemoDraft, publishDemo } from "../lib/mock/actions";
-import { CategoryArt, DemoMap } from "./buyer-ui";
+import { CategoryArt } from "./buyer-ui";
+import { AddressSearch } from "./address-search";
+import { LocationPicker } from "./sale-map";
 import { useAccount } from "../lib/supabase/use-account";
 import "../app/(workspace)/seller-redesign.css";
 
@@ -36,6 +38,8 @@ export default function SellerWizard({ step }: { step: WizardStep }) {
   const [showExactAddress, setShowExactAddress] = useState(false);
   const [items, setItems] = useState<MockItem[]>([]);
   const [eventCode, setEventCode] = useState(search.get("event") || "");
+  const [mapUnavailable, setMapUnavailable] = useState(false);
+  const noMap = useCallback(() => setMapUnavailable(true), []);
   const { userId } = useAccount();
   const savedWhere = userId ? "in your account" : "on this device";
 
@@ -75,7 +79,10 @@ export default function SellerWizard({ step }: { step: WizardStep }) {
     event.preventDefault(); const data = new FormData(event.currentTarget);
     const address = String(data.get("address") || "").trim(); const town = String(data.get("town") || "").trim();
     if (!address || !town) { setError("Add your street address and town or suburb."); return; }
-    void save({ location: { address, town, reveal: String(data.get("reveal") || "sale-day") as Draft["location"]["reveal"] } }, "photos");
+    const pinned = typeof location.latitude === "number" && typeof location.longitude === "number";
+    // The pin is what puts the sale on buyers' map; only skip it when this device can't show the map at all.
+    if (!pinned && !mapUnavailable) { setError("Pick your address from the list, or tap the map where your sale is."); return; }
+    void save({ location: { address, town, reveal: String(data.get("reveal") || "sale-day") as Draft["location"]["reveal"], ...(pinned ? { latitude: location.latitude, longitude: location.longitude } : {}) } }, "photos");
   }
   async function choosePhotos(files: FileList | null) {
     if (!files?.length || !id || busy) return;
@@ -135,7 +142,7 @@ export default function SellerWizard({ step }: { step: WizardStep }) {
     </ol>
     <p className="sale-substep">{stageNames[index]}{index < 4 && <span> · Part {index % 2 + 1} of 2</span>}</p>
     {step === "when" && <form onSubmit={saveDays}><p className="eyebrow">When?</p><h1>When are<br />you selling?</h1><p className="workspace-lede">Add your sale days and opening times. All times are New Zealand local time.</p><div className="form-stack">{days.map((day, i) => <fieldset className="day-card" key={i}><legend>Sale day {i + 1}</legend><label>Date<input type="date" name={`date-${i}`} value={day.date} min={localDateKey(new Date())} required onChange={e => setDays(days.map((d, n) => n === i ? { ...d, date: e.target.value } : d))} /></label><div className="field-pair"><label>Starts<input type="time" name={`starts-${i}`} value={day.starts} required onChange={e => setDays(days.map((d, n) => n === i ? { ...d, starts: e.target.value } : d))} /></label><label>Finishes<input type="time" name={`finishes-${i}`} value={day.finishes} required onChange={e => setDays(days.map((d, n) => n === i ? { ...d, finishes: e.target.value } : d))} /></label></div>{days.length > 1 && <button type="button" className="text-button" onClick={() => setDays(days.filter((_, n) => n !== i))}>Remove this day</button>}</fieldset>)}<button className="button button-quiet" type="button" onClick={() => setDays([...days, { date: "", starts: "08:00", finishes: "13:00" }])}>＋ Add another day</button></div>{messages}<button className="button button-primary full-width continue-button" disabled={busy}>{busy ? "Saving…" : "Save and continue"}<span aria-hidden="true">→</span></button></form>}
-    {step === "where" && <form onSubmit={saveLocation}><p className="eyebrow">Where?</p><h1>Where’s<br />the sale?</h1><p className="workspace-lede">Set the location and choose when buyers can see your address.</p><div className="form-stack"><label>Street address<input name="address" autoComplete="street-address" value={location.address} maxLength={200} required placeholder="Street number and name" onChange={e => setLocation({ ...location, address: e.target.value })} /></label><label>Town or suburb<input name="town" autoComplete="address-level2" value={location.town} maxLength={100} required placeholder="e.g. Hamilton East" onChange={e => setLocation({ ...location, town: e.target.value })} /></label><div><DemoMap sales={[]} /><p className="field-help">Demo area preview · your address is saved with this sale.</p></div><fieldset className="privacy-options"><legend>Who can see your address?</legend>{[{ value: "sale-day", title: "Reveal on sale day", text: "Recommended. Only your town or suburb appears before the sale." }, { value: "now", title: "Show the address when published", text: "Buyers can see the exact address as soon as the listing is live." }, { value: "area-only", title: "Approximate area only", text: "Keep the street address hidden in the public listing." }].map(option => <label className="radio-card" key={option.value}><input type="radio" name="reveal" value={option.value} checked={location.reveal === option.value} onChange={() => setLocation({ ...location, reveal: option.value as Draft["location"]["reveal"] })} /><span><strong>{option.title}</strong><small>{option.text}</small></span></label>)}</fieldset></div>{messages}<button className="button button-primary full-width continue-button" disabled={busy}>{busy ? "Saving…" : "Save and continue"}<span aria-hidden="true">→</span></button></form>}
+    {step === "where" && <form onSubmit={saveLocation}><p className="eyebrow">Where?</p><h1>Where’s<br />the sale?</h1><p className="workspace-lede">Set the location and choose when buyers can see your address.</p><div className="form-stack"><AddressSearch value={location.address} onType={address => setLocation(current => ({ ...current, address }))} onPick={found => setLocation(current => ({ ...current, address: found.address, town: found.town || current.town, latitude: found.lat, longitude: found.lng }))} /><label>Town or suburb<input name="town" autoComplete="address-level2" value={location.town} maxLength={100} required placeholder="e.g. Hamilton East" onChange={e => setLocation({ ...location, town: e.target.value })} /></label><div><LocationPicker point={typeof location.latitude === "number" && typeof location.longitude === "number" ? { lat: location.latitude, lng: location.longitude } : null} onChange={point => setLocation(current => ({ ...current, latitude: point.lat, longitude: point.lng }))} onUnavailable={noMap} /><p className="field-help">Check the pin is on your place. Tap the map or drag the pin to move it. Buyers only see a rough area until your chosen time.</p></div><fieldset className="privacy-options"><legend>Who can see your address?</legend>{[{ value: "sale-day", title: "Reveal on sale day", text: "Recommended. Only your town or suburb appears before the sale." }, { value: "now", title: "Show the address when published", text: "Buyers can see the exact address as soon as the listing is live." }, { value: "area-only", title: "Approximate area only", text: "Keep the street address hidden in the public listing." }].map(option => <label className="radio-card" key={option.value}><input type="radio" name="reveal" value={option.value} checked={location.reveal === option.value} onChange={() => setLocation({ ...location, reveal: option.value as Draft["location"]["reveal"] })} /><span><strong>{option.title}</strong><small>{option.text}</small></span></label>)}</fieldset></div>{messages}<button className="button button-primary full-width continue-button" disabled={busy}>{busy ? "Saving…" : "Save and continue"}<span aria-hidden="true">→</span></button></form>}
     {step === "photos" && <section className="sale-photos" aria-busy={busy}>
       <h1>Show off the<br /><span className="highlight">good stuff.</span></h1>
       <p className="workspace-lede">A few photos of your tables and boxes. No need to shoot every item.</p>

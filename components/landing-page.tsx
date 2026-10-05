@@ -76,7 +76,7 @@ export function LandingPage() {
       </main>
       <footer className="landing-footer landing-container">
         <div className="landing-footer-main"><Link className="landing-brand" href={appHome} aria-label="SNAB home"><Image src="/brand/snab-highlight-final-b.svg" alt="SNAB" width={112} height={55} /></Link><span>Good stuff finds new people.</span><a href="#main-content">Back to top ↑</a></div>
-        <p className="landing-build-note">SNAB is growing. Demo sales are labelled in the app; maps and distances are illustrative.</p>
+        <p className="landing-build-note">SNAB is growing. Demo sales are labelled in the app.</p>
       </footer>
     </div>
   );

@@ -8,7 +8,8 @@ export type Draft = {
   title: string;
   description: string;
   days: SaleDay[];
-  location: { address: string; town: string; reveal: AddressReveal };
+  // latitude/longitude: the exact spot, private like the street; buyers only get it through the server's reveal rule.
+  location: { address: string; town: string; reveal: AddressReveal; latitude?: number; longitude?: number };
   categories: Category[];
   highlights: string[];
   status: "draft" | "published" | "closed";

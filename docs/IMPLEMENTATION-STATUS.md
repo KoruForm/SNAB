@@ -31,7 +31,7 @@ The current phase is a complete interactive UX mock. Backend services and produc
 
 Local sales and photo blobs are saved in IndexedDB on the same origin, device and browser profile. Favourites, treasure interests, demo profile and demo reports use localStorage. Refresh retains state. Browser storage eviction, clearing site data and private profile closure can remove it. A local sale URL opened in another browser will show unavailable; sample sale URLs work because their fixtures are supplied to every browser. Exported local-sale signs disclose that limitation.
 
-The illustrated map is not geocoded. Distances, routes, scan results, price estimates, matching and engagement statistics are demonstrations. Asking prices and item availability are seller-editable local state. Exact street text is projected according to the privacy choice across buyer detail, directions, share text and sign export; this is UX behaviour, not server-side access control.
+Maps are real (see "Maps and addresses" in the README); demo sales sit in their real suburbs with fictional streets. Scan results, price estimates, matching and engagement statistics are demonstrations. Asking prices and item availability are seller-editable local state. Exact street text is projected according to the privacy choice across buyer detail, directions, share text and sign export; this is UX behaviour, not server-side access control.
 
 ## Next phase: hookups
 

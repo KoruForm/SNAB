@@ -6,13 +6,13 @@ import { blankDraft, type Category, type Draft, type DraftPatch, type DraftPhoto
 // Supabase-backed drafts for signed-in sellers. Tables and policies: supabase/migrations/001 and 003.
 export const PHOTO_BUCKET = "sale-photos";
 const SIGNED_URL_SECONDS = 60 * 60;
-const SALE_SELECT = "id, title, description, status, categories, highlights, items, demo_scan, event_code, day_mode, abundance, created_at, updated_at, sale_days(sale_date, starts, finishes), sale_private_locations(address, town, reveal)";
+const SALE_SELECT = "id, title, description, status, categories, highlights, items, demo_scan, event_code, day_mode, abundance, created_at, updated_at, sale_days(sale_date, starts, finishes), sale_private_locations(address, town, reveal, exact_latitude, exact_longitude)";
 
 export type SaleRow = {
   id: string; title: string; description: string; status: Draft["status"]; categories: string[]; highlights: string[]; items: MockItem[] | null;
   demo_scan: boolean; event_code: string | null; day_mode: Draft["dayMode"] | null; abundance: Draft["abundance"] | null; created_at: string; updated_at: string;
   sale_days: { sale_date: string; starts: string; finishes: string }[] | null;
-  sale_private_locations: { address: string; town: string; reveal: Draft["location"]["reveal"] } | null;
+  sale_private_locations: { address: string; town: string; reveal: Draft["location"]["reveal"]; exact_latitude?: number | null; exact_longitude?: number | null } | null;
 };
 export type PhotoRow = { id: string; sale_id: string; storage_path: string; sort_order: number; file_name: string; content_type: string; created_at: string };
 
@@ -22,7 +22,11 @@ export function rowToDraft(row: SaleRow): Draft {
   const draft: Draft = { ...blankDraft(row.id, row.created_at), title: row.title, description: row.description, status: row.status, categories: row.categories as Category[], highlights: row.highlights, updatedAt: row.updated_at };
   // A new draft has no dated days yet; keep the wizard's blank starter day.
   if (days.length) draft.days = days;
-  if (row.sale_private_locations) draft.location = { ...row.sale_private_locations };
+  if (row.sale_private_locations) {
+    const { address, town, reveal, exact_latitude, exact_longitude } = row.sale_private_locations;
+    draft.location = { address, town, reveal };
+    if (typeof exact_latitude === "number" && typeof exact_longitude === "number") Object.assign(draft.location, { latitude: exact_latitude, longitude: exact_longitude });
+  }
   if (row.items?.length) draft.items = row.items;
   if (row.demo_scan) draft.demoScan = true;
   if (row.event_code) draft.eventCode = row.event_code;
@@ -44,6 +48,9 @@ export function patchToSaleRow(patch: DraftPatch): Record<string, unknown> {
   if ("dayMode" in patch) row.day_mode = patch.dayMode ?? null;
   if ("abundance" in patch) row.abundance = patch.abundance ?? null;
   return row;
+}
+export function locationToRow(saleId: string, location: Draft["location"]) {
+  return { sale_id: saleId, address: location.address, town: location.town, reveal: location.reveal, exact_latitude: location.latitude ?? null, exact_longitude: location.longitude ?? null };
 }
 // Days without a date are still being filled in by the wizard and are not stored.
 export function daysToRows(days: SaleDay[]): { sale_date: string; starts: string; finishes: string }[] {
@@ -77,7 +84,7 @@ export async function listRemoteDrafts(supabase: SupabaseClient): Promise<Draft[
 }
 export async function updateRemoteDraft(supabase: SupabaseClient, id: string, patch: DraftPatch): Promise<Draft> {
   if (patch.days) check(await supabase.rpc("replace_sale_days", { p_sale_id: id, p_days: daysToRows(patch.days) }), SAVE_FAILED);
-  if (patch.location) check(await supabase.from("sale_private_locations").upsert({ sale_id: id, ...patch.location }), SAVE_FAILED);
+  if (patch.location) check(await supabase.from("sale_private_locations").upsert(locationToRow(id, patch.location)), SAVE_FAILED);
   // Always touch the sale row so updated_at moves (trigger) and a missing sale is reported.
   const updated = check(await supabase.from("sales").update({ ...patchToSaleRow(patch), updated_at: new Date().toISOString() }).eq("id", id).select("id"), SAVE_FAILED);
   if (!updated?.length) throw new Error("This draft no longer exists.");
