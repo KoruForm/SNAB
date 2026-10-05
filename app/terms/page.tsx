@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { contactEmail, legalUpdated, operator } from "../../lib/legal";
+import { contactEmail, legalUpdated } from "../../lib/legal";
 
 export const metadata = { title: "Terms of use · SNAB", description: "The simple rules for using SNAB to list and find garage sales." };
 
@@ -8,7 +8,7 @@ export default function TermsPage() {
     <p><Link href="/">← SNAB</Link></p>
     <h1>Terms of use</h1>
     <p className="legal-updated">Last updated {legalUpdated}</p>
-    <p>SNAB is a free service, run by {operator} in New Zealand, that helps people list and find garage sales. By using SNAB you agree to these terms. Please also read our <Link href="/privacy">privacy policy</Link>.</p>
+    <p>SNAB is a free service, based in New Zealand, that helps people list and find garage sales. “SNAB”, “we” and “us” mean the business that runs it. By using SNAB you agree to these terms. Please also read our <Link href="/privacy">privacy policy</Link>.</p>
 
     <h2>What SNAB is (and isn’t)</h2>
     <p>SNAB is a noticeboard. We show sales; we don’t sell anything, take payments or take part in any deal. Buying and selling happens between you and the other person at the sale. We don’t check items, listings or people, so look things over before you buy.</p>
