@@ -1,5 +1,6 @@
 import type { MockItem } from "./drafts/types";
-import { matchedItems, queryTokens, type BuyerSale } from "./mock/catalogue";
+import type { BuyerSale } from "./mock/catalogue";
+import { treasureItems } from "./treasure-match";
 
 // The treasure list is a watchlist: things a buyer is hunting for. A sale "has" a treasure when one of its
 // available highlights matches it. Finished sales never count.
@@ -7,16 +8,7 @@ export const TREASURE_LIMIT = 30;
 export type WatchHit = { treasure: string; items: MockItem[] };
 export type TreasureMatches = { treasure: string; sales: { sale: BuyerSale; items: MockItem[] }[] };
 
-// Describing words alone are too loose for a watchlist ("old computers" shouldn't flag an old radio),
-// so they only count when the treasure has nothing else in it.
-const DESCRIBERS = new Set(["old", "vintage", "retro", "antique", "used", "small", "big", "large", "little", "nice", "good", "cheap", "new"]);
-function itemsFor(sale: BuyerSale, treasure: string): MockItem[] {
-  const tokens = queryTokens(treasure); const strong = tokens.filter(t => !DESCRIBERS.has(t)); const needed = strong.length ? strong : tokens;
-  if (!needed.length) return [];
-  // Every word must be found in the same highlight.
-  const perWord = needed.map(word => new Set(matchedItems(sale, word).map(i => i.id)));
-  return sale.items.filter(i => perWord.every(ids => ids.has(i.id)));
-}
+function itemsFor(sale: BuyerSale, treasure: string): MockItem[] { return treasureItems(sale.items, treasure); }
 export function watchHits(sale: BuyerSale, treasures: string[]): WatchHit[] {
   if (sale.state === "closed") return [];
   return treasures.map(treasure => ({ treasure, items: itemsFor(sale, treasure) })).filter(hit => hit.items.length);
@@ -41,4 +33,12 @@ export function addTreasure(list: string[], name: string): string[] | null {
 // Labels of the highlights that put a sale on the list, without repeats.
 export function hitLabels(hits: WatchHit[]): string[] {
   return [...new Set(hits.flatMap(hit => hit.items.map(i => i.label)))];
+}
+
+// Signing in: the first time this browser meets the account, keep both lists; after that the account copy is the latest.
+export function mergeTreasures(local: string[], remote: string[], seenBefore: boolean): string[] {
+  if (seenBefore) return remote;
+  const merged = [...remote];
+  for (const t of local) if (!merged.some(m => m.toLowerCase() === t.toLowerCase())) merged.push(t);
+  return merged.slice(-TREASURE_LIMIT);
 }

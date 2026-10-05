@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { appHome } from "../lib/launch";
 import { supabaseConfigured } from "../lib/supabase/client";
+import { TreasureSync } from "../lib/treasure-sync";
 
 const tabs = [{ href: "/map", label: "Find", icon: "search" }, { href: "/sell", label: "Sell", icon: "plus" }, { href: "/saved", label: "Saved", icon: "heart" }, { href: "/me", label: "Me", icon: "user" }];
 function NavIcon({ name }: { name: string }) {
@@ -20,6 +21,7 @@ function NavIcon({ name }: { name: string }) {
 export default function WorkspaceShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   return <div className="workspace">
+    <TreasureSync />
     <header className="workspace-header">
       <Link href={appHome} aria-label="SNAB home" className="workspace-logo"><Image src="/brand/snab-highlight-final-b.svg" alt="SNAB" width={100} height={49} priority /></Link>
       <div className="workspace-header-actions">{!supabaseConfigured() && <span className="build-label">Demo</span>}<Link href="/me" className="workspace-drafts-link" aria-label="My space"><NavIcon name="user" /></Link></div>
