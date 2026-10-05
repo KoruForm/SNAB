@@ -41,7 +41,7 @@ export function InterestForm() {
       </label>
       {error && <p className="soon-error" id="soon-error" role="alert">{error}</p>}
       <button className="button button-primary" type="submit" disabled={state === "sending"}>{state === "sending" ? "Adding you…" : "Keep me posted"} <svg className="landing-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6" /></svg></button>
-      <p className="soon-privacy">One email when it’s time. No spam, and we never share your email.</p>
+      <p className="soon-privacy">One email when it’s time. No spam, and we never share your email. <a href="/privacy">Privacy policy</a></p>
     </form>
   );
 }

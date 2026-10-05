@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { savePreferences } from "../lib/mock/preferences";
 import { usePreferences } from "../lib/mock/use-catalogue";
-import { signOut, useAccount } from "../lib/supabase/use-account";
+import { deleteAccount, signOut, useAccount } from "../lib/supabase/use-account";
 import { CodeSignIn } from "./code-sign-in";
 export default function AccountDemo() {
   const account = useAccount();
@@ -12,6 +12,8 @@ export default function AccountDemo() {
 function AccountSignIn({ account }: { account: ReturnType<typeof useAccount> }) {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleted, setDeleted] = useState(false);
   async function run(action: () => Promise<void>) { setBusy(true); setError(""); try { await action(); } catch (e) { setError(e instanceof Error ? e.message : "Something went wrong. Please try again."); } finally { setBusy(false); } }
   const signedIn = Boolean(account.userId);
   return <section className="account-page"><Link href="/me" className="back-link">← My space</Link><p className="eyebrow">A name to your Snab</p><h1>{signedIn ? "Your account." : "Make yourself at home."}</h1>
@@ -19,7 +21,12 @@ function AccountSignIn({ account }: { account: ReturnType<typeof useAccount> }) 
     <div className="profile-avatar">{account.email?.slice(0, 1).toUpperCase() || "S"}</div>
     {account.loading && <p role="status">Checking your account…</p>}
     {!account.loading && !signedIn && <CodeSignIn />}
-    {signedIn && <><p className="form-message success-message" role="status">Signed in as {account.email}.</p><button className="text-button" disabled={busy} onClick={() => void run(signOut)}>Sign out</button></>}
+    {deleted && <p className="form-message success-message" role="status">Your account and everything in it has been deleted.</p>}
+    {signedIn && <><p className="form-message success-message" role="status">Signed in as {account.email}.</p><button className="text-button" disabled={busy} onClick={() => void run(signOut)}>Sign out</button>
+      <div className="delete-account">{!confirmDelete ? <button className="text-button" disabled={busy} onClick={() => setConfirmDelete(true)}>Delete my account</button>
+        : <div className="delete-confirm" role="alertdialog" aria-labelledby="delete-account-title"><strong id="delete-account-title">Delete your account?</strong><p>This deletes your account, your sales, their photos and addresses, and your treasure list. It can’t be undone.</p>
+          <button className="button button-primary" disabled={busy} onClick={() => void run(async () => { await deleteAccount(); setConfirmDelete(false); setDeleted(true); })}>{busy ? "Deleting…" : "Yes, delete everything"}</button> <button className="button button-quiet" disabled={busy} onClick={() => setConfirmDelete(false)}>Keep my account</button></div>}</div></>}
+    <p className="field-help account-legal"><Link href="/privacy">Privacy policy</Link> · <Link href="/terms">Terms of use</Link></p>
     {error && <p className="form-message error-message" role="alert">{error}</p>}</section>;
 }
 function DemoProfile() {

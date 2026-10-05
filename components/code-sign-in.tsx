@@ -14,6 +14,7 @@ export function CodeSignIn({ sendLabel = "Email me a sign-in code", onSignedIn }
     {!sentTo ? <form className="form-stack" onSubmit={e => { e.preventDefault(); const to = email.trim(); if (to) void send(to); }}>
       <label>Email<input name="email" type="email" required maxLength={254} placeholder="you@example.com" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} /></label>
       <button className="button button-primary" disabled={busy}>{busy ? "Sending…" : sendLabel}</button>
+      <p className="field-help">By signing in you agree to the <a href="/terms">terms</a> and <a href="/privacy">privacy policy</a>.</p>
     </form> : <form className="form-stack" onSubmit={e => { e.preventDefault(); const code = String(new FormData(e.currentTarget).get("code") || "").replace(/\D/g, ""); if (code) void run(async () => { await verifySignInCode(sentTo, code); onSignedIn?.(); }); }}>
       <p className="form-message success-message" role="status">We’ve sent a code to {sentTo}. It can take a minute to arrive.</p>
       <label>Your code<input name="code" className="code-input" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9 ]{6,12}" maxLength={12} required placeholder="123456" autoFocus /></label>
