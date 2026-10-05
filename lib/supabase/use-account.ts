@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { PHOTO_BUCKET } from "../drafts/remote";
 import { getSupabase, supabaseConfigured } from "./client";
 
 export type Account = { configured: boolean; loading: boolean; email: string | null; userId: string | null };
@@ -30,4 +31,21 @@ export async function verifySignInCode(email: string, code: string): Promise<voi
 export async function signOut(): Promise<void> {
   const { error } = (await getSupabase()?.auth.signOut()) ?? { error: null };
   if (error) throw new Error(error.message || "Couldn’t sign out. Try again.");
+}
+// Deletes the signed-in account and everything in it (supabase/migrations/011). Photo files are removed first,
+// because stored files don't disappear with the database rows. Nothing here can be undone.
+export async function deleteAccount(): Promise<void> {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error("Accounts aren’t switched on for this site yet.");
+  const failed = "Couldn’t delete your account. Check your connection and try again.";
+  const { data: sales, error } = await supabase.from("sales").select("sale_photos(storage_path)");
+  if (error) throw new Error(failed);
+  const paths = ((sales ?? []) as { sale_photos: { storage_path: string }[] | null }[]).flatMap(s => (s.sale_photos ?? []).map(p => p.storage_path));
+  for (let i = 0; i < paths.length; i += 100) {
+    const { error: removeError } = await supabase.storage.from(PHOTO_BUCKET).remove(paths.slice(i, i + 100));
+    if (removeError) throw new Error(failed);
+  }
+  const { error: deleteError } = await supabase.rpc("delete_my_account");
+  if (deleteError) throw new Error(failed);
+  await supabase.auth.signOut({ scope: "local" });
 }

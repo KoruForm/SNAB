@@ -20,8 +20,8 @@ export function proxy(request: NextRequest) {
     return response;
   }
 
-  // The stop link in alert emails always works, even while the app is hidden.
-  if (pathname === "/" || pathname === "/coming-soon" || pathname === "/alerts/stop") return NextResponse.next();
+  // The stop link in alert emails, the privacy policy and the terms always work, even while the app is hidden.
+  if (["/", "/coming-soon", "/alerts/stop", "/privacy", "/terms"].includes(pathname)) return NextResponse.next();
   if (key && request.cookies.get(previewCookie)?.value === key) return NextResponse.next();
 
   const home = request.nextUrl.clone();
