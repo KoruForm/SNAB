@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { contactEmail, legalUpdated, operator } from "../../lib/legal";
+import { contactEmail, legalUpdated } from "../../lib/legal";
 
 export const metadata = { title: "Privacy policy · SNAB", description: "What SNAB collects, why, where it’s kept and how to delete it." };
 
@@ -12,7 +12,7 @@ export default function PrivacyPage() {
     <p><Link href="/">← SNAB</Link></p>
     <h1>Privacy policy</h1>
     <p className="legal-updated">Last updated {legalUpdated}</p>
-    <p>SNAB helps people in New Zealand find and run garage sales. It’s run by {operator} in New Zealand. This policy explains what we collect, why, who can see it, where it’s stored, and how to see, change or delete it. We follow the Privacy Act 2020.</p>
+    <p>SNAB helps people in New Zealand find and run garage sales. SNAB is a New Zealand business, and “we” and “us” in this policy mean SNAB. This policy explains what we collect, why, who can see it, where it’s stored, and how to see, change or delete it. We follow the Privacy Act 2020.</p>
 
     <h2>The short version</h2>
     <ul>
