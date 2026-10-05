@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "./globals.css";
+import { umamiScript, umamiWebsiteId } from "../lib/analytics";
 import { comingSoonHome } from "../lib/launch";
 
 // Link previews need absolute URLs. Set NEXT_PUBLIC_SITE_URL before building
@@ -34,7 +36,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en-NZ">
-      <body>{children}</body>
+      <body>
+        {children}
+        {umamiWebsiteId && <Script src={umamiScript} data-website-id={umamiWebsiteId} strategy="afterInteractive" />}
+      </body>
     </html>
   );
 }
