@@ -26,7 +26,7 @@ To set up a Supabase project:
 
 ## Coming soon page
 
-`/coming-soon` is a pre-launch page in the landing style with a "Be first to know" email sign-up. Sign-ups go through `register_interest()` (migration `005`) into `interest_signups`, which nobody can read through the API; view them in the Supabase dashboard. To show it as the home page, set `COMING_SOON_DEFAULT = true` in `lib/launch.ts` (or `NEXT_PUBLIC_COMING_SOON=on` before building). The rest of the app stays reachable at its own addresses.
+`/coming-soon` is a pre-launch page in the landing style with a "Be first to know" email sign-up. Sign-ups go through `register_interest()` (migration `005`) into `interest_signups`, which nobody can read through the API; view them in the Supabase dashboard. It is currently the home page (`COMING_SOON_DEFAULT = true` in `lib/launch.ts`); the app's own landing page is at `/welcome` and every other route works as before. Set it to `false` (or `NEXT_PUBLIC_COMING_SOON=off` before building) to put the app landing back on `/`.
 
 ## Stack
 
