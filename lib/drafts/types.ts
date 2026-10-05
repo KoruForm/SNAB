@@ -20,6 +20,8 @@ export type Draft = {
   eventCode?: string;
   dayMode?: "auto" | "open" | "closed";
   abundance?: "lots" | "some-gone";
+  // Taken off the buyer side after reports, until it's checked (migration 006). Only the server sets it.
+  hidden?: boolean;
   createdAt: string;
   updatedAt: string;
 };
