@@ -38,14 +38,24 @@ export function localDateKey(date: Date, timezone = "Pacific/Auckland"): string 
   return ["year", "month", "day"].map(type => parts.find(part => part.type === type)?.value).join("-");
 }
 
+// A sale runs for up to a week of days, starting within the next six months. The database holds the same
+// limits (supabase/migrations/010_listing_limits.sql), so a listing can't sit on the map for years.
+export const MAX_SALE_DAYS = 7;
+export const MAX_DAYS_AHEAD = 183;
+
 export function validateDays(days: SaleDay[], today = localDateKey(new Date())): string | null {
   if (!days.length) return "Add at least one sale day.";
+  if (days.length > MAX_SALE_DAYS) return `Keep your sale to ${MAX_SALE_DAYS} days or fewer.`;
+  const latest = new Date(`${today}T12:00:00Z`);
+  latest.setUTCDate(latest.getUTCDate() + MAX_DAYS_AHEAD);
+  const latestKey = latest.toISOString().slice(0, 10);
   const seen = new Set<string>();
   for (const day of days) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(day.date)) return "Choose a date for each sale day.";
     const date = new Date(`${day.date}T12:00:00Z`);
     if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== day.date) return "Choose a valid date.";
     if (day.date < today) return "Choose today or a future date.";
+    if (day.date > latestKey) return "Choose a date in the next six months.";
     if (seen.has(day.date)) return "Each sale day needs a different date.";
     seen.add(day.date);
     if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(day.starts) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(day.finishes)) return "Set a start and finish time for each day.";
