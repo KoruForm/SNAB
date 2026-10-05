@@ -19,8 +19,8 @@ h1{margin:0;font-size:clamp(36px,5.1vw,68px);line-height:1.12}
 h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 .eyebrow{margin:0 0 22px;display:flex;align-items:center;gap:9px;color:var(--blue);text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:700}
 .highlight{display:inline-block;background:var(--yellow);padding:0 .14em .02em;margin:0 -.04em;border-radius:.12em;line-height:1.08;transform:rotate(-1deg)}
-.button{min-height:52px;padding:12px 20px;display:inline-flex;justify-content:center;align-items:center;gap:10px;border-radius:7px;border:1.5px solid var(--ink);cursor:pointer;font-size:16px;font-weight:700;transition:background-color .15s ease,transform .15s ease,box-shadow .15s ease}
-.button-primary{color:var(--ink);background:var(--yellow);box-shadow:0 3px 0 var(--ink)}
+.button{min-height:52px;padding:12px 20px;display:inline-flex;justify-content:center;align-items:center;gap:10px;border-radius:5px;border:1.5px solid var(--ink);cursor:pointer;font-size:16px;font-weight:700;transition:background-color .15s ease,transform .15s ease,box-shadow .15s ease}
+.button-primary{color:var(--ink);background:var(--yellow);border-width:3px}
 .button-primary:hover{background:#ffdf70}
 .button:active:not(:disabled){transform:translateY(2px);box-shadow:none}
 .button:disabled{box-shadow:none}
@@ -67,7 +67,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 .landing-section-intro h2{font-size:clamp(30px,3vw,40px);line-height:1.2}
 .landing-section-intro>p:last-child{max-width:385px;font-size:18px;line-height:1.6;margin:22px 0 0;color:var(--muted)}
 .find-preview{margin:0;position:relative}
-.find-preview-card{position:relative;background:var(--white);border:1.5px solid var(--ink);border-radius:14px;box-shadow:6px 6px 0 var(--ink);padding:18px;display:grid;gap:14px}
+.find-preview-card{position:relative;background:var(--white);border:4px solid var(--ink);border-radius:10px;padding:18px;display:grid;gap:14px}
 .find-preview-search{display:flex;align-items:center;gap:10px;min-height:48px;padding:10px 14px;border:1.5px solid var(--ink);border-radius:999px;background:var(--paper);font-size:16px;font-weight:700}
 .find-preview-search svg{width:20px;height:20px;flex-shrink:0}
 .find-preview-search mark{background:url("/brand/marker-bar.svg") center/100% 100% no-repeat;padding:2px 6px;color:inherit}
@@ -105,7 +105,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 .landing-seller-details h3{font-size:20px;line-height:1.3;margin:0 0 5px}
 .landing-seller-details li p{font-size:16px;line-height:1.45;margin:0;max-width:345px}
 .sell-steps{list-style:none;margin:0;padding:0;display:grid;gap:22px}
-.sell-steps li{position:relative;display:flex;align-items:center;gap:18px;padding:16px 18px 18px 16px;background:var(--white);border:1.5px solid var(--ink);border-radius:10px;box-shadow:4px 4px 0 var(--ink)}
+.sell-steps li{position:relative;display:flex;align-items:center;gap:18px;padding:16px 18px 18px 16px;background:var(--white);border:4px solid var(--ink);border-radius:7px}
 .sell-steps li:nth-child(2){transform:rotate(.6deg)}
 .sell-steps li:not(:last-child):after{content:"";position:absolute;left:55px;top:100%;height:24px;border-left:2px dashed var(--ink)}
 .sell-step-visual{position:relative;flex-shrink:0;width:80px;height:80px;border-radius:8px;background:#fff1bd}
@@ -139,7 +139,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 /* The logo artwork has empty space under it; crop it off so the tagline sits close. */
 .soon-logo{width:min(100%,440px);height:auto;aspect-ratio:1072/436;object-fit:cover;object-position:top}
 .soon-line{max-width:680px;font-size:clamp(28px,4.4vw,44px);line-height:1.15}
-.soon-form{width:100%;max-width:520px;padding:26px;background:var(--white);border:1.5px solid var(--ink);border-radius:10px;box-shadow:6px 6px 0 var(--ink);display:grid;gap:16px;text-align:left;scroll-margin-top:24px}
+.soon-form{width:100%;max-width:520px;padding:26px;background:var(--white);border:4px solid var(--ink);border-radius:7px;display:grid;gap:16px;text-align:left;scroll-margin-top:24px}
 .soon-form h2{font-size:clamp(22px,2.3vw,28px);line-height:1.15}
 .soon-field{display:grid;gap:7px;font-size:14px;font-weight:700}
 .soon-field input{min-height:52px;padding:12px 14px;border:1.5px solid var(--ink);border-radius:7px;background:var(--paper);font-size:17px;color:var(--ink);width:100%}
@@ -154,7 +154,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
   .soon-site{padding:36px 20px;align-items:start}
   .soon-main{gap:22px}
   .soon-logo{width:min(100%,300px)}
-  .soon-form{padding:20px;box-shadow:4px 4px 0 var(--ink)}
+  .soon-form{padding:20px}
 }
 
 @media(max-width:1000px){
@@ -190,7 +190,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
   .landing-how{padding-block:44px 48px;grid-template-columns:1fr;gap:29px}
   .landing-section-intro h2{font-size:clamp(27px,7.3vw,38px)}
   .landing-section-intro>p:last-child{font-size:17px;margin-top:19px;max-width:100%}
-  .find-preview-card{padding:14px;box-shadow:4px 4px 0 var(--ink)}
+  .find-preview-card{padding:14px}
   .find-preview-list li{position:relative;gap:10px;padding:10px}
   .find-preview-icon{width:36px;height:36px}
   .find-preview-title{padding-right:80px;font-size:15px}
@@ -221,7 +221,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 /* Treasure list (watchlist): shared by the home page and the app. */
 .watch-tape{display:inline-block;padding:5px 14px 4px;background:url("/brand/coming-soon-tape.png") center/100% 100% no-repeat;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;color:var(--ink);transform:rotate(-2deg)}
 .watch-mark{background:url("/brand/marker-bar.svg") center/100% 100% no-repeat;padding:1px 6px;margin:0 -2px;color:inherit;font-weight:700}
-.watch-card{position:relative;margin:22px 0 18px;padding:24px 18px 18px;background:var(--white);border:1.5px solid var(--ink);border-radius:12px;box-shadow:4px 4px 0 var(--ink)}
+.watch-card{position:relative;margin:22px 0 18px;padding:24px 18px 18px;background:var(--white);border:4px solid var(--ink);border-radius:9px}
 .watch-card>.watch-tape{position:absolute;top:-12px;left:14px}
 .watch-card h2{font:700 19px/1.35 "Atkinson Hyperlegible Next",Arial,sans-serif;letter-spacing:0;margin:0 0 6px}
 .watch-card p{margin:0;font-size:14px;line-height:1.5;color:var(--muted)}
@@ -253,7 +253,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 .treasure-starters button{min-height:40px;padding:7px 12px;border:1px solid #17181545;border-radius:999px;background:transparent;font:600 13px/1.2 "Atkinson Hyperlegible Next",Arial,sans-serif;color:var(--ink);cursor:pointer}
 .treasure-notice{margin:10px 0 0;font-size:13px;color:var(--blue);font-weight:600}
 .treasure-list article{flex-direction:column;align-items:stretch!important}
-.treasure-list article.has-hits{border:1.5px solid var(--ink);box-shadow:4px 4px 0 var(--yellow)}
+.treasure-list article.has-hits{border:4px solid var(--yellow)}
 .treasure-head{display:flex;align-items:center;gap:12px}
 .treasure-head>div{flex:1;min-width:0}
 .treasure-list article.has-hits small{color:var(--ink);font-weight:600}
@@ -269,7 +269,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 .landing-treasure{border-top:1px solid var(--line);padding-block:70px 80px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:100px;align-items:center}
 .landing-treasure .landing-section-intro>p:last-of-type{max-width:400px;font-size:18px;line-height:1.6;margin:22px 0 26px;color:var(--muted)}
 .landing-treasure .landing-section-intro .button{min-width:215px;justify-content:space-between}
-.treasure-promo-card{position:relative;background:var(--white);border:1.5px solid var(--ink);border-radius:14px;box-shadow:6px 6px 0 var(--ink);padding:30px 18px 20px}
+.treasure-promo-card{position:relative;background:var(--white);border:4px solid var(--ink);border-radius:10px;padding:30px 18px 20px}
 .treasure-promo-tape{top:-15px;left:22px;transform:rotate(-2deg)}
 .treasure-promo-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 .treasure-promo-list li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1.5px solid var(--ink);border-radius:10px;background:var(--paper);font-size:16px;font-weight:700}
@@ -285,7 +285,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
   .landing-treasure{padding-block:44px 52px;grid-template-columns:1fr;gap:34px}
   .landing-treasure .landing-section-intro>p:last-of-type{font-size:17px;max-width:100%}
   .landing-treasure .landing-section-intro .button{width:100%}
-  .treasure-promo-card{padding:28px 14px 16px;box-shadow:4px 4px 0 var(--ink)}
+  .treasure-promo-card{padding:28px 14px 16px}
   .treasure-promo-list li{font-size:15px;padding:11px 12px}
   .treasure-promo-list b{font-size:10px}
 }
