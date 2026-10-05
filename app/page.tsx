@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ComingSoon } from "../components/coming-soon";
 import { FindPreview } from "../components/find-preview";
 import { SellSteps } from "../components/sell-steps";
+import { TreasurePromo } from "../components/treasure-list";
 import { comingSoonHome } from "../lib/launch";
 
 function Arrow({ plus = false }: { plus?: boolean }) {
@@ -44,6 +45,15 @@ export default function Home() {
             <p>From a chair with a bit of history to the book you didn’t know you needed. See what’s out there.</p>
           </div>
           <FindPreview />
+        </section>
+        <section className="landing-treasure landing-container" aria-labelledby="treasure-heading">
+          <div className="landing-section-intro">
+            <p className="landing-eyebrow"><Image className="landing-pin" src="/brand/snab-pin.png" alt="" width={17} height={24} /> Hunting for something?</p>
+            <h2 id="treasure-heading">Put it on your<br /><span className="landing-underline">treasure list.</span></h2>
+            <p>Add the things you’re after. When a sale has one, SNAB flags it as you browse, so the good stuff finds you.</p>
+            <Link className="button button-quiet" href="/saved">See your list <Arrow /></Link>
+          </div>
+          <TreasurePromo />
         </section>
         <section className="landing-seller" aria-labelledby="seller-heading">
           <div className="landing-seller-inner landing-container">
