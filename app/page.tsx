@@ -1,14 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ComingSoon } from "../components/coming-soon";
+import { FindPreview } from "../components/find-preview";
 import { SellSteps } from "../components/sell-steps";
 import { comingSoonHome } from "../lib/launch";
-
-const steps = [
-  { number: "01", title: "Have a little look.", detail: "Browse sales, search for something you love and save the ones that catch your eye." },
-  { number: "02", title: "Know before you go.", detail: "Check the photos, sale times and location details. A little planning leaves more time for rummaging." },
-  { number: "03", title: "Find your thing.", detail: "Head along when the sale is open. That next great find might be waiting in someone’s garage." },
-];
 
 function Arrow({ plus = false }: { plus?: boolean }) {
   return <svg className="landing-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{plus ? <path d="M12 4v16M4 12h16" /> : <path d="M4 12h15m-6-6 6 6-6 6" />}</svg>;
@@ -48,7 +43,7 @@ export default function Home() {
             <h2 id="how-heading">Less scrolling.<br /><span className="landing-underline">More rummaging.</span></h2>
             <p>From a chair with a bit of history to the book you didn’t know you needed. See what’s out there.</p>
           </div>
-          <ol className="landing-steps">{steps.map(step => <li key={step.number}><span className="landing-step-number" aria-hidden="true">{step.number}</span><div><h3>{step.title}</h3><p>{step.detail}</p></div></li>)}</ol>
+          <FindPreview />
         </section>
         <section className="landing-seller" aria-labelledby="seller-heading">
           <div className="landing-seller-inner landing-container">
