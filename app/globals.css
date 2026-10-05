@@ -226,3 +226,76 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
   .soon-last-note+.button{width:100%;font-size:17px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+
+/* Treasure list (watchlist): shared by the home page and the app. */
+.watch-tape{display:inline-block;padding:5px 14px 4px;background:url("/brand/coming-soon-tape.png") center/100% 100% no-repeat;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;color:var(--ink);transform:rotate(-2deg)}
+.watch-mark{background:url("/brand/marker-bar.svg") center/100% 100% no-repeat;padding:1px 6px;margin:0 -2px;color:inherit;font-weight:700}
+.watch-card{position:relative;margin:22px 0 18px;padding:24px 18px 18px;background:var(--white);border:1.5px solid var(--ink);border-radius:12px;box-shadow:4px 4px 0 var(--ink)}
+.watch-card>.watch-tape{position:absolute;top:-12px;left:14px}
+.watch-card h2{font:700 19px/1.35 "Atkinson Hyperlegible Next",Arial,sans-serif;letter-spacing:0;margin:0 0 6px}
+.watch-card p{margin:0;font-size:14px;line-height:1.5;color:var(--muted)}
+.watch-pin{position:absolute;top:-14px;right:18px;width:22px;height:auto;transform:rotate(10deg)}
+.watch-promo{background:#fff1bd}
+.watch-chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 12px}
+.watch-chips button{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:6px 8px 6px 13px;border:1.5px solid var(--ink);border-radius:999px;background:var(--paper);font:600 13px/1.2 "Atkinson Hyperlegible Next",Arial,sans-serif;color:var(--ink);cursor:pointer}
+.watch-chips button span{display:grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border-radius:999px;background:#ebe7dc;font-size:12px}
+.watch-chips button.has-hits{background:#fff1bd}
+.watch-chips button.has-hits span{background:var(--ink);color:var(--yellow)}
+.watch-hit{background:#fff1bd;margin:6px 0 22px}
+.watch-hit p strong{font-size:17px;color:var(--ink)}
+.watch-hit .watch-hit-items{margin-top:5px}
+.watch-nudge{display:flex;align-items:center;gap:12px;margin:6px 0 22px;padding:14px 16px;border:1.5px dashed #17181560;border-radius:10px;color:var(--ink)}
+.watch-nudge img{flex-shrink:0;width:17px;height:auto}
+.watch-nudge>span:nth-child(2){flex:1;min-width:0}
+.watch-nudge strong{display:block;font-size:15px}
+.watch-nudge small{display:block;margin-top:3px;font-size:13px;color:var(--muted)}
+.buyer-card-cover{position:relative}
+.card-tape{position:absolute;left:10px;bottom:10px;z-index:1}
+.buyer-sale-card.on-list{border:1.5px solid var(--ink);box-shadow:4px 4px 0 var(--yellow)}
+.watch-reason strong{color:var(--ink)}
+.item-on-list{background:#fff1bd!important;border-color:var(--ink)!important}
+.item-on-list mark{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink)}
+.treasure-add{margin:22px 0}
+.treasure-add .treasure-form{margin:0}
+.treasure-add-compact{margin:16px 0 0}
+.treasure-starters{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px;font-size:12px;color:var(--muted)}
+.treasure-starters button{min-height:40px;padding:7px 12px;border:1px solid #17181545;border-radius:999px;background:transparent;font:600 13px/1.2 "Atkinson Hyperlegible Next",Arial,sans-serif;color:var(--ink);cursor:pointer}
+.treasure-notice{margin:10px 0 0;font-size:13px;color:var(--blue);font-weight:600}
+.treasure-list article{flex-direction:column;align-items:stretch!important}
+.treasure-list article.has-hits{border:1.5px solid var(--ink);box-shadow:4px 4px 0 var(--yellow)}
+.treasure-head{display:flex;align-items:center;gap:12px}
+.treasure-head>div{flex:1;min-width:0}
+.treasure-list article.has-hits small{color:var(--ink);font-weight:600}
+.treasure-hits{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:8px}
+.treasure-hits a{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:9px;background:#fff1bd;color:var(--ink)}
+.treasure-hits a>span:first-child{flex:1;min-width:0}
+.treasure-hits b{display:block;font-size:15px;overflow-wrap:anywhere}
+.treasure-hits small{margin:2px 0!important;font-size:12px!important}
+.treasure-hits em{display:block;font-style:normal;font-size:13px;color:var(--muted)}
+.treasure-empty p{max-width:420px}
+
+/* Home page treasure list section */
+.landing-treasure{border-top:1px solid var(--line);padding-block:70px 80px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:100px;align-items:center}
+.landing-treasure .landing-section-intro>p:last-of-type{max-width:400px;font-size:18px;line-height:1.6;margin:22px 0 26px;color:var(--muted)}
+.landing-treasure .landing-section-intro .button{min-width:215px;justify-content:space-between}
+.treasure-promo-card{position:relative;background:var(--white);border:1.5px solid var(--ink);border-radius:14px;box-shadow:6px 6px 0 var(--ink);padding:30px 18px 20px}
+.treasure-promo-tape{top:-15px;left:22px;transform:rotate(-2deg)}
+.treasure-promo-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.treasure-promo-list li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1.5px solid var(--ink);border-radius:10px;background:var(--paper);font-size:16px;font-weight:700}
+.treasure-promo-list li.is-hit{background:#fff1bd}
+.treasure-promo-list b{flex-shrink:0;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:999px;border:1px solid var(--ink)}
+.treasure-promo-list li.is-hit b{background:var(--ink);color:var(--yellow)}
+.treasure-promo-card .treasure-form{display:flex;gap:10px;align-items:end}
+.treasure-promo-card .treasure-form label{flex:1;font-size:14px;font-weight:700}
+.treasure-promo-card input{display:block;width:100%;margin-top:8px;min-height:50px;padding:12px 14px;border:1.5px solid var(--ink);border-radius:7px;background:var(--paper);font:16px "Atkinson Hyperlegible Next",Arial,sans-serif;color:var(--ink)}
+.treasure-promo-card input:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.treasure-promo-card .treasure-form .button{min-height:50px;padding:10px 17px;font-size:15px}
+@media(max-width:700px){
+  .landing-treasure{padding-block:44px 52px;grid-template-columns:1fr;gap:34px}
+  .landing-treasure .landing-section-intro>p:last-of-type{font-size:17px;max-width:100%}
+  .landing-treasure .landing-section-intro .button{width:100%}
+  .treasure-promo-card{padding:28px 14px 16px;box-shadow:4px 4px 0 var(--ink)}
+  .treasure-promo-list li{font-size:15px;padding:11px 12px}
+  .treasure-promo-list b{font-size:10px}
+}
+@media(min-width:701px) and (max-width:1000px){.landing-treasure{gap:48px}}
