@@ -13,13 +13,6 @@ export type BrowseRow = {
 };
 const SIGNED_URL_SECONDS = 60 * 60;
 
-// Until addresses are placed on a real map, spread listings over the illustrated one by id.
-function mapSpot(id: string): { x: number; y: number } {
-  let hash = 0;
-  for (const char of id) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
-  return { x: 15 + (hash % 70), y: 15 + ((hash >>> 8) % 65) };
-}
-
 export function rowToBuyerSale(row: BrowseRow, photos: DraftPhoto[], now = new Date()): BuyerSale {
   const visible = row.exact_location && Boolean(row.address);
   const base = toBuyerSale({
@@ -28,7 +21,9 @@ export function rowToBuyerSale(row: BrowseRow, photos: DraftPhoto[], now = new D
     items: row.items ?? undefined, eventCode: row.event_code ?? undefined, dayMode: row.day_mode ?? undefined, abundance: row.abundance ?? undefined,
     createdAt: "", updatedAt: "",
   }, photos, now);
-  return { ...base, ...mapSpot(row.id), own: false, distance: null, exactAddressVisible: visible,
+  // The server sends the exact spot only with the street; otherwise the centre of the sale's area.
+  const point = typeof row.latitude === "number" && typeof row.longitude === "number" ? { lat: row.latitude, lng: row.longitude } : null;
+  return { ...base, point, exactPoint: Boolean(point) && visible, own: false, distance: null, exactAddressVisible: visible,
     addressLabel: visible ? row.address! : `${row.town || "Local area"} · street address not shown yet` };
 }
 

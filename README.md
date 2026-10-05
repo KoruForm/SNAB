@@ -24,6 +24,14 @@ To set up a Supabase project:
 2. In **Authentication → URL configuration**, set the site URL and add `<site>/account` as a redirect URL for each environment (for example `http://localhost:3000/account`).
 3. Put the project URL and anon key in `.env.local` locally, or in Hostinger's environment variables before building. Never add the service-role key.
 
+## Maps and addresses
+
+Maps use MapLibre with OpenFreeMap's free tiles (no key; `NEXT_PUBLIC_MAP_STYLE_URL` swaps the style). MapLibre's worker is served from the installed package at `/maplibre/<version>/…` because the bundler can't follow it.
+
+- **Sellers** type their street on the "Where" step and pick a real NZ address. `/api/address` asks Geoapify when `GEOAPIFY_API_KEY` is set (server-only), otherwise the keyless Photon service; both use OpenStreetMap, which carries the LINZ address list. The pin can be dragged or the map tapped to place it, and is saved as the private `exact_latitude`/`exact_longitude`.
+- **Buyers** get an exact pin only when `browse_sales()` sends the street. Until then they get the centre of the sale's 0.01° grid cell and see a dashed circle of 750 m that always contains the real spot.
+- **Near me** keeps the buyer's position on their device (rounded to about 100 m) and measures to the point they can see, never to a hidden street. At pilot scale every listed sale is loaded and filtered on the phone; a server-side area query can come later.
+
 ## Coming soon page
 
 `/coming-soon` is a pre-launch page in the landing style with a "Be first to know" email sign-up. Sign-ups go through `register_interest()` (migration `005`) into `interest_signups`, which nobody can read through the API; view them in the Supabase dashboard. It is currently the home page (`COMING_SOON_DEFAULT = true` in `lib/launch.ts`); the app's own landing page is at `/welcome` and every other route works as before. Set it to `false` (or `NEXT_PUBLIC_COMING_SOON=off` before building) to put the app landing back on `/`.
