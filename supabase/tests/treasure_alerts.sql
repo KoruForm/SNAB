@@ -1,4 +1,4 @@
--- Treasure list and alert checks for 006_treasure_alerts.sql. Run by scripts/test-db.sh; any failed check raises.
+-- Treasure list and alert checks for 008_treasure_alerts.sql. Run by scripts/test-db.sh; any failed check raises.
 \set ON_ERROR_STOP on
 set client_min_messages = warning;
 

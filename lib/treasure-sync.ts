@@ -6,7 +6,7 @@ import { useAccount } from "./supabase/use-account";
 import { mergeTreasures } from "./watchlist";
 
 // The treasure list stays in the browser, and a signed-in buyer's copy is kept on their account
-// (treasure_lists, supabase/migrations/006) so it follows them to any device and can trigger email alerts.
+// (treasure_lists, supabase/migrations/008) so it follows them to any device and can trigger email alerts.
 type Remote = { treasures: string[]; alerts: boolean };
 
 async function push(userId: string, row: Partial<Remote>): Promise<void> {

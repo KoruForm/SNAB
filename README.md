@@ -16,7 +16,7 @@ Supabase owner-only database and private-storage setup is prepared in `supabase/
 
 ## Treasure alerts
 
-A buyer's treasure list stays in the browser until they ask for email alerts on **Saved**. Signing in by code then saves the list to their account (`treasure_lists`, migration `006`) so it follows them to other devices. Every 15 minutes pg_cron (migration `007`) runs the `treasure-alerts` Edge Function in `supabase/functions/`, which emails each buyer about sales published since they switched alerts on that have something on their list, once per sale. It uses the same matching code as the app (`lib/treasure-match.ts`, copied next to the function; a test keeps them identical). Deploy with `supabase functions deploy treasure-alerts --no-verify-jwt` and set the function secrets `RESEND_API_KEY`, `ALERT_FROM` and `SITE_URL`. Without `RESEND_API_KEY` it sends nothing. Each email has a stop link (`/alerts/stop`).
+A buyer's treasure list stays in the browser until they ask for email alerts on **Saved**. Signing in by code then saves the list to their account (`treasure_lists`, migration `008`) so it follows them to other devices. Every 15 minutes pg_cron (migration `009`) runs the `treasure-alerts` Edge Function in `supabase/functions/`, which emails each buyer about sales published since they switched alerts on that have something on their list, once per sale. It uses the same matching code as the app (`lib/treasure-match.ts`, copied next to the function; a test keeps them identical). Deploy with `supabase functions deploy treasure-alerts --no-verify-jwt` and set the function secrets `RESEND_API_KEY`, `ALERT_FROM` and `SITE_URL`. Without `RESEND_API_KEY` it sends nothing. Each email has a stop link (`/alerts/stop`).
 
 ## Seller accounts (Supabase)
 

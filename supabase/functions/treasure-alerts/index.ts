@@ -1,5 +1,5 @@
 // Treasure alerts: emails buyers when a newly published sale has something on their treasure list.
-// Run every 15 minutes by pg_cron (supabase/migrations/007). Safe to call any time: it only sends what is
+// Run every 15 minutes by pg_cron (supabase/migrations/009). Safe to call any time: it only sends what is
 // due, and remembers each buyer and sale it has emailed so nobody hears about a sale twice.
 // Secrets (Supabase → Edge Functions → Secrets): RESEND_API_KEY to send, ALERT_FROM (e.g. "SNAB <alerts@snab.nz>"),
 // SITE_URL for links. With no RESEND_API_KEY it reports what it would send and sends nothing.

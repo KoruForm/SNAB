@@ -1,4 +1,4 @@
--- SNAB treasure list on the buyer's account, and email alerts when a new sale has something on it. Apply after 001-005.
+-- SNAB treasure list on the buyer's account, and email alerts when a new sale has something on it. Apply after 001-007.
 -- A signed-in buyer's list lives in treasure_lists (owner-only). The treasure-alerts Edge Function reads
 -- watchers and listed sales through treasure_alert_work(), matches them, emails each buyer and records what
 -- it sent, so nobody hears about the same sale twice. Both of those functions are for the service role only.

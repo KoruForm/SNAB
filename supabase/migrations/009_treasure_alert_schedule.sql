@@ -1,4 +1,4 @@
--- SNAB treasure alerts: run the treasure-alerts Edge Function every 15 minutes. Apply after 006.
+-- SNAB treasure alerts: run the treasure-alerts Edge Function every 15 minutes. Apply after 008.
 -- Needs pg_cron and pg_net, which Supabase provides; skipped where they don't exist (the local test database).
 -- The function sends nothing until RESEND_API_KEY is set in Supabase → Edge Functions → Secrets.
 do $outer$
