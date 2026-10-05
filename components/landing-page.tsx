@@ -32,7 +32,7 @@ export function LandingPage() {
             </div>
           </div>
           <figure className="landing-hero-figure">
-            <div className="landing-hero-image"><Image src="/editorial/good-finds.png" alt="A secondhand wooden chair, desk lamp, records and a leafy plant in the sunshine" fill sizes="(max-width: 700px) 100vw, (max-width: 1200px) 50vw, 580px" priority /></div>
+            <div className="landing-hero-image"><Image src="/editorial/good-finds-tab.png" alt="A secondhand wooden chair, desk lamp, records and a leafy plant in the sunshine" fill sizes="(max-width: 700px) 100vw, (max-width: 1200px) 50vw, 580px" priority /></div>
             <figcaption><span>Someone’s clear-out.<br /><strong>Your next great find.</strong></span><a href="#how-it-works" aria-label="See how SNAB works"><Arrow /></a></figcaption>
           </figure>
         </section>
