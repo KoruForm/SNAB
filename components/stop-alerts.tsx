@@ -21,6 +21,6 @@ export default function StopAlerts() {
       : <><p>We’ll stop emailing you when a new sale has something on your treasure list.</p>
         <button className="button button-primary" disabled={state === "busy"} onClick={() => void stop()}>{state === "busy" ? "Stopping…" : "Stop the emails"}</button></>}
     {state === "error" && <p role="alert">That link didn’t work. Sign in and turn alerts off from your treasure list instead.</p>}
-    <p><Link href="/saved">Go to your treasure list →</Link></p>
+    <p><Link href="/saved?tab=treasures">Go to your treasure list →</Link></p>
   </main>;
 }

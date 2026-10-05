@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, type FormEvent } from "react";
+import { Fragment, useEffect, useState, type FormEvent } from "react";
 import { CATEGORIES, formatDay, type Category, type MockItem } from "../lib/drafts/types";
 import { matchedItems, withDistances, type BuyerSale, type Match } from "../lib/mock/catalogue";
 import { distanceKm, roundKm } from "../lib/geo";
@@ -65,6 +65,8 @@ export function MapPage({ event = false }: { event?: boolean }) {
   const picked = results.find(result => result.sale.id === selected);
   const towns = [...new Set(sales.map(sale => sale.town))].sort();
   const activeFilters = [filters.category, filters.town, filters.radius, filters.openOnly, filters.sort !== "match"].filter(Boolean).length;
+  // The treasure list sits among the first sales rather than above them, so sales are the first thing you see.
+  const watchStrip = !filters.query && <div className="find-watch"><WatchlistStrip sales={sales} onPick={query => update({ q: query })} /></div>;
 
   function update(changes: Record<string, string>) {
     const next = new URLSearchParams(params.toString());
@@ -78,11 +80,11 @@ export function MapPage({ event = false }: { event?: boolean }) {
   }
 
   return <section className="buyer-page find-page">
-    <div className="page-heading">
-      <p className="eyebrow">{event ? "Community SNAB Day" : "A good day for a rummage"}</p>
-      <h1>{event ? <>Hamilton<br /><span className="highlight">SNAB Day.</span></> : <>Find your next<br /><span className="highlight">good thing.</span></>}</h1>
-      <p className="workspace-lede">{event ? "One neighbourhood. Loads to find." : "Garage sales, great finds and a reason to get out."}</p>
-    </div>
+    {event ? <div className="page-heading">
+      <p className="eyebrow">Community SNAB Day</p>
+      <h1>Hamilton<br /><span className="highlight">SNAB Day.</span></h1>
+      <p className="workspace-lede">One neighbourhood. Loads to find.</p>
+    </div> : <h1 className="find-title">Find a <span className="highlight">sale.</span></h1>}
     {event && <div className="event-banner"><strong>Make a day of it.</strong><p>Explore sales taking part in Hamilton SNAB Day.</p><Link href="/sell?event=HAMILTON" className="small-link">Join with your sale →</Link></div>}
     <SearchBox key={filters.query} initial={filters.query} onSearch={query => update({ q: query.trim() })} />
     <div className="find-quick-filters" role="group" aria-label="Filter sales by day">
@@ -101,7 +103,6 @@ export function MapPage({ event = false }: { event?: boolean }) {
       <div className="find-filter-footer"><label className="inline-checkbox"><input type="checkbox" checked={filters.openOnly} onChange={e => update({ open: e.target.checked ? "1" : "" })} />Open now</label><button className="text-button" onClick={reset}>Clear filters</button></div>
     </div>}
     {locationProblem && <p role="status" className="field-help">{locationProblem}</p>}
-    {!filters.query && !loading && <WatchlistStrip sales={sales} onPick={query => update({ q: query })} />}
     {!filters.query && <div className="find-suggestions"><span>Try</span>{["Old computers", "Books and plants", "Woodworking tools"].map(query => <button key={query} onClick={() => update({ q: query })}>{query}</button>)}</div>}
     <div className="results-toolbar">
       <h2 aria-live="polite">{loading ? "Finding sales…" : `${results.length} ${results.length === 1 ? "sale" : "sales"} to explore`}</h2>
@@ -111,7 +112,8 @@ export function MapPage({ event = false }: { event?: boolean }) {
     <LoadingOrError loading={loading} error={error} />
     {!loading && <>
       {filters.view === "map" && <><SaleMap sales={results.map(result => result.sale)} selected={selected} onSelect={setSelected} origin={origin} label="Map of sales" />{picked ? <div className="selected-sale"><SaleCard sale={picked.sale} match={filters.query ? picked : undefined} /><button className="text-button" onClick={() => setSelected("")}>Close selected sale</button></div> : <p className="field-help map-help">Tap a pin or circle to preview a sale. A circle means the seller is keeping their street private for now.{results.some(result => !result.sale.point) ? " Sales without a map spot yet are in the list below." : ""}</p>}</>}
-      {!results.length ? <NoResults reset={reset} /> : <div className="buyer-card-list">{results.map(match => <SaleCard sale={match.sale} match={filters.query ? match : undefined} key={match.sale.id} />)}</div>}
+      {!results.length ? <NoResults reset={reset} /> : <div className="buyer-card-list">{results.map((match, i) => <Fragment key={match.sale.id}><SaleCard sale={match.sale} match={filters.query ? match : undefined} />{i === Math.min(1, results.length - 1) && watchStrip}</Fragment>)}</div>}
+      {!results.length && watchStrip}
       {!event && <Link href="/event" className="find-event-link"><span><strong>A whole neighbourhood of finds.</strong><small>Explore Hamilton SNAB Day</small></span><span aria-hidden="true">→</span></Link>}
     </>}
   </section>;
@@ -145,8 +147,10 @@ export function ItemDetail({ saleId, itemId }: { saleId: string; itemId: string 
   return <section className="item-detail"><Link href={`/sale/${saleId}/search`} className="back-link">← Search this sale</Link><div className="item-hero">{sale.photos[0] ? <DraftPhotoImage photo={sale.photos[0]} className="sale-cover" /> : <CategoryArt category={item.category} size={170} />}<span>{sale.photos.length ? "Sale photo · item location is illustrative" : sale.sample ? "Illustration · demo highlight" : "Illustration · no photo of this item"}</span><HeartButton saved={saved} label="item" onClick={() => act(() => togglePreference("savedItems", key))} className="hero-round hero-heart" /></div><div className="card-topline"><span className="demo-pill">{item.category}</span><StateBadge state={sale.state} /></div><h1>{item.label}</h1><p className="workspace-lede">{item.description}</p><div className="price-card">{item.price ? <><strong>Asking price: {item.price}</strong><p>{sale.sample ? "Set by the seller in this demo." : "Set by the seller."}</p></> : item.estimate ? <><strong>{item.estimate}</strong><p>Sample estimate · condition and value haven’t been assessed. Ask the seller at the sale.</p></> : <><strong>Ask at the sale</strong><p>The seller hasn’t added a price.</p></>}</div>{!item.available && <p className="form-message">This find has already gone.</p>}<div className="location-card"><h2>At {sale.title}</h2><p>{sale.addressLabel}</p><StateBadge state={sale.state} /><Link className="button button-primary full-width continue-button" href={`/sale/${saleId}`}>See it at the sale →</Link></div></section>;
 }
 export function SavedPage() {
-  const { sales, loading, error } = useCatalogue(); const { prefs, error: prefsError } = usePreferences(); const [tab, setTab] = useState("treasures"); const savedSales = sales.filter(s => prefs.savedSales.includes(s.id)); const savedItems = sales.flatMap(s => s.items.filter(i => prefs.savedItems.includes(`${s.id}:${i.id}`)).map(i => ({ sale: s, item: i })));
-  return <section><p className="eyebrow">Keep an eye out</p><h1>Your<br /><span className="highlight">treasure list.</span></h1><p className="workspace-lede">Tell SNAB what you’re hunting for. Any sale that has it gets flagged as you browse.</p><div className="segmented saved-tabs" role="tablist" aria-label="Saved finds">{[{ id: "treasures", label: `Treasures (${prefs.treasures.length})` }, { id: "sales", label: `Sales (${savedSales.length})` }, { id: "items", label: `Finds (${savedItems.length})` }].map(t => <button role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={tab === t.id} key={t.id} className={tab === t.id ? "selected" : ""} onClick={() => setTab(t.id)}>{t.label}</button>)}</div><LoadingOrError loading={loading} error={error || prefsError} /><div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>{tab === "treasures" && <TreasureWatchlist sales={sales} />}{tab === "sales" && (savedSales.length ? <div className="buyer-card-list">{savedSales.map(s => <SaleCard key={s.id} sale={s} />)}</div> : <div className="empty-card"><h2>No sales saved yet.</h2><p>Tap a heart on a sale you’d like to visit.</p><Link className="button button-primary" href="/map">Explore sales</Link></div>)}{tab === "items" && (savedItems.length ? <div className="item-list">{savedItems.map(({ sale, item }) => <ItemCard sale={sale} item={item} key={`${sale.id}:${item.id}`} />)}</div> : <div className="empty-card"><h2>A good find is worth saving.</h2><p>Open an item and tap its heart to keep it here.</p><Link href="/hunt" className="button button-primary">Go hunting</Link></div>)}</div></section>;
+  const { sales, loading, error } = useCatalogue(); const { prefs, error: prefsError } = usePreferences(); const params = useSearchParams(); const [chosen, setTab] = useState(params.get("tab")); const savedSales = sales.filter(s => prefs.savedSales.includes(s.id)); const savedItems = sales.flatMap(s => s.items.filter(i => prefs.savedItems.includes(`${s.id}:${i.id}`)).map(i => ({ sale: s, item: i })));
+  // Open on what the person has saved: their hearted sales first, then items, then the treasure list.
+  const tab = chosen && ["sales", "items", "treasures"].includes(chosen) ? chosen : savedSales.length ? "sales" : savedItems.length ? "items" : "treasures";
+  return <section><p className="eyebrow">Keep an eye out</p><h1><span className="highlight">Saved.</span></h1><p className="workspace-lede">Sales and items you’ve hearted, and your treasure list of things you’re hunting for.</p><div className="segmented saved-tabs" role="tablist" aria-label="Saved">{[{ id: "sales", label: `Sales (${savedSales.length})` }, { id: "items", label: `Items (${savedItems.length})` }, { id: "treasures", label: `Treasures (${prefs.treasures.length})` }].map(t => <button role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={tab === t.id} key={t.id} className={tab === t.id ? "selected" : ""} onClick={() => setTab(t.id)}>{t.label}</button>)}</div><LoadingOrError loading={loading} error={error || prefsError} /><div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>{tab === "treasures" && <TreasureWatchlist sales={sales} />}{tab === "sales" && (savedSales.length ? <div className="buyer-card-list">{savedSales.map(s => <SaleCard key={s.id} sale={s} />)}</div> : <div className="empty-card"><h2>No sales saved yet.</h2><p>Tap a heart on a sale you’d like to visit.</p><Link className="button button-primary" href="/map">Explore sales</Link></div>)}{tab === "items" && (savedItems.length ? <div className="item-list">{savedItems.map(({ sale, item }) => <ItemCard sale={sale} item={item} key={`${sale.id}:${item.id}`} />)}</div> : <div className="empty-card"><h2>A good find is worth saving.</h2><p>Open an item at a sale and tap its heart to keep it here.</p><Link href="/hunt" className="button button-primary">Go hunting</Link></div>)}</div></section>;
 }
 export function DirectionsPage({ id }: { id: string }) {
   const { sales, loading, error } = useCatalogue(); const { origin } = useBuyerLocation(); const sale = sales.find(s => s.id === id);

@@ -49,7 +49,7 @@ export function LandingPage() {
             <p className="landing-eyebrow"><Image className="landing-pin" src="/brand/snab-pin.png" alt="" width={17} height={24} /> Hunting for something?</p>
             <h2 id="treasure-heading">Put it on your<br /><span className="landing-underline">treasure list.</span></h2>
             <p>Add the things you’re after. When a sale has one, SNAB flags it as you browse, so the good stuff finds you.</p>
-            <Link className="button button-quiet" href="/saved">See your list <Arrow /></Link>
+            <Link className="button button-quiet" href="/saved?tab=treasures">See your list <Arrow /></Link>
           </div>
           <TreasurePromo />
         </section>
