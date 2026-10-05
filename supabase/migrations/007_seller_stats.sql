@@ -1,4 +1,4 @@
--- SNAB seller stats: how many people looked at a sale and how many saved it. Apply after 001-005.
+-- SNAB seller stats: how many people looked at a sale and how many saved it. Apply after 001-006.
 -- Buyers' browsers send a random device code (no account, no IP). The server keeps only a one-way hash of
 -- that code mixed with the sale (and, for views, the Auckland date), so rows can't be linked across sales
 -- or days and nobody can work out who looked. Views count once per device per sale per day.

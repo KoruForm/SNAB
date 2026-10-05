@@ -1,4 +1,4 @@
--- Seller stats checks for 006_seller_stats.sql. Run by scripts/test-db.sh; any failed check raises.
+-- Seller stats checks for 007_seller_stats.sql. Run by scripts/test-db.sh; any failed check raises.
 \set ON_ERROR_STOP on
 set client_min_messages = warning;
 
