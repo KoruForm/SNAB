@@ -3,7 +3,7 @@ import { ComingSoon } from "../../components/coming-soon";
 
 export const metadata: Metadata = {
   title: "SNAB",
-  description: "Something’s coming to your street.",
+  description: "Coming soon to a driveway near you.",
 };
 
 export default function ComingSoonPage() {

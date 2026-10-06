@@ -8,7 +8,7 @@ export function ComingSoon() {
     <div className="soon-site">
       <main className="soon-main" id="main-content">
         <Image className="soon-logo" src="/brand/snab-highlight-final-b.svg" alt="SNAB" width={1072} height={528} priority />
-        <h1 className="soon-line">Something’s coming to your street.</h1>
+        <h1 className="soon-line">Coming soon to a driveway near you.</h1>
         <InterestForm />
       </main>
     </div>

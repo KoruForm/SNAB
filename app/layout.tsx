@@ -11,9 +11,9 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://olivedrab-rabbit-86
 // While the coming soon teaser is on, shares and search results give nothing away either.
 const teaser = comingSoonHome;
 const title = teaser ? "SNAB" : "SNAB — Garage sales. Great finds.";
-const description = teaser ? "Something’s coming to your street." : "Browse garage sales, save your favourites and give your good stuff a new home. Add photos, set the details and preview your own sale with SNAB.";
+const description = teaser ? "Coming soon to a driveway near you." : "Browse garage sales, save your favourites and give your good stuff a new home. Add photos, set the details and preview your own sale with SNAB.";
 const image = teaser
-  ? { url: "/social/teaser-preview.jpg", width: 1200, height: 630, alt: "SNAB. Something’s coming to your street." }
+  ? { url: "/social/teaser-preview.jpg", width: 1200, height: 630, alt: "SNAB. Coming soon to a driveway near you." }
   : { url: "/social/link-preview.jpg", width: 1200, height: 630, alt: "SNAB: Good stuff finds new people. Garage Sales Made Easy." };
 
 export const metadata: Metadata = {
