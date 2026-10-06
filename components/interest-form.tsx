@@ -27,7 +27,7 @@ export function InterestForm() {
     return (
       <div className="soon-form soon-done" id="join" role="status">
         <h2>You’re on the list.</h2>
-        <p>Keep an eye on your street. We’ll email you when it’s time.</p>
+        <p>Keep an eye on the driveways. We’ll email you when it’s time.</p>
       </div>
     );
   }
