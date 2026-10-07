@@ -69,12 +69,12 @@ For each item give:
 privacy_flags: list any visible faces, readable number plates, documents with personal details, screens showing personal content, or medication.
 summary: one sentence describing the sale in this photo.`;
 
-async function callClaude(model, jpeg) {
+async function callClaude(model, jpeg, effort) {
   const client = new Anthropic();
   const res = await client.messages.create({
     model,
     max_tokens: 16000,
-    output_config: { format: { type: "json_schema", schema: SCHEMA } },
+    output_config: { format: { type: "json_schema", schema: SCHEMA }, ...(effort ? { effort } : {}) },
     messages: [{ role: "user", content: [
       { type: "image", source: { type: "base64", media_type: "image/jpeg", data: jpeg.toString("base64") } },
       { type: "text", text: PROMPT },
@@ -122,6 +122,16 @@ async function callOpenAI(model, jpeg) {
 
 const CALLERS = { claude: callClaude, gemini: callGemini, openai: callOpenAI };
 
+// Claude deep-dive: SCAN_TEST_CLAUDE_VARIANTS="claude-haiku-5-5:medium,claude-opus-5-5:high" compares Claude sizes and
+// effort levels side by side, each as its own supplier. Prices in US$ per million tokens, checked 2026-10-08.
+const CLAUDE_PRICES = { "claude-haiku-5-5": [0.1, 0.5], "claude-sonnet-5-5": [2, 10], "claude-opus-5-5": [4, 20] };
+for (const variant of (process.env.SCAN_TEST_CLAUDE_VARIANTS || "").split(",").map(v => v.trim()).filter(Boolean)) {
+  const [model, effort] = variant.split(":");
+  if (!CLAUDE_PRICES[model]) throw new Error(`No price for ${model}`);
+  SUPPLIERS[variant] = { model, effort, price: CLAUDE_PRICES[model] };
+  CALLERS[variant] = (m, jpeg) => callClaude(m, jpeg, effort);
+}
+
 async function withRetry(fn) {
   try { return await fn(); }
   catch (e) { await new Promise(r => setTimeout(r, 5000)); console.warn(`retrying after: ${e.message}`); return fn(); }
@@ -133,7 +143,7 @@ async function preparePhoto(file) {
 }
 
 async function main() {
-  const only = (process.env.SCAN_TEST_SUPPLIERS || Object.keys(SUPPLIERS).join(",")).split(",").map(s => s.trim()).filter(Boolean);
+  const only = (process.env.SCAN_TEST_SUPPLIERS || (process.env.SCAN_TEST_CLAUDE_VARIANTS ? process.env.SCAN_TEST_CLAUDE_VARIANTS : Object.keys(SUPPLIERS).join(","))).split(",").map(s => s.trim()).filter(Boolean);
   const files = (await readdir(PHOTO_DIR)).filter(f => /\.(jpe?g|png|webp|heic|heif)$/i.test(f)).sort();
   if (!files.length) throw new Error(`No photos in ${PHOTO_DIR}`);
   const outDir = path.join(here, "results", new Date().toISOString().replace(/[:.]/g, "-"));

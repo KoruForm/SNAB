@@ -27,6 +27,8 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SCAN_TEST_RUNS: "1"
+          SCAN_TEST_CLAUDE_VARIANTS: "claude-haiku-5-5:medium,claude-sonnet-5-5:low,claude-sonnet-5-5:high,claude-opus-5-5:medium,claude-opus-5-5:high"
       - name: Save results to the branch
         run: |
           git config user.name "github-actions[bot]"
