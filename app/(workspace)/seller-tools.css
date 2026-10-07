@@ -1,0 +1,55 @@
+/* Seller tools, demand and route planning (components/seller-tools.tsx, seller-helpers.tsx, plan-morning.tsx). */
+.demo-stats:has(>div:nth-child(4)){grid-template-columns:repeat(2,minmax(0,1fr))}
+.manage-sale .sale-day-panel+.sale-day-panel,.manage-sale .sale-day-panel{margin:18px 0}
+.sale-day-panel>p{font-size:14px;line-height:1.6}
+.sale-day-panel label{display:block;font-size:14px;font-weight:600;margin:12px 0}
+.sale-day-panel>.button{margin-top:12px}
+.advertise-list,.pickup-list,.plan-stops,.plan-more,.demand-chips,.planned-dates{list-style:none;padding:0;margin:16px 0}
+.advertise-list li{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #22232120}
+.advertise-list li>span:first-child{font-size:18px;width:22px;text-align:center;color:var(--green)}
+.advertise-list li>span:nth-child(2){flex:1;min-width:0}
+.advertise-list strong{display:block;font-size:15px}
+.advertise-list small,.pickup-list small{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+.advertise-list .text-button{flex-shrink:0;font-size:13px}
+.pickup-list li{padding:8px 0}
+.pickup-list a{font-weight:700;color:var(--blue)}
+.price-guide{margin:16px 0;font-size:14px}
+.price-guide summary{cursor:pointer;font-weight:700;color:var(--blue);min-height:44px;display:flex;align-items:center}
+.price-guide dl{display:grid;gap:8px;margin:12px 0}
+.price-guide dl>div{display:grid;grid-template-columns:96px 1fr;gap:10px}
+.price-guide dt{font-weight:700}.price-guide dd{margin:0;color:var(--muted)}
+.demand-panel{margin:20px 0;padding:18px;border:2px solid var(--ink);border-radius:10px;background:var(--white)}
+.demand-panel>strong{display:block;font-size:16px}
+.demand-panel>small{display:block;font-size:12px;color:var(--muted)}
+.demand-chips{display:flex;flex-wrap:wrap;gap:8px}
+.demand-chips li{padding:6px 10px;border:1px solid #17181545;border-radius:6px;font-size:13px;font-weight:600}
+.demand-chips li span{display:inline-block;min-width:20px;margin-left:4px;padding:0 5px;border-radius:9px;background:var(--paper-deep);font-size:11px;text-align:center}
+.demand-chips li.met{background:var(--green);border-color:var(--green);color:var(--paper)}
+.demand-chips li.met span{background:#ffffff30}
+.planned-dates{display:grid;gap:8px}
+.planned-dates button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;width:100%;min-height:44px;padding:10px 14px;border:1px solid #17181545;border-radius:7px;background:transparent;color:var(--ink);text-align:left}
+.planned-dates button span{font-size:12px;color:var(--muted)}
+.sale-extras{border:0;padding:0;margin:18px 0}
+.sale-extras legend{font-weight:700;font-size:17px;margin-bottom:6px}
+.sale-extras .filter-chips{margin:6px 0 12px;gap:4px 14px}
+.sale-extras .field-label{margin:14px 0 0;font-weight:700;font-size:14px}
+.good-to-know{display:grid;gap:10px;margin:20px 0;padding:16px;border:1px solid #22232125;border-radius:10px;background:var(--white)}
+.good-to-know>div{display:grid;grid-template-columns:110px 1fr;gap:10px;font-size:14px}
+.good-to-know dt{font-weight:700}.good-to-know dd{margin:0}
+.moved-note{background:#f6ebc4}
+.leftovers-note{background:#e5efdf}
+.partner-line{font-size:13px;color:var(--muted);margin:18px 0}
+.partner-line a{color:var(--blue);font-weight:700}
+.plan-stops{display:grid;gap:10px}
+.plan-stops li{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #22232125;border-radius:10px;background:var(--white)}
+.plan-stops li>div:nth-child(3){flex:1;min-width:0}
+.plan-stops strong{display:block;font-size:15px;overflow-wrap:anywhere}
+.plan-stops small{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+.plan-number{display:grid;place-items:center;flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--yellow);font-weight:700}
+.plan-cover{width:56px;height:56px;flex-shrink:0;overflow:hidden;border-radius:6px}
+.plan-cover>*{width:100%!important;height:100%!important;min-height:0!important;object-fit:cover}
+.plan-cover .illustrated-cover img{width:32px;height:32px}
+.plan-more li{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #22232120}
+.plan-more li>div{flex:1;min-width:0}
+.plan-more small{display:block;font-size:12px;color:var(--muted)}
+.plan-page>.button{margin:16px 0}

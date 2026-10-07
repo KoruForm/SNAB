@@ -1,16 +1,17 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { cleanPhoto } from "./clean-photo";
 import { MAX_PHOTOS, tooManyPhotos, validatePhotoBatch } from "./limits";
+import { cleanDetails } from "../sale-details";
 import { blankDraft, type Category, type Draft, type DraftPatch, type DraftPhoto, type MockItem, type SaleDay } from "./types";
 
 // Supabase-backed drafts for signed-in sellers. Tables and policies: supabase/migrations/001 and 003.
 export const PHOTO_BUCKET = "sale-photos";
 const SIGNED_URL_SECONDS = 60 * 60;
-const SALE_SELECT = "id, title, description, status, categories, highlights, items, demo_scan, event_code, day_mode, abundance, hidden, created_at, updated_at, sale_days(sale_date, starts, finishes), sale_private_locations(address, town, reveal, exact_latitude, exact_longitude)";
+const SALE_SELECT = "id, title, description, status, categories, highlights, items, demo_scan, event_code, day_mode, abundance, hidden, details, partner_code, created_at, updated_at, sale_days(sale_date, starts, finishes), sale_private_locations(address, town, reveal, exact_latitude, exact_longitude)";
 
 export type SaleRow = {
   id: string; title: string; description: string; status: Draft["status"]; categories: string[]; highlights: string[]; items: MockItem[] | null;
-  demo_scan: boolean; event_code: string | null; day_mode: Draft["dayMode"] | null; abundance: Draft["abundance"] | null; hidden?: boolean; created_at: string; updated_at: string;
+  demo_scan: boolean; event_code: string | null; day_mode: Draft["dayMode"] | null; abundance: Draft["abundance"] | null; hidden?: boolean; details?: unknown; partner_code?: string | null; created_at: string; updated_at: string;
   sale_days: { sale_date: string; starts: string; finishes: string }[] | null;
   sale_private_locations: { address: string; town: string; reveal: Draft["location"]["reveal"]; exact_latitude?: number | null; exact_longitude?: number | null } | null;
 };
@@ -33,6 +34,9 @@ export function rowToDraft(row: SaleRow): Draft {
   if (row.day_mode) draft.dayMode = row.day_mode;
   if (row.abundance) draft.abundance = row.abundance;
   if (row.hidden) draft.hidden = true;
+  const details = cleanDetails(row.details);
+  if (Object.keys(details).length) draft.details = details;
+  if (row.partner_code) draft.partner = row.partner_code;
   return draft;
 }
 // Only the sale-record columns present in the patch; days and location live in their own tables.
@@ -48,6 +52,8 @@ export function patchToSaleRow(patch: DraftPatch): Record<string, unknown> {
   if ("eventCode" in patch) row.event_code = patch.eventCode ?? null;
   if ("dayMode" in patch) row.day_mode = patch.dayMode ?? null;
   if ("abundance" in patch) row.abundance = patch.abundance ?? null;
+  if ("details" in patch) row.details = cleanDetails(patch.details);
+  if ("partner" in patch) row.partner_code = patch.partner ?? null;
   return row;
 }
 export function locationToRow(saleId: string, location: Draft["location"]) {

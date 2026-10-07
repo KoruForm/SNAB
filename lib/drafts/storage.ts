@@ -33,8 +33,8 @@ export async function moveDeviceDraftToAccount(id: string): Promise<Draft> {
   const photos = await local.getPhotos(id);
   const created = await remote.createRemoteDraft(a.supabase, a.userId);
   try {
-    const { title, description, days, location, categories, highlights, status, items, demoScan, eventCode, dayMode, abundance } = draft;
-    await remote.updateRemoteDraft(a.supabase, created.id, { title, description, days, location, categories, highlights, status, items, demoScan, eventCode, dayMode, abundance });
+    const { title, description, days, location, categories, highlights, status, items, demoScan, eventCode, dayMode, abundance, details, partner } = draft;
+    await remote.updateRemoteDraft(a.supabase, created.id, { title, description, days, location, categories, highlights, status, items, demoScan, eventCode, dayMode, abundance, details, partner });
     const files = photos.filter(p => p.blob).map(p => new File([p.blob!], p.name, { type: p.type }));
     if (files.length) await remote.addRemotePhotos(a.supabase, a.userId, created.id, files);
   } catch (error) {
