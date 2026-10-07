@@ -1,7 +1,9 @@
 import { aliases, containsTerm, itemsMatching, queryTokens } from "../treasure-match";
 import { areaPoint, distanceKm, roundKm, type Point } from "../geo";
+import type { SaleDetails } from "../sale-details";
 import { addressVisible, localDateKey, publicAddress, type Category, type Draft, type DraftPhoto, type MockItem, type SaleDay } from "../drafts/types";
-export type BuyerSale = { id: string; title: string; description: string; town: string; addressLabel: string; exactAddressVisible: boolean; days: SaleDay[]; categories: Category[]; items: MockItem[]; photos: DraftPhoto[]; coverCategory: Category; distance: number | null; point: Point | null; exactPoint: boolean; state: "open" | "upcoming" | "closed"; sample: boolean; own: boolean; eventCode?: string; abundance?: string };
+export type BuyerSale = { id: string; title: string; description: string; town: string; addressLabel: string; exactAddressVisible: boolean; days: SaleDay[]; categories: Category[]; items: MockItem[]; photos: DraftPhoto[]; coverCategory: Category; distance: number | null; point: Point | null; exactPoint: boolean; state: "open" | "upcoming" | "closed"; sample: boolean; own: boolean; eventCode?: string; abundance?: string; details?: SaleDetails; partner?: SalePartner };
+export type SalePartner = { code: string; name: string; website: string };
 export type Match = { sale: BuyerSale; band: "Great match" | "Good match" | "Possible match"; reasons: string[]; score: number };
 function item(id: string, label: string, category: Category, description: string, estimate?: string): MockItem { return { id, label, category, description, estimate, available: true, confirmed: true }; }
 const templates = [
@@ -25,7 +27,7 @@ export function toBuyerSale(draft: Draft, photos: DraftPhoto[], now = new Date()
   const { latitude, longitude } = draft.location;
   const spot = typeof latitude === "number" && typeof longitude === "number" ? { lat: latitude, lng: longitude } : null;
   const fallbackItems = draft.highlights.map((label, n) => item(`highlight-${n}`, label, draft.categories[0] || "Other", label));
-  return { id: draft.id, title: draft.title || "Your garage sale", description: draft.description, town: draft.location.town, addressLabel: publicAddress(draft, now), exactAddressVisible, days: draft.days, categories: draft.categories, items: draft.items?.length ? draft.items : fallbackItems, photos, coverCategory: draft.categories[0] || "Furniture", distance: null, point: exactAddressVisible || !spot ? spot : areaPoint(spot), exactPoint: exactAddressVisible && Boolean(spot), state, sample: false, own: true, eventCode: draft.eventCode, abundance: draft.abundance };
+  return { id: draft.id, title: draft.title || "Your garage sale", description: draft.description, town: draft.location.town, addressLabel: publicAddress(draft, now), exactAddressVisible, days: draft.days, categories: draft.categories, items: draft.items?.length ? draft.items : fallbackItems, photos, coverCategory: draft.categories[0] || "Furniture", distance: null, point: exactAddressVisible || !spot ? spot : areaPoint(spot), exactPoint: exactAddressVisible && Boolean(spot), state, sample: false, own: true, eventCode: draft.eventCode, abundance: draft.abundance, details: draft.details };
 }
 export { queryTokens };
 export function matchedItems(sale: BuyerSale, query: string): MockItem[] { return itemsMatching(sale.items, query); }

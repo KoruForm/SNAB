@@ -1,3 +1,4 @@
+import type { SaleDetails } from "../sale-details";
 export const CATEGORIES = ["Furniture", "Tools", "Books", "Electronics", "Clothing", "Kitchen", "Garden", "Toys", "Free", "Other"] as const;
 export type Category = typeof CATEGORIES[number];
 export type AddressReveal = "sale-day" | "now" | "area-only";
@@ -22,12 +23,16 @@ export type Draft = {
   abundance?: "lots" | "some-gone";
   // Taken off the buyer side after reports, until it's checked (migration 006). Only the server sets it.
   hidden?: boolean;
+  // Sale type, buyer questions, rain-date move and leftovers (lib/sale-details.ts, migration 013).
+  details?: SaleDetails;
+  // The partner (agent, mover, local business) whose link the seller came from.
+  partner?: string;
   createdAt: string;
   updatedAt: string;
 };
 // Local photos carry their blob; account photos carry a short-lived signed URL instead.
 export type DraftPhoto = { id: string; draftId: string; name: string; type: string; blob?: Blob; url?: string; createdAt: string };
-export type DraftPatch = Partial<Pick<Draft, "title" | "description" | "days" | "location" | "categories" | "highlights" | "status" | "items" | "demoScan" | "readyMade" | "eventCode" | "dayMode" | "abundance">>;
+export type DraftPatch = Partial<Pick<Draft, "title" | "description" | "days" | "location" | "categories" | "highlights" | "status" | "items" | "demoScan" | "readyMade" | "eventCode" | "dayMode" | "abundance" | "details" | "partner">>;
 
 export function blankDraft(id: string, now = new Date().toISOString()): Draft {
   return { id, title: "", description: "", days: [{ date: "", starts: "08:00", finishes: "13:00" }], location: { address: "", town: "", reveal: "sale-day" }, categories: [], highlights: [], status: "draft", createdAt: now, updatedAt: now };

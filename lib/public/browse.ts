@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { PHOTO_BUCKET } from "../drafts/remote";
 import type { Category, DraftPhoto, MockItem, SaleDay } from "../drafts/types";
+import { cleanDetails } from "../sale-details";
 import { toBuyerSale, type BuyerSale } from "../mock/catalogue";
 
 // Published sales from every seller, read through public.browse_sales() (supabase/migrations/004).
@@ -10,6 +11,7 @@ export type BrowseRow = {
   days: SaleDay[]; town: string; address: string | null; latitude: number | null; longitude: number | null; exact_location: boolean;
   items: MockItem[] | null; event_code: string | null; day_mode: "auto" | "open" | "closed" | null; abundance: "lots" | "some-gone" | null;
   photos: { id: string; path: string; name: string; type: string }[];
+  details?: unknown; partner?: { code: string; name: string; website: string } | null;
 };
 const SIGNED_URL_SECONDS = 60 * 60;
 
@@ -18,12 +20,12 @@ export function rowToBuyerSale(row: BrowseRow, photos: DraftPhoto[], now = new D
   const base = toBuyerSale({
     id: row.id, title: row.title, description: row.description, status: row.status, categories: row.categories as Category[], highlights: row.highlights,
     days: row.days, location: { address: row.address ?? "", town: row.town, reveal: visible ? "now" : "area-only" },
-    items: row.items ?? undefined, eventCode: row.event_code ?? undefined, dayMode: row.day_mode ?? undefined, abundance: row.abundance ?? undefined,
+    items: row.items ?? undefined, eventCode: row.event_code ?? undefined, dayMode: row.day_mode ?? undefined, abundance: row.abundance ?? undefined, details: cleanDetails(row.details),
     createdAt: "", updatedAt: "",
   }, photos, now);
   // The server sends the exact spot only with the street; otherwise the centre of the sale's area.
   const point = typeof row.latitude === "number" && typeof row.longitude === "number" ? { lat: row.latitude, lng: row.longitude } : null;
-  return { ...base, point, exactPoint: Boolean(point) && visible, own: false, distance: null, exactAddressVisible: visible,
+  return { ...base, ...(row.partner?.name ? { partner: row.partner } : {}), point, exactPoint: Boolean(point) && visible, own: false, distance: null, exactAddressVisible: visible,
     addressLabel: visible ? row.address! : `${row.town || "Local area"} · street address not shown yet` };
 }
 
