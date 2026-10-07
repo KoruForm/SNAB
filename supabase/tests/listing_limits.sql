@@ -28,6 +28,12 @@ select pg_temp.check((select count(*) from public.sale_days where sale_id = 'a10
 insert into public.sales (owner_id) select '00000000-0000-0000-0000-0000000000a1' from generate_series(1, 49);
 select pg_temp.check(pg_temp.refused($$insert into public.sales (owner_id) values ('00000000-0000-0000-0000-0000000000a1')$$), 'a 51st sale refused');
 
+select pg_temp.check(pg_temp.refused($$insert into public.sale_photos (sale_id, storage_path)
+  select 'a1000000-0000-0000-0000-000000000001', 'limits/' || n from generate_series(1, 21) n$$), 'more than 20 photos refused');
+insert into public.sale_photos (sale_id, storage_path)
+  select 'a1000000-0000-0000-0000-000000000001', 'limits/' || n from generate_series(1, 20) n;
+select pg_temp.check(pg_temp.refused($$insert into public.sale_photos (sale_id, storage_path) values ('a1000000-0000-0000-0000-000000000001', 'limits/21')$$), 'a 21st photo refused');
+
 delete from public.sales where owner_id = '00000000-0000-0000-0000-0000000000a1';
 delete from auth.users where id = '00000000-0000-0000-0000-0000000000a1';
 \echo 'listing limits: all checks passed'
