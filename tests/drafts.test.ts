@@ -57,7 +57,7 @@ test("photo count and size limits reject an entire batch without leaving partial
   const draft = await createDraft();
   const small = new File(["x"], "test.png", { type: "image/png" });
   await addPhotos(draft.id, [small]);
-  await assert.rejects(addPhotos(draft.id, Array.from({ length: MAX_PHOTOS }, () => small)), /40 photos/);
+  await assert.rejects(addPhotos(draft.id, Array.from({ length: MAX_PHOTOS }, () => small)), /20 photos/);
   assert.equal((await getPhotos(draft.id)).length, 1);
   const large = new File([new Uint8Array(20 * 1024 * 1024 + 1)], "large.png", { type: "image/png" });
   await assert.rejects(addPhotos(draft.id, [small, large]), /20 MB/);
