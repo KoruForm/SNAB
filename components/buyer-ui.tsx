@@ -86,7 +86,7 @@ export function MapPage({ event = false }: { event?: boolean }) {
       <p className="eyebrow">Community SNAB Day</p>
       <h1>Hamilton<br /><span className="highlight">SNAB Day.</span></h1>
       <p className="workspace-lede">One neighbourhood. Loads to find.</p>
-    </div> : <h1 className="find-title">Find a <span className="highlight">sale.</span></h1>}
+    </div> : <div className="find-head"><h1 className="find-title">Find a <span className="highlight">sale.</span></h1><Link href="/plan" className="find-plan-button">Plan my morning</Link></div>}
     {event && <div className="event-banner"><strong>Make a day of it.</strong><p>Explore sales taking part in Hamilton SNAB Day.</p><Link href="/sell?event=HAMILTON" className="small-link">Join with your sale →</Link></div>}
     <SearchBox key={filters.query} initial={filters.query} onSearch={query => update({ q: query.trim() })} />
     <div className="find-quick-filters" role="group" aria-label="Filter sales by day">
@@ -116,7 +116,6 @@ export function MapPage({ event = false }: { event?: boolean }) {
       {filters.view === "map" && <><SaleMap sales={results.map(result => result.sale)} selected={selected} onSelect={setSelected} origin={origin} label="Map of sales" />{picked ? <div className="selected-sale"><SaleCard sale={picked.sale} match={filters.query ? picked : undefined} /><button className="text-button" onClick={() => setSelected("")}>Close selected sale</button></div> : <p className="field-help map-help">Tap a pin or circle to preview a sale. A circle means the seller is keeping their street private for now.{results.some(result => !result.sale.point) ? " Sales without a map spot yet are in the list below." : ""}</p>}</>}
       {!results.length ? <NoResults reset={reset} query={filters.query} /> : <div className="buyer-card-list">{results.map((match, i) => <Fragment key={match.sale.id}><SaleCard sale={match.sale} match={filters.query ? match : undefined} />{i === Math.min(1, results.length - 1) && watchStrip}</Fragment>)}</div>}
       {!results.length && watchStrip}
-      {results.length > 1 && <Link href="/plan" className="find-event-link"><span><strong>Plan my morning</strong><small>Pick the sales you want and get the best order</small></span><span aria-hidden="true">→</span></Link>}
       {/* Hamilton SNAB Day is still a demo idea: only the demo build points to it. */}{!event && !supabaseConfigured() && <Link href="/event" className="find-event-link"><span><strong>A whole neighbourhood of finds.</strong><small>Explore Hamilton SNAB Day</small></span><span aria-hidden="true">→</span></Link>}
     </>}
   </section>;
