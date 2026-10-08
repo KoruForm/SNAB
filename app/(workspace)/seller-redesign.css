@@ -206,3 +206,11 @@
   .wizard .sale-step-groups { gap: 7px; }
   .wizard .sale-step-groups li { font-size: 11px; }
 }
+
+/* Highlights the seller types in: name and price side by side */
+.highlight-rows{border:0;margin:28px 0;padding:0;display:grid;gap:14px}
+.highlight-rows legend{font-size:17px;font-weight:700;padding:0;margin-bottom:6px}
+.highlight-row{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:10px;align-items:end}
+.highlight-row .text-button{grid-column:1/-1;justify-self:start;padding:4px 0;min-height:32px}
+.highlight-price{font-weight:700}
+.publish-actions{display:grid;gap:14px}

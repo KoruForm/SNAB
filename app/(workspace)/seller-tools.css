@@ -53,3 +53,9 @@
 .plan-more li>div{flex:1;min-width:0}
 .plan-more small{display:block;font-size:12px;color:var(--muted)}
 .plan-page>.button{margin:16px 0}
+
+/* Stickers and Run it again sit behind one tap so sale-day controls stay near the top */
+.more-tools{margin:28px 0;border:1px solid #2223211a;border-radius:14px;background:var(--white);padding:0 18px}
+.more-tools>summary{cursor:pointer;font-weight:700;font-size:16px;min-height:52px;display:flex;align-items:center}
+.more-tools[open]>summary{border-bottom:1px solid #2223211a;margin-bottom:6px}
+.wizard .sale-photo-gallery .make-cover{font-weight:700;color:var(--blue)}

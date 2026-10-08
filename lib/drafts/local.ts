@@ -98,6 +98,18 @@ export async function addPhotos(draftId: string, files: File[]): Promise<void> {
     tx.oncomplete = () => resolve(); tx.onerror = tx.onabort = () => reject(error || fail(tx));
   });
 }
+// The first photo is the sale's cover, so making one the cover moves it to the front.
+export async function makeCoverPhoto(draftId: string, id: string): Promise<void> {
+  const photos = await getPhotos(draftId);
+  const photo = photos.find(p => p.id === id);
+  if (!photo || photos[0]?.id === id) return;
+  const first = new Date(photos[0].createdAt).getTime();
+  const database = await db();
+  return new Promise((resolve, reject) => {
+    const tx = database.transaction("photos", "readwrite"); tx.objectStore("photos").put({ ...photo, createdAt: new Date(first - 1).toISOString() });
+    tx.oncomplete = () => resolve(); tx.onerror = tx.onabort = () => reject(fail(tx));
+  });
+}
 export async function removePhoto(id: string): Promise<void> {
   const database = await db();
   return new Promise((resolve, reject) => {

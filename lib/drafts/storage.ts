@@ -17,6 +17,7 @@ export async function listDrafts(): Promise<Draft[]> { const a = await account()
 export async function updateDraft(id: string, patch: DraftPatch): Promise<Draft> { const a = await account(); return a ? remote.updateRemoteDraft(a.supabase, id, patch) : local.updateDraft(id, patch); }
 export async function getPhotos(draftId: string): Promise<DraftPhoto[]> { const a = await account(); return a ? remote.getRemotePhotos(a.supabase, draftId) : local.getPhotos(draftId); }
 export async function addPhotos(draftId: string, files: File[]): Promise<void> { const a = await account(); return a ? remote.addRemotePhotos(a.supabase, a.userId, draftId, files) : local.addPhotos(draftId, files); }
+export async function makeCoverPhoto(draftId: string, id: string): Promise<void> { const a = await account(); return a ? remote.makeRemoteCoverPhoto(a.supabase, draftId, id) : local.makeCoverPhoto(draftId, id); }
 export async function removePhoto(id: string): Promise<void> { const a = await account(); return a ? remote.removeRemotePhoto(a.supabase, id) : local.removePhoto(id); }
 export async function deleteDraft(id: string): Promise<void> { const a = await account(); return a ? remote.deleteRemoteDraft(a.supabase, id) : local.deleteDraft(id); }
 
