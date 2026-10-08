@@ -1,0 +1,30 @@
+/* Readability floor, loaded last. Small labels were 10-13px and some links were 18-20px tall, hard going for older
+   sellers and for anyone reading in the sun. Text the reader needs is at least 13-14px and anything tappable is at least
+   44px tall. The extra .workspace prefix lets these win over the per-page rules without !important. */
+.workspace .workspace-main .field-help,
+.workspace .workspace-main .plan-stops small,
+.workspace .workspace-main .find-suggestions,
+.workspace .workspace-main .find-suggestions button,
+.workspace .workspace-main .filter-chips button,
+.workspace .workspace-main .segmented button,
+.workspace .workspace-main .small-link,
+.workspace .workspace-main .text-button { font-size: 14px; }
+.workspace .workspace-main .state-badge,
+.workspace .workspace-main .match-band,
+.workspace .workspace-main .category-chips span,
+.workspace .workspace-main .category-chips a,
+.workspace .workspace-main .draft-badge,
+.workspace .workspace-main .demo-stats span,
+.workspace .workspace-main .sale-step-groups li { font-size: 13px; }
+.workspace .workspace-main .find-suggestions button,
+.workspace .workspace-main .text-button { min-height: 44px; }
+.workspace .workspace-main .small-link,
+.workspace .workspace-main a.back-link:not(.hero-round) { display: inline-flex; align-items: center; min-height: 44px; }
+.workspace .workspace-main .plan-stops button { min-width: 64px; min-height: 44px; }
+.workspace .workspace-main .find-quick-filters button,
+.workspace .workspace-main .treasure-starters button,
+.workspace .workspace-main .manage-items small,
+.workspace .workspace-main .category-picker label,
+.workspace .workspace-main .quick-action-grid small { font-size: 14px; }
+.workspace .workspace-main .plan-page .text-button { min-width: 64px; }
+.workspace .workspace-main a.text-link { min-height: 44px; display: inline-flex; align-items: center; }

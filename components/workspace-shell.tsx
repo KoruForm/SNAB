@@ -24,7 +24,7 @@ export default function WorkspaceShell({ children }: { children: ReactNode }) {
     <TreasureSync />
     <header className="workspace-header">
       <Link href={appHome} aria-label="SNAB home" className="workspace-logo"><Image src="/brand/snab-highlight-final-b.svg" alt="SNAB" width={100} height={49} priority /></Link>
-      <div className="workspace-header-actions">{!supabaseConfigured() && <span className="build-label">Demo</span>}<Link href="/me" className="workspace-drafts-link" aria-label="My space"><NavIcon name="user" /></Link></div>
+      <div className="workspace-header-actions">{!supabaseConfigured() && <span className="build-label">Demo</span>}</div>
     </header>
     <main className="workspace-main" id="main-content">{children}</main>
     <nav className="bottom-nav" aria-label="App navigation">{tabs.map(tab => {

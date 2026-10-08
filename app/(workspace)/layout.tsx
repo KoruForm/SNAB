@@ -3,4 +3,5 @@ import WorkspaceShell from "../../components/workspace-shell";
 import "./workspace.css";
 import "./discovery.css";
 import "./seller-tools.css";
+import "./readability.css";
 export default function WorkspaceLayout({ children }: { children: ReactNode }) { return <WorkspaceShell>{children}</WorkspaceShell>; }
