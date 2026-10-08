@@ -8,6 +8,13 @@ export const signQrTags = "utm_source=sign&utm_medium=qr";
 // Query keys kept when the coming soon page redirects a visitor home, so a scan before launch still counts.
 export const trackingParams = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
 
+// The campaign a visitor arrived on (e.g. "drop-hillcrest" from a letterbox flyer QR), cleaned for saving
+// alongside their email so each drop's sign-ups can be counted. Empty when there's none.
+export function arrivalCampaign(search: string): string {
+  const raw = new URLSearchParams(search).get("utm_campaign") || "";
+  return raw.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 60);
+}
+
 type Umami = { track: (event: string, data?: Record<string, string | number>) => void };
 
 // Records a named event (shows under Events in Umami). Does nothing when Umami isn't loaded or is blocked.

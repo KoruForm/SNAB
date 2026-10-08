@@ -1,7 +1,7 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import { registerInterest, validEmail } from "../lib/interest";
-import { trackEvent } from "../lib/analytics";
+import { arrivalCampaign, trackEvent } from "../lib/analytics";
 
 export function InterestForm() {
   const [email, setEmail] = useState("");
@@ -14,9 +14,10 @@ export function InterestForm() {
     setState("sending");
     setError("");
     try {
-      await registerInterest(email, "both", "");
+      const campaign = arrivalCampaign(window.location.search);
+      await registerInterest(email, "both", campaign);
       setState("done");
-      trackEvent("Email sign-up");
+      trackEvent("Email sign-up", campaign ? { campaign } : undefined);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn’t add you to the list just now. Please try again.");
       setState("idle");
