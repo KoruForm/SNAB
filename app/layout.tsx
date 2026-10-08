@@ -5,9 +5,8 @@ import "./globals.css";
 import { umamiScript, umamiWebsiteId } from "../lib/analytics";
 import { comingSoonHome } from "../lib/launch";
 
-// Link previews need absolute URLs. Set NEXT_PUBLIC_SITE_URL before building
-// once SNAB has its own domain; until then this is the Hostinger preview address.
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://olivedrab-rabbit-869283.hostingersite.com";
+// Link previews need absolute URLs. NEXT_PUBLIC_SITE_URL overrides the default at build time.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://snab.nz";
 // While the coming soon teaser is on, shares and search results give nothing away either.
 const teaser = comingSoonHome;
 const title = teaser ? "SNAB" : "SNAB — Garage sales. Great finds.";
