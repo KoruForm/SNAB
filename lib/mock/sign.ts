@@ -2,6 +2,7 @@ import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
 import { TITLE_MAX, type SaleDay } from "../drafts/types";
 import type { BuyerSale } from "./catalogue";
+import { clock } from "../sale-details";
 
 // Josh's A4 template (design/sign/a4-template.svg) is pre-rendered to public/sign/a4-template.png.
 // Everything that changes per sale is drawn on top in Bowlby One SC. All measurements are in mm.
@@ -22,7 +23,7 @@ export type SignLayout = { lines: SignLine[]; scale: number };
 export type Measure = (text: string, size: number) => number; // width of text at a font size, in the layout's units
 
 export function signDay(day: SaleDay): { name: string; date: string; time: string } {
-  const time = `${day.starts} - ${day.finishes}`;
+  const time = `${clock(day.starts)} - ${clock(day.finishes)}`;
   if (!day.date) return { name: "Date", date: "to be confirmed", time };
   const d = new Date(`${day.date}T12:00:00Z`);
   const part = (o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat("en-NZ", { ...o, timeZone: "UTC" }).format(d);

@@ -27,8 +27,13 @@ test("a seller can publish, close, reopen and mark a highlight gone with persist
   assert.equal(toBuyerSale(stored, []).eventCode, "HAMILTON");
   stored = await updateDraft(draft.id, { status: "closed", dayMode: "closed" });
   assert.equal(toBuyerSale(stored, []).state, "closed");
-  stored = await updateDraft(draft.id, { status: "published", dayMode: "open", items: stored.items!.map(i => ({ ...i, available: i.id !== "mock-drill" })) });
-  const buyer = toBuyerSale((await getDraft(draft.id))!, []);
+  stored = await updateDraft(draft.id, { status: "published", dayMode: "open", days: [{ date: "2026-10-10", starts: "08:00", finishes: "13:00" }], items: stored.items!.map(i => ({ ...i, available: i.id !== "mock-drill" })) });
+  const reopened = (await getDraft(draft.id))!;
+  // Opened by hand: open early on the sale day, but not on another day, and not after the finish time.
+  assert.equal(toBuyerSale(reopened, [], new Date("2026-10-09T18:30:00Z")).state, "open"); // Sat 7:30am NZDT
+  assert.equal(toBuyerSale(reopened, [], new Date("2026-10-08T00:00:00Z")).state, "upcoming"); // Thu
+  assert.equal(toBuyerSale(reopened, [], new Date("2026-10-10T01:30:00Z")).state, "closed"); // Sat 2:30pm
+  const buyer = toBuyerSale(reopened, [], new Date("2026-10-09T21:00:00Z"));
   assert.equal(buyer.state, "open"); assert.equal(matchedItems(buyer, "drill").length, 0);
   assert.equal(buyer.items.find(i => i.id === "mock-drill")!.available, false);
 });

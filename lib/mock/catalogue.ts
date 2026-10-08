@@ -18,10 +18,18 @@ export function demoSales(now = new Date()): BuyerSale[] {
   const today = localDateKey(now); const weekday = new Date(`${today}T12:00:00Z`).getUTCDay(); const saturdayOffset = (6 - weekday + 7) % 7;
   return templates.map(({ spot, ...s }) => { const exact = s.addressLabel.includes("fictional"); return { ...s, sample: true, own: false, exactAddressVisible: exact, distance: null, point: exact ? spot : areaPoint(spot), exactPoint: exact, categories: [...new Set(s.items.map(i => i.category))], photos: [], eventCode: "HAMILTON", days: [{ date: s.state === "upcoming" ? offsetDate(today, saturdayOffset || 7) : today, starts: "08:00", finishes: "13:00" }], items: s.items.map(i => ({ ...i })) }; });
 }
+function nzTime(now: Date): string { return new Intl.DateTimeFormat("en-NZ", { timeZone: "Pacific/Auckland", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(now); }
+// Today's sale day if it hasn't finished yet: the only time a seller can open their sale by hand.
+export function unfinishedSaleDayToday(days: SaleDay[], now = new Date()): SaleDay | undefined {
+  const today = localDateKey(now); const time = nzTime(now);
+  return days.find(day => day.date === today && day.finishes > time);
+}
 export function toBuyerSale(draft: Draft, photos: DraftPhoto[], now = new Date()): BuyerSale {
-  const today = localDateKey(now); const time = new Intl.DateTimeFormat("en-NZ", { timeZone: "Pacific/Auckland", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(now);
+  const today = localDateKey(now); const time = nzTime(now);
   const open = draft.days.some(day => day.date === today && day.starts <= time && day.finishes > time);
-  const state = draft.status === "closed" || draft.dayMode === "closed" ? "closed" : draft.dayMode === "open" || open ? "open" : draft.days.length && draft.days.every(day => day.date < today || (day.date === today && day.finishes <= time)) ? "closed" : "upcoming";
+  // Opening by hand only counts on a sale day until its finish time, so a sale can't say "Open now" on the wrong day.
+  const openedEarly = draft.dayMode === "open" && Boolean(unfinishedSaleDayToday(draft.days, now));
+  const state = draft.status === "closed" || draft.dayMode === "closed" ? "closed" : openedEarly || open ? "open" : draft.days.length && draft.days.every(day => day.date < today || (day.date === today && day.finishes <= time)) ? "closed" : "upcoming";
   const exactAddressVisible = addressVisible(draft, now);
   // Your own sale is placed by the same rule buyers get from the server.
   const { latitude, longitude } = draft.location;
