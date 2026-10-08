@@ -1,4 +1,5 @@
 "use client";
+import { trackEvent } from "../lib/analytics";
 import Link from "next/link";
 import { useState } from "react";
 import { formatDay, localDateKey } from "../lib/drafts/types";
@@ -38,7 +39,7 @@ export function PlanMorning() {
       {problem && <p className="field-help" role="status">{problem}</p>}
       <ol className="plan-stops">{stops.map((stop, n) => <li key={stop.sale.id}><span className="plan-number">{n + 1}</span><div className="plan-cover"><SaleCover sale={stop.sale} /></div><div><Link href={`/sale/${stop.sale.id}`}><strong>{stop.sale.title}</strong></Link><small>{clock(stop.starts)} to {clock(stop.finishes)} · {stop.sale.town}{stop.legKm !== null ? ` · ${stop.legKm} km ${n ? "from the last stop" : "from you"}` : ""}</small>{!stop.sale.exactAddressVisible && <small>Street not shown yet, so this stop is the middle of the area.</small>}</div><button className="text-button" onClick={() => toggle(stop.sale.id)} aria-label={`Take ${stop.sale.title} off the route`}>Remove</button></li>)}</ol>
       {!stops.length && <p className="field-help">Nothing ticked for this day yet. Add sales from the list below.</p>}
-      {url && <a className="button button-primary full-width" href={url} target="_blank" rel="noopener noreferrer">Open the route in Google Maps →</a>}
+      {url && <a className="button button-primary full-width" href={url} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("Route opened", { stops: stops.length })}>Open the route in Google Maps →</a>}
       {stops.length > 10 && <p className="field-help">Maps takes up to 10 stops. The rest are in your list above.</p>}
       {onDay.some(s => !isIn(s.id)) && <><div className="section-heading"><h2>More sales that day</h2></div>
         <ul className="plan-more">{onDay.filter(s => !isIn(s.id)).map(s => <li key={s.id}><div><strong>{s.title}</strong><small>{s.town} · {clock(s.days.find(d => d.date === date)!.starts)}{s.distance !== null ? ` · ${s.distance} km` : ""}</small></div><StateBadge state={s.state} /><button className="text-button" onClick={() => toggle(s.id)}>Add</button></li>)}</ul></>}
