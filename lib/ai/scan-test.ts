@@ -14,7 +14,7 @@ const SUPPLIERS: Record<ScanSupplier, { model: string; price: [number, number]; 
   openai: { model: process.env.OPENAI_MODEL || "gpt-6.1-sol", price: [2, 10], key: "OPENAI_API_KEY" },
 };
 
-const SCHEMA = {
+export const SCHEMA = {
   type: "object",
   additionalProperties: false,
   required: ["summary", "items", "privacy_flags"],
@@ -46,7 +46,7 @@ const SCHEMA = {
   },
 };
 
-const PROMPT = `This photo was taken by a seller at a New Zealand garage sale. Buyers will search the sale by item.
+export const PROMPT = `This photo was taken by a seller at a New Zealand garage sale. Buyers will search the sale by item.
 
 List every item or clearly grouped lot a buyer could pick up and buy. Group near-identical small things (for example "box of paperbacks", "set of 6 glasses") instead of listing each one. Do not list fixtures that aren't for sale, such as the garage door, the car or the house.
 
@@ -62,19 +62,19 @@ For each item give:
 privacy_flags: list any visible faces, readable number plates, documents with personal details, screens showing personal content, or medication.
 summary: one sentence describing the sale in this photo.`;
 
-type Raw = { text: string; inputTokens: number; outputTokens: number };
+export type Raw = { text: string; inputTokens: number; outputTokens: number };
 const TIMEOUT = 120_000;
 
-async function callClaude(model: string, key: string, base64: string): Promise<Raw> {
+export async function callClaude(model: string, key: string, base64: string, mediaType = "image/jpeg", effort?: "low" | "medium" | "high"): Promise<Raw> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
     body: JSON.stringify({
       model,
       max_tokens: 16000,
-      output_config: { format: { type: "json_schema", schema: SCHEMA } },
+      output_config: { format: { type: "json_schema", schema: SCHEMA }, ...(effort ? { effort } : {}) },
       messages: [{ role: "user", content: [
-        { type: "image", source: { type: "base64", media_type: "image/jpeg", data: base64 } },
+        { type: "image", source: { type: "base64", media_type: mediaType, data: base64 } },
         { type: "text", text: PROMPT },
       ] }],
     }),

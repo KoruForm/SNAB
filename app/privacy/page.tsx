@@ -29,6 +29,7 @@ export default function PrivacyPage() {
       <li><strong>Your sale listing</strong>: title, description, dates and times, categories, highlights, prices you add, and photos.</li>
       <li><strong>Your sale address and map pin.</strong> These are kept separately from the listing and shown to buyers only as you choose (see below).</li>
       <li><strong>Your treasure list</strong> (the things you’re hunting for) and whether you want email alerts about them.</li>
+      <li><strong>Photo scans.</strong> If you ask SNAB to find the good stuff in your photos, we keep what the AI suggested for each photo and compare it with the highlights you keep, fix or remove. We use this only to make the scanning more accurate.</li>
       <li><strong>Reports</strong> you make about a listing, with any note you add.</li>
       <li><strong>View and save counts</strong> for sales. Your browser keeps a random code; we store only a scrambled version mixed with the sale and the day, so we (and sellers) see totals, never who looked.</li>
       <li><strong>Visit statistics</strong> through Umami, which doesn’t use cookies or collect personal information. It counts pages visited, the kind of device and roughly which country.</li>
@@ -59,6 +60,7 @@ export default function PrivacyPage() {
     <ul>
       <li><strong>Supabase</strong> (database, sign-in and photos). Stored in <strong>Tokyo, Japan</strong>.</li>
       <li><strong>Hostinger</strong> (website hosting).</li>
+      <li><strong>Anthropic</strong> (the Claude AI that suggests highlights from your photos), based in the United States. It sees only the photos you ask it to scan, and doesn’t use them to train its models.</li>
       <li><strong>Resend</strong> (sending sign-in codes and alert emails), based in the United States.</li>
       <li><strong>Umami</strong> (cookie-free visit statistics).</li>
       <li><strong>Geoapify or Photon</strong> (address suggestions when you type your address) and <strong>OpenFreeMap</strong> (map images). These see what you type or which part of the map you’re viewing, not who you are.</li>

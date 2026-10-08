@@ -3,7 +3,9 @@ export const CATEGORIES = ["Furniture", "Tools", "Books", "Electronics", "Clothi
 export type Category = typeof CATEGORIES[number];
 export type AddressReveal = "sale-day" | "now" | "area-only";
 export type SaleDay = { date: string; starts: string; finishes: string };
-export type MockItem = { id: string; label: string; category: Category; description: string; price?: string; estimate?: string; available: boolean; confirmed: boolean };
+// ai: what the photo scan first suggested (lib/ai/scan-items.ts). Comparing it with the seller's final label and
+// category, and with the scan's full answer in photo_scans, is how the scan learns which suggestions were wrong.
+export type MockItem = { id: string; label: string; category: Category; description: string; price?: string; estimate?: string; available: boolean; confirmed: boolean; ai?: { scan: string; label: string; category: Category } };
 export type Draft = {
   id: string;
   title: string;
