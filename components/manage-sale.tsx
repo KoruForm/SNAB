@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getDraft, getPhotos, updateDraft } from "../lib/drafts/storage";
 import { formatDay, localDateKey, type Draft, type DraftPhoto } from "../lib/drafts/types";
+import { shareOrigin } from "../lib/site";
 import { closeNowPatch, openNowPatch, toBuyerSale, unfinishedSaleDayToday } from "../lib/mock/catalogue";
 import { signQrTags, trackEvent } from "../lib/analytics";
 import { fetchSaleStats, type SaleStats } from "../lib/sale-stats";
@@ -23,7 +24,7 @@ export default function ManageSale({ id }: { id: string }) {
   useEffect(() => () => { if (signUrl) URL.revokeObjectURL(signUrl); }, [signUrl]);
   useEffect(() => () => { Object.values(social).forEach(u => u && URL.revokeObjectURL(u)); }, [social]);
   async function change(patch: Parameters<typeof updateDraft>[1], message: string) { setBusy(true); setError(""); try { setDraft(await updateDraft(id, patch)); setNotice(message); } catch(e) { setError(e instanceof Error ? e.message : "Couldn’t save that."); } finally { setBusy(false); } }
-  function url() { return `${window.location.origin}/sale/${id}`; }
+  function url() { return `${shareOrigin()}/sale/${id}`; }
   function qrUrl() { return `${url()}?${signQrTags}`; }
   function text() { return `SNAB — ${draft?.title}\n${draft?.days.map(d=>`${formatDay(d)} ${clock(d.starts)}–${clock(d.finishes)}`).join("\n")}\n${draft ? toBuyerSale(draft,photos).addressLabel : ""}\n${url()}${real ? "" : "\nUX demo · sale saved on this device only."}`; }
   async function copy(value: string) { try { await navigator.clipboard.writeText(value); setNotice("Copied. Ready to paste into a post or message."); } catch { setNotice("Select the text below and copy it from your browser."); } }
