@@ -25,6 +25,11 @@
 .search-field:focus-within { outline:3px solid var(--yellow); outline-offset:3px; }
 .search-box .button { width:100%; }
 .workspace-main .find-title { font-size:clamp(28px,7vw,36px); }
+/* Plan my morning sits beside the title, so buyers see it before the list. */
+.find-head { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.find-head .find-title { margin:0; }
+.find-plan-button { display:inline-flex; align-items:center; min-height:44px; padding:9px 14px; border:1.5px solid var(--ink); border-radius:6px; background:var(--white); color:var(--ink); font-size:14px; font-weight:700; white-space:nowrap; text-decoration:none; }
+.find-plan-button:hover { background:var(--paper); }
 .find-page .search-box { margin-top:16px; }
 /* One scrolling row of chips, so the filters never take two lines. */
 .find-quick-filters { display:flex; gap:8px; overflow-x:auto; margin-inline:-28px; padding:2px 28px 4px; scrollbar-width:none; }
