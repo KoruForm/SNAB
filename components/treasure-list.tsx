@@ -1,4 +1,5 @@
 "use client";
+import { trackEvent } from "../lib/analytics";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -24,6 +25,7 @@ export function TreasureAddForm({ label = "What are you hunting for?", compact =
     const next = addTreasure(prefs.treasures, name);
     if (!next) { setNotice(name.trim() ? "That’s already on your list." : ""); return false; }
     act(() => savePreferences({ treasures: next }));
+    trackEvent("Treasure added");
     setNotice(`Added “${next[next.length - 1]}”. We’ll flag any sale that has it.`);
     onAdded?.(next[next.length - 1]);
     return true;
@@ -52,7 +54,7 @@ export function AddSearchToList({ query }: { query: string }) {
   if (!clean) return null;
   const listed = prefs.treasures.some(t => t.toLowerCase() === clean.toLowerCase());
   if (listed) return <p className="field-help" role="status">“{clean}” is on your treasure list. We’ll flag it when it turns up.</p>;
-  return <button className="button button-primary" onClick={() => { const next = addTreasure(prefs.treasures, clean); if (next) act(() => savePreferences({ treasures: next })); }}>Add “{clean}” to my treasure list</button>;
+  return <button className="button button-primary" onClick={() => { const next = addTreasure(prefs.treasures, clean); if (next) { act(() => savePreferences({ treasures: next })); trackEvent("Treasure added"); } }}>Add “{clean}” to my treasure list</button>;
 }
 export function WatchlistStrip({ sales, onPick }: { sales: BuyerSale[]; onPick: (treasure: string) => void }) {
   const { prefs } = usePreferences();

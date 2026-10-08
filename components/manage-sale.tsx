@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { getDraft, getPhotos, updateDraft } from "../lib/drafts/storage";
 import { formatDay, localDateKey, type Draft, type DraftPhoto } from "../lib/drafts/types";
 import { toBuyerSale, unfinishedSaleDayToday } from "../lib/mock/catalogue";
-import { signQrTags } from "../lib/analytics";
+import { signQrTags, trackEvent } from "../lib/analytics";
 import { fetchSaleStats, type SaleStats } from "../lib/sale-stats";
 import { CategoryArt, MissingSale, SaleCover, StateBadge } from "./buyer-ui";
 import { useAccount } from "../lib/supabase/use-account";
@@ -38,7 +38,7 @@ export default function ManageSale({ id }: { id: string }) {
   // The square post image, for the phone's share menu.
   async function postImage() { if (!draft) return undefined; const { createSocialImage } = await import("../lib/mock/social"); return createSocialImage(toBuyerSale(draft, photos), "post", photos[0]?.blob ?? photos[0]?.url); }
   async function downloadSign() {
-    if (!draft) return; setBusy(true); setError("");
+    if (!draft) return; setBusy(true); setError(""); trackEvent("Sign made");
     try { const { createSaleSign } = await import("../lib/mock/sign"); const bytes = await createSaleSign(toBuyerSale(draft, photos), qrUrl()); setSignUrl(URL.createObjectURL(new Blob([bytes], {type:"application/pdf"}))); setShareView("sign"); setNotice(real ? "Your sign PDF is ready. Preview it below, then save it." : "Your demo sign PDF is ready. Preview it below, then save it.");
     } catch(e) { setError(e instanceof Error ? e.message : "Couldn’t make the sign. Try again."); } finally { setBusy(false); }
   }

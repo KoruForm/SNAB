@@ -1,4 +1,5 @@
 "use client";
+import { trackEvent } from "../lib/analytics";
 import Image from "next/image";
 import Link from "next/link";
 import { SnapPhoto } from "./snap-photo";
@@ -62,7 +63,7 @@ export default function SellerWizard({ step }: { step: WizardStep }) {
   function href(next: string) { return `/sell/${next}?draft=${id}`; }
   async function start(demo = false) {
     setBusy(true); setError("");
-    try { if (eventCode && eventCode.toUpperCase().trim() !== "HAMILTON") throw new Error("Try the demo community code HAMILTON."); const code = eventCode.toUpperCase().trim() || undefined; const created = demo ? await createDemoDraft(code) : await createDraft(); const partner = demo ? undefined : rememberedPartner(); if (!demo && (code || partner)) await updateDraft(created.id, { eventCode: code, partner }); router.push(`/sell/${demo ? "preview" : "when"}?draft=${created.id}`); }
+    try { if (eventCode && eventCode.toUpperCase().trim() !== "HAMILTON") throw new Error("Try the demo community code HAMILTON."); const code = eventCode.toUpperCase().trim() || undefined; const created = demo ? await createDemoDraft(code) : await createDraft(); trackEvent("Sale started", { kind: demo ? "demo" : "real" }); const partner = demo ? undefined : rememberedPartner(); if (!demo && (code || partner)) await updateDraft(created.id, { eventCode: code, partner }); router.push(`/sell/${demo ? "preview" : "when"}?draft=${created.id}`); }
     catch (e) { setError(errorText(e)); setBusy(false); }
   }
   async function save(patch: Parameters<typeof updateDraft>[1], next?: string) {
@@ -123,7 +124,7 @@ export default function SellerWizard({ step }: { step: WizardStep }) {
     const submitter = (event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null;
     const details = cleanDetails(readExtras(data, draft?.details));
     if (submitter?.value === "publish" && id) {
-      setBusy(true); setError(""); try { await updateDraft(id, { details }); await publishDemo(id, submittedTitle, submittedDescription); router.push(`/manage/${id}?published=1`); } catch(e) { setError(errorText(e)); setBusy(false); }
+      setBusy(true); setError(""); try { await updateDraft(id, { details }); await publishDemo(id, submittedTitle, submittedDescription); trackEvent("Sale published", { kind: userId ? "real" : "demo" }); router.push(`/manage/${id}?published=1`); } catch(e) { setError(errorText(e)); setBusy(false); }
     } else await save({ title: submittedTitle, description: submittedDescription, details });
   }
 
