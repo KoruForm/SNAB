@@ -1,4 +1,5 @@
 "use client";
+import { trackEvent } from "../lib/analytics";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -24,6 +25,7 @@ export function TreasureAddForm({ label = "What are you hunting for?", compact =
     const next = addTreasure(prefs.treasures, name);
     if (!next) { setNotice(name.trim() ? "That’s already on your list." : ""); return false; }
     act(() => savePreferences({ treasures: next }));
+    trackEvent("Treasure added");
     setNotice(`Added “${next[next.length - 1]}”. We’ll flag any sale that has it.`);
     onAdded?.(next[next.length - 1]);
     return true;
