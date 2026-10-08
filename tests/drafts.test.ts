@@ -2,7 +2,7 @@ import "fake-indexeddb/auto";
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
 import { addressVisible, blankDraft, localDateKey, publicAddress, validateDays } from "../lib/drafts/types";
-import { createDraft, getDraft, updateDraft, getPhotos, addPhotos, deleteDraft, removePhoto, MAX_PHOTOS } from "../lib/drafts/storage";
+import { createDraft, getDraft, updateDraft, getPhotos, addPhotos, deleteDraft, makeCoverPhoto, removePhoto, MAX_PHOTOS } from "../lib/drafts/storage";
 
 test("sale-day disclosure uses Auckland's date and hides the address on non-sale days", () => {
   const draft = blankDraft("test");
@@ -64,4 +64,14 @@ test("photo count and size limits reject an entire batch without leaving partial
   assert.equal((await getPhotos(draft.id)).length, 1);
   await deleteDraft(draft.id);
   await assert.rejects(addPhotos(draft.id, [small]), /no longer exists/);
+});
+
+test("making a photo the cover moves it to the front and keeps the rest in order", async () => {
+  const draft = await createDraft();
+  await addPhotos(draft.id, ["a", "b", "c"].map(n => new File([n], `${n}.png`, { type: "image/png" })));
+  const third = (await getPhotos(draft.id))[2];
+  await makeCoverPhoto(draft.id, third.id);
+  assert.deepEqual((await getPhotos(draft.id)).map(p => p.name), ["c.png", "a.png", "b.png"]);
+  await makeCoverPhoto(draft.id, third.id);
+  assert.deepEqual((await getPhotos(draft.id)).map(p => p.name), ["c.png", "a.png", "b.png"]);
 });

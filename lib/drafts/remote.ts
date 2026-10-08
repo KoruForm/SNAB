@@ -133,6 +133,12 @@ export async function addRemotePhotos(supabase: SupabaseClient, userId: string, 
   }
   await supabase.from("sales").update({ updated_at: new Date().toISOString() }).eq("id", saleId);
 }
+// Photos are shown in sort_order, so the cover is whichever photo sorts first.
+export async function makeRemoteCoverPhoto(supabase: SupabaseClient, saleId: string, id: string): Promise<void> {
+  const rows = check(await supabase.from("sale_photos").select("id, sort_order").eq("sale_id", saleId).order("sort_order").order("created_at"), SAVE_FAILED) as Pick<PhotoRow, "id" | "sort_order">[];
+  if (!rows.length || rows[0].id === id || !rows.some(r => r.id === id)) return;
+  check(await supabase.from("sale_photos").update({ sort_order: rows[0].sort_order - 1 }).eq("id", id), SAVE_FAILED);
+}
 export async function removeRemotePhoto(supabase: SupabaseClient, id: string): Promise<void> {
   const row = check(await supabase.from("sale_photos").select("storage_path").eq("id", id).maybeSingle(), SAVE_FAILED);
   if (!row) return;
