@@ -29,6 +29,9 @@ export type SaleDetails = {
   movedFrom?: string[];
   // After the sale: what's left is free to collect until this time on the last sale day.
   leftoversUntil?: string;
+  // The sale day the seller opened or closed the sale by hand. The hand setting only counts on that day,
+  // so closing Saturday afternoon doesn't close Sunday, and opening early Saturday doesn't open Sunday at midnight.
+  modeOn?: string;
 };
 
 const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
@@ -44,6 +47,7 @@ export function cleanDetails(value: unknown): SaleDetails {
   if (typeof v.note === "string" && v.note.trim()) out.note = v.note.trim().slice(0, NOTE_MAX);
   if (Array.isArray(v.movedFrom)) { const moved = v.movedFrom.filter((d): d is string => typeof d === "string" && DATE.test(d)).slice(-7); if (moved.length) out.movedFrom = moved; }
   if (typeof v.leftoversUntil === "string" && TIME.test(v.leftoversUntil)) out.leftoversUntil = v.leftoversUntil;
+  if (typeof v.modeOn === "string" && DATE.test(v.modeOn)) out.modeOn = v.modeOn;
   return out;
 }
 
