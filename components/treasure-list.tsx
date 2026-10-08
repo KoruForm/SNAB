@@ -45,6 +45,15 @@ export function TreasureAddForm({ label = "What are you hunting for?", compact =
 }
 
 // Find: a nudge to start the list, or a summary of which sales have something on it.
+// For a search that found nothing: put the search on the treasure list so SNAB flags it when it turns up.
+export function AddSearchToList({ query }: { query: string }) {
+  const { prefs, act } = usePreferences();
+  const clean = query.replace(/\s+/g, " ").trim().slice(0, 80);
+  if (!clean) return null;
+  const listed = prefs.treasures.some(t => t.toLowerCase() === clean.toLowerCase());
+  if (listed) return <p className="field-help" role="status">“{clean}” is on your treasure list. We’ll flag it when it turns up.</p>;
+  return <button className="button button-primary" onClick={() => { const next = addTreasure(prefs.treasures, clean); if (next) act(() => savePreferences({ treasures: next })); }}>Add “{clean}” to my treasure list</button>;
+}
 export function WatchlistStrip({ sales, onPick }: { sales: BuyerSale[]; onPick: (treasure: string) => void }) {
   const { prefs } = usePreferences();
   if (!prefs.treasures.length) return <aside className="watch-card watch-promo" aria-labelledby="watch-promo-title">
@@ -58,7 +67,7 @@ export function WatchlistStrip({ sales, onPick }: { sales: BuyerSale[]; onPick: 
   const onList = salesOnList(sales, prefs.treasures).length;
   return <aside className="watch-card watch-summary" aria-labelledby="watch-summary-title">
     <span className="watch-tape">Your treasure list</span>
-    <h2 id="watch-summary-title">{onList ? <><span className="watch-mark">{plural(onList, "sale")}</span> {onList === 1 ? "has" : "have"} something you’re after.</> : "Nothing on your list yet. We’ll flag it when it turns up."}</h2>
+    <h2 id="watch-summary-title">{onList ? <><span className="watch-mark">{plural(onList, "sale")}</span> {onList === 1 ? "has" : "have"} something you’re after.</> : "No matches yet. We’ll flag it when it turns up."}</h2>
     <div className="watch-chips">{matches.map(m => <button key={m.treasure} type="button" className={m.sales.length ? "has-hits" : ""} onClick={() => onPick(m.treasure)}>{m.treasure}<span>{m.sales.length}</span></button>)}</div>
     <Link className="small-link" href="/saved?tab=treasures">Edit your list →</Link>
   </aside>;
