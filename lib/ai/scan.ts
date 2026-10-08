@@ -21,6 +21,15 @@ export type LiveScan = { scanId: string; answer: ScanAnswer };
 
 export function scanModel(): string { return process.env.SCAN_MODEL?.trim() || DEFAULT_MODEL; }
 export function scanDailyLimit(): number { return Number(process.env.SCAN_DAILY_LIMIT) || 60; }
+// A ceiling on what all sellers together can spend in a day, in US$, whatever happens to individual limits
+// (bursts of requests, or deleting a sale to wipe its scans). SNAB runs as one Node process, so memory is enough.
+export function scanDailyBudget(): number { return Number(process.env.SCAN_DAILY_BUDGET_USD) || 5; }
+const PER_SELLER_AT_ONCE = 3;
+const inFlight = new Map<string, number>();
+const spend = { day: "", usd: 0 };
+function spentToday(now = new Date()): number { const day = now.toISOString().slice(0, 10); if (spend.day !== day) { spend.day = day; spend.usd = 0; } return spend.usd; }
+export function resetScanGuards() { inFlight.clear(); spend.day = ""; spend.usd = 0; }
+
 export function scanReady(): boolean { return Boolean(process.env.ANTHROPIC_API_KEY?.trim() && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY); }
 
 // A Supabase client acting as the signed-in seller, so their row-level security applies to every read and write.
@@ -43,10 +52,20 @@ export async function scanSalePhoto(supabase: SupabaseClient, userId: string, ph
     .order("created_at", { ascending: false }).limit(1).maybeSingle()).data;
   if (earlier) return { scanId: earlier.id, answer: earlier.result as ScanAnswer };
 
-  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const { count } = await supabase.from("photo_scans").select("id", { count: "exact", head: true }).eq("owner_id", userId).gte("created_at", since);
-  if ((count ?? 0) >= scanDailyLimit()) throw new ScanError("You’ve scanned a lot of photos today. Add the rest of your highlights yourself, or try again tomorrow.", 429);
+  if (spentToday() >= scanDailyBudget()) throw new ScanError("Photo scanning is resting for today. Add your highlights yourself, or try again tomorrow.", 429);
+  const running = inFlight.get(userId) ?? 0;
+  if (running >= PER_SELLER_AT_ONCE) throw new ScanError("Still scanning your other photos. Try this one again in a moment.", 429);
+  // Counted before any waiting, so a burst of requests can't all slip under the limits at once.
+  inFlight.set(userId, running + 1);
+  try {
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { count } = await supabase.from("photo_scans").select("id", { count: "exact", head: true }).eq("owner_id", userId).gte("created_at", since);
+    if ((count ?? 0) + running >= scanDailyLimit()) throw new ScanError("You’ve scanned a lot of photos today. Add the rest of your highlights yourself, or try again tomorrow.", 429);
+    return await runScan(supabase, userId, photo, model);
+  } finally { const left = (inFlight.get(userId) ?? 1) - 1; if (left > 0) inFlight.set(userId, left); else inFlight.delete(userId); }
+}
 
+async function runScan(supabase: SupabaseClient, userId: string, photo: { id: string; sale_id: string; storage_path: string; content_type: string }, model: string): Promise<LiveScan> {
   const file = (await supabase.storage.from(PHOTO_BUCKET).download(photo.storage_path)).data;
   if (!file) throw new ScanError("Couldn’t open that photo.", 404);
   const mediaType = IMAGE_TYPES.includes(file.type) ? file.type : IMAGE_TYPES.includes(photo.content_type) ? photo.content_type : "";
@@ -56,7 +75,9 @@ export async function scanSalePhoto(supabase: SupabaseClient, userId: string, ph
   const raw = await callClaude(model, process.env.ANTHROPIC_API_KEY!.trim(), Buffer.from(await file.arrayBuffer()).toString("base64"), mediaType, "medium");
   let answer: ScanAnswer;
   try { answer = JSON.parse(raw.text); } catch { throw new ScanError("The scan’s answer couldn’t be read. Try again.", 502); }
-  const [inPrice, outPrice] = PRICES[model] ?? [0, 0];
+  // Unknown models are costed at the dearest listed price, so the daily budget still holds.
+  const [inPrice, outPrice] = PRICES[model] ?? [4, 20];
+  spend.usd += (raw.inputTokens * inPrice + raw.outputTokens * outPrice) / 1e6;
   const saved = await supabase.from("photo_scans").insert({
     sale_id: photo.sale_id, photo_id: photo.id, owner_id: userId, model, prompt_version: PROMPT_VERSION, result: answer,
     item_count: answer.items?.length ?? 0, ms: Date.now() - started, cost_usd: (raw.inputTokens * inPrice + raw.outputTokens * outPrice) / 1e6,
