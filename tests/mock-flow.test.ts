@@ -45,7 +45,12 @@ test("buyer projection excludes the street before the sale and for area-only lis
   assert.equal(sale.exactAddressVisible, false); assert.ok(!JSON.stringify(sale).includes("123 Hidden"));
   sale = toBuyerSale(draft, [], new Date("2026-10-09T23:00:00Z"));
   assert.equal(sale.exactAddressVisible, true); assert.equal(sale.addressLabel, "123 Hidden Street");
+  // Fri 9 Oct NZ: still hidden at 5:59pm, shown from 6pm so buyers can plan the night before.
+  assert.equal(toBuyerSale(draft, [], new Date("2026-10-09T04:59:00Z")).exactAddressVisible, false);
+  assert.equal(toBuyerSale(draft, [], new Date("2026-10-09T05:00:00Z")).exactAddressVisible, true);
+  assert.equal(toBuyerSale(draft, [], new Date("2026-10-08T07:00:00Z")).exactAddressVisible, false); // Thu 8pm
   draft.location.reveal = "area-only";
+  assert.equal(toBuyerSale(draft, [], new Date("2026-10-09T05:00:00Z")).exactAddressVisible, false);
   sale = toBuyerSale(draft, [], new Date("2026-10-09T23:00:00Z"));
   assert.equal(sale.exactAddressVisible, false); assert.ok(!JSON.stringify(sale).includes("123 Hidden"));
 });

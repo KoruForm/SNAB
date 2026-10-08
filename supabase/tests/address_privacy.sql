@@ -22,16 +22,26 @@ insert into public.sale_private_locations (sale_id, address, town, exact_latitud
 create function pg_temp.check(ok boolean, what text) returns void language plpgsql as $$
 begin if ok is not true then raise exception 'FAILED: %', what; end if; end $$;
 
--- Friday 9 Oct, 11pm NZ: before the sale.
-select pg_temp.check(count(*) = 4, 'drafts are never listed') from private.public_sale_rows('2026-10-09 23:00+13');
+-- Friday 9 Oct, 5pm NZ: before the sale.
+select pg_temp.check(count(*) = 4, 'drafts are never listed') from private.public_sale_rows('2026-10-09 17:00+13');
 select pg_temp.check(address is null and not exact_location and latitude = -37.785 and longitude = 175.295, 'sale-day hides street and exact point before the sale')
-  from private.public_sale_rows('2026-10-09 23:00+13') where title = 'Sale day reveal';
+  from private.public_sale_rows('2026-10-09 17:00+13') where title = 'Sale day reveal';
 select pg_temp.check(address = '2 Secret Street' and exact_location and latitude = -37.78123, 'show-now reveals once published')
-  from private.public_sale_rows('2026-10-09 23:00+13') where title = 'Show now';
+  from private.public_sale_rows('2026-10-09 17:00+13') where title = 'Show now';
 select pg_temp.check(address is null and town = 'Rototuna' and latitude = -37.725, 'area-only shows town and grid point')
-  from private.public_sale_rows('2026-10-09 23:00+13') where title = 'Area only';
+  from private.public_sale_rows('2026-10-09 17:00+13') where title = 'Area only';
 select pg_temp.check(address is null and not exact_location, 'closed sales never reveal')
-  from private.public_sale_rows('2026-10-09 23:00+13') where title = 'Closed early';
+  from private.public_sale_rows('2026-10-09 17:00+13') where title = 'Closed early';
+
+-- Friday 9 Oct from 6pm NZ: sale-day streets show the evening before, so buyers can plan their route.
+select pg_temp.check(address is null, 'sale-day still hidden at 5:59pm the evening before')
+  from private.public_sale_rows('2026-10-09 17:59+13') where title = 'Sale day reveal';
+select pg_temp.check(address = '1 Secret Street' and exact_location, 'sale-day reveals from 6pm the evening before')
+  from private.public_sale_rows('2026-10-09 18:00+13') where title = 'Sale day reveal';
+select pg_temp.check(address is null, 'area-only stays hidden the evening before')
+  from private.public_sale_rows('2026-10-09 18:00+13') where title = 'Area only';
+select pg_temp.check(address is null, 'sale-day stays hidden two evenings before')
+  from private.public_sale_rows('2026-10-08 20:00+13') where title = 'Sale day reveal';
 
 -- 10 Oct 00:30 NZ is still 9 Oct in UTC: the reveal must follow Auckland's date.
 select pg_temp.check(address = '1 Secret Street' and exact_location and longitude = 175.29871, 'sale-day reveals on an Auckland sale day')
