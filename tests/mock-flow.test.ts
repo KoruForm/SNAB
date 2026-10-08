@@ -7,7 +7,7 @@ import { getDraft, updateDraft } from "../lib/drafts/storage";
 import { createDemoDraft, publicationError, publishDemo } from "../lib/mock/actions";
 import { createSaleSign, layoutSaleSign, signText } from "../lib/mock/sign";
 import { layoutSocial, SOCIAL, socialDay } from "../lib/mock/social";
-import { demoSales, matchedItems, rankSales, toBuyerSale } from "../lib/mock/catalogue";
+import { closeNowPatch, demoSales, matchedItems, openNowPatch, rankSales, toBuyerSale } from "../lib/mock/catalogue";
 
 test("demo publication requires a title, sale dates and a location", () => {
   const draft = blankDraft("invalid");
@@ -130,4 +130,21 @@ test("social post and story layouts keep text in their zones and use buyer-visib
     assert.ok(!text.includes("PRIVATE STREET")); assert.ok(text.includes("CLAUDELANDS")); assert.ok(text.includes("8:30AM - 1PM")); assert.ok(text.includes("TOYS")); assert.ok(!text.includes("OTHER"));
   }
   assert.deepEqual(socialDay({date:"2026-10-10",starts:"14:00",finishes:"16:30"}), {name:"SATURDAY",date:"10 OCT",time:"2PM - 4:30PM"});
+});
+
+test("opening or closing by hand only counts on that day, so a two-day sale isn't stuck closed or open early", () => {
+  const draft = { ...blankDraft("two-day"), status: "published" as const, title: "Weekend sale",
+    days: [{ date: "2026-10-10", starts: "08:00", finishes: "13:00" }, { date: "2026-10-11", starts: "08:00", finishes: "13:00" }],
+    location: { address: "1 Example St", town: "Hamilton East", reveal: "now" as const } };
+  const satNoon = new Date("2026-10-09T23:00:00Z"), sunEarly = new Date("2026-10-10T17:00:00Z"), sunNine = new Date("2026-10-10T20:00:00Z");
+  const closedSat = { ...draft, ...closeNowPatch(draft, satNoon) };
+  assert.equal(closedSat.status, "published", "closing Saturday keeps Sunday listed");
+  assert.equal(toBuyerSale(closedSat, [], satNoon).state, "closed");
+  assert.equal(toBuyerSale(closedSat, [], sunNine).state, "open", "Sunday opens by itself");
+  const closedSun = { ...closedSat, ...closeNowPatch(closedSat, sunNine) };
+  assert.equal(closedSun.status, "closed", "closing on the last day finishes the sale");
+  const openedSat = { ...draft, ...openNowPatch(draft, new Date("2026-10-09T18:30:00Z")) };
+  assert.equal(toBuyerSale(openedSat, [], new Date("2026-10-09T18:30:00Z")).state, "open");
+  assert.equal(toBuyerSale(openedSat, [], sunEarly).state, "upcoming", "opening early Saturday doesn't open Sunday at 6am");
+  assert.equal(toBuyerSale(openedSat, [], sunNine).state, "open");
 });

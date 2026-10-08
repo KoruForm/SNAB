@@ -4,9 +4,8 @@ import Script from "next/script";
 import "./globals.css";
 import { umamiScript, umamiWebsiteId } from "../lib/analytics";
 import { comingSoonHome } from "../lib/launch";
+import { siteUrl } from "../lib/site";
 
-// Link previews need absolute URLs. NEXT_PUBLIC_SITE_URL overrides the default at build time.
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://snab.nz";
 // While the coming soon teaser is on, shares and search results give nothing away either.
 const teaser = comingSoonHome;
 const title = teaser ? "SNAB" : "SNAB — Garage sales. Great finds.";

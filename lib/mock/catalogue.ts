@@ -24,12 +24,25 @@ export function unfinishedSaleDayToday(days: SaleDay[], now = new Date()): SaleD
   const today = localDateKey(now); const time = nzTime(now);
   return days.find(day => day.date === today && day.finishes > time);
 }
+// The seller's "Open my sale now" and "Close sale" buttons. Closing before the last sale day only closes today;
+// the sale opens again by itself on its next day. Closing on the last day finishes the sale.
+export function openNowPatch(draft: Draft, now = new Date()): Pick<Draft, "status" | "dayMode" | "details"> {
+  return { status: "published", dayMode: "open", details: { ...draft.details, modeOn: localDateKey(now) } };
+}
+export function closeNowPatch(draft: Draft, now = new Date()): Pick<Draft, "dayMode" | "details"> & Partial<Pick<Draft, "status">> {
+  const today = localDateKey(now);
+  const later = draft.days.some(day => day.date > today);
+  return { ...(later ? {} : { status: "closed" as const }), dayMode: "closed", details: { ...draft.details, modeOn: today } };
+}
 export function toBuyerSale(draft: Draft, photos: DraftPhoto[], now = new Date()): BuyerSale {
   const today = localDateKey(now); const time = nzTime(now);
   const open = draft.days.some(day => day.date === today && day.starts <= time && day.finishes > time);
-  // Opening by hand only counts on a sale day until its finish time, so a sale can't say "Open now" on the wrong day.
-  const openedEarly = draft.dayMode === "open" && Boolean(unfinishedSaleDayToday(draft.days, now));
-  const state = draft.status === "closed" || draft.dayMode === "closed" ? "closed" : openedEarly || open ? "open" : draft.days.length && draft.days.every(day => day.date < today || (day.date === today && day.finishes <= time)) ? "closed" : "upcoming";
+  // Opening or closing by hand only counts on the day it was done (older sales without modeOn: any day), and
+  // opening only until the finish time, so a sale can't say "Open now" or "Closed" on the wrong day.
+  const handToday = !draft.details?.modeOn || draft.details.modeOn === today;
+  const openedEarly = draft.dayMode === "open" && handToday && Boolean(unfinishedSaleDayToday(draft.days, now));
+  const closedByHand = draft.dayMode === "closed" && handToday;
+  const state = draft.status === "closed" || closedByHand ? "closed" : openedEarly || open ? "open" : draft.days.length && draft.days.every(day => day.date < today || (day.date === today && day.finishes <= time)) ? "closed" : "upcoming";
   const exactAddressVisible = addressVisible(draft, now);
   // Your own sale is placed by the same rule buyers get from the server.
   const { latitude, longitude } = draft.location;

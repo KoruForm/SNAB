@@ -303,3 +303,7 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 .legal-page{max-width:680px;margin:0 auto;padding:40px 20px 80px;line-height:1.6;overflow-wrap:anywhere}.legal-page h1{font-size:38px;line-height:1.1;margin:18px 0 6px}.legal-page h2{font-size:22px;line-height:1.25;margin:34px 0 10px}.legal-page p,.legal-page li{margin:10px 0}.legal-page ul{padding-left:22px}.legal-page a{text-decoration:underline}.legal-updated{color:#555;font-size:15px}
 .delete-account{margin-top:28px}.account-legal{margin-top:28px}
 .field-help a,.soon-privacy a{text-decoration:underline;text-underline-offset:2px}
+.oops-page{max-width:480px;margin:0 auto;padding:48px 16px;display:flex;flex-direction:column;gap:16px}
+.oops-page h1{margin:8px 0 0;font-size:40px;line-height:1.05}
+.oops-page p{margin:0;font-size:18px;line-height:1.5}
+.oops-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
