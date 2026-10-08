@@ -78,13 +78,19 @@ export function formatDay(day: SaleDay): string {
   return new Intl.DateTimeFormat("en-NZ", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).format(date);
 }
 
-// Mirrors private.address_visible in supabase/migrations/002_public_sale_privacy.sql, which enforces this rule on the server.
+// When a "sale-day" street starts showing: this time on the evening before each sale day (NZ time).
+export const REVEAL_EVENING_BEFORE = "18:00";
+// Mirrors private.address_visible in supabase/migrations/014_reveal_night_before.sql, which enforces this rule on the server.
 // Unpublished drafts are previewed as if published; closed sales and finished sales never show the street.
 export function addressVisible(draft: Pick<Draft, "status" | "days" | "location">, now = new Date()): boolean {
   if (draft.status === "closed") return false;
   const today = localDateKey(now);
   if (draft.location.reveal === "now") return draft.days.some(day => day.date >= today);
-  if (draft.location.reveal === "sale-day") return draft.days.some(day => day.date === today);
+  if (draft.location.reveal === "sale-day") {
+    const tomorrow = new Date(`${today}T12:00:00Z`); tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+    const evening = new Intl.DateTimeFormat("en-NZ", { timeZone: "Pacific/Auckland", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(now) >= REVEAL_EVENING_BEFORE;
+    return draft.days.some(day => day.date === today || (evening && day.date === tomorrow.toISOString().slice(0, 10)));
+  }
   return false;
 }
 
@@ -92,7 +98,7 @@ export function publicAddress(draft: Draft, now = new Date()): string {
   if (addressVisible(draft, now)) return draft.location.address || draft.location.town;
   if (draft.location.reveal === "area-only") return draft.location.town || "Area to be confirmed";
   const today = localDateKey(now);
-  return draft.status !== "closed" && draft.days.some(day => day.date > today) ? `${draft.location.town || "Local area"} · address revealed on sale day` : draft.location.town || "Area to be confirmed";
+  return draft.status !== "closed" && draft.days.some(day => day.date > today) ? `${draft.location.town || "Local area"} · street shows 6pm the night before` : draft.location.town || "Area to be confirmed";
 }
 
 export function draftProgress(draft: Draft, photoCount: number): number {

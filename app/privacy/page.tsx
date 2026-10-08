@@ -48,7 +48,7 @@ export default function PrivacyPage() {
     <h2>Who can see it</h2>
     <ul>
       <li><strong>Everyone</strong> can see a published listing: its title, description, dates, photos, highlights and town or suburb.</li>
-      <li><strong>Your street address</strong> is shown only as you choose when you list: on sale days only (recommended), from when you publish, or never. Until then buyers see a rough area. Once your sale has finished it no longer appears to buyers.</li>
+      <li><strong>Your street address</strong> is shown only as you choose when you list: from 6pm the night before your sale (recommended), from when you publish, or never. Until then buyers see a rough area. Once your sale has finished it no longer appears to buyers.</li>
       <li><strong>Your email address</strong> is never shown to other people.</li>
       <li><strong>Sellers</strong> see how many people viewed and saved their sale, not who.</li>
       <li><strong>We</strong> can see stored information to run and look after SNAB, for example when reviewing a report.</li>
