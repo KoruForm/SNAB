@@ -44,7 +44,7 @@ export function Insider() {
           <p>Seen the “Coming soon” signs? This is it. SNAB puts every garage sale near you on one map, with photos of what’s for sale, so buyers can plan a Saturday morning route and sellers get a crowd.</p>
           <p>A few streets get it first. Yours is one of them.</p>
           <ul>
-            <li><strong>Selling?</strong> Snap a few photos and your sale is listed free. We’ll give you a printed sign too.</li>
+            <li><strong>Selling?</strong> Snap a few photos and your sale is listed free. We’ll sort you a sign too.</li>
             <li><strong>Buying?</strong> Get the map before everyone else, and a heads up the night before.</li>
           </ul>
         </div>
