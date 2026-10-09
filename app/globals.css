@@ -149,6 +149,15 @@ h2{margin:0;font-size:clamp(29px,3vw,40px);line-height:1.22}
 .soon-error{margin:0;color:var(--rust);font-size:15px;font-weight:700;line-height:1.4}
 .soon-privacy{margin:-4px 0 0;font-size:13px;line-height:1.45;color:var(--muted)}
 .soon-done{gap:10px}
+.insider-main{gap:22px}
+.insider-copy{width:100%;max-width:560px;text-align:left;font-size:17px;line-height:1.55}
+.insider-copy p{margin:0 0 12px}
+.insider-copy ul{margin:0;padding-left:20px;display:grid;gap:8px}
+.insider-choices{margin:0;padding:0;border:0;display:grid;gap:8px}
+.insider-choices legend{margin-bottom:7px;font-size:14px;font-weight:700}
+.insider-choice{display:flex;align-items:center;gap:10px;min-height:48px;padding:10px 14px;border:1.5px solid var(--ink);border-radius:7px;background:var(--paper);font-size:16px;cursor:pointer}
+.insider-choice:has(input:checked){background:var(--green);border-color:var(--green);color:var(--white);font-weight:700}
+.insider-choice input{width:20px;height:20px;accent-color:var(--yellow)}
 .soon-done p:last-child{margin:0;font-size:17px;line-height:1.5}
 @media(max-width:700px){
   .soon-site{padding:36px 20px;align-items:start}
